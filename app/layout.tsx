@@ -1,11 +1,10 @@
 import './globals.css';
-import SideNav from '@/components/SideNav';
-import HeaderItems from '@/components/HeaderItems';
 import { Inter } from 'next/font/google';
 import { SessionProvider } from 'next-auth/react';
 import { auth } from '@/auth';
 import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
+import MenuProvider from '@/context/MenuContext';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -15,7 +14,7 @@ const inter = Inter({
 export const metadata = {
   title: 'PMS',
   description: 'Inventory track',
-  icons: [{ rel: 'icon', url: '/favicon.ico' }],
+  icons: [{ rel: 'icon', url: '/vercel.svg' }],
 };
 
 export default async function RootLayout({
@@ -30,7 +29,7 @@ export default async function RootLayout({
       <html lang="en">
         <body className={`font-sans ${inter.variable}`}>
           <Toaster />
-          {children}
+          <MenuProvider>{children}</MenuProvider>
         </body>
       </html>
     </SessionProvider>
