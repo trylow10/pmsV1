@@ -1,10 +1,10 @@
-import bcrypt from "bcryptjs";
-import type { NextAuthConfig } from "next-auth";
-import Credentials from "next-auth/providers/credentials";
-import Google from "next-auth/providers/google";
+import bcrypt from 'bcryptjs';
+import type { NextAuthConfig } from 'next-auth';
+import Credentials from 'next-auth/providers/credentials';
+import Google from 'next-auth/providers/google';
 //TODO:user.schama
-import { LoginSchema } from "@/schemas";
-import { getUserByEmail } from "@/data/user";
+import { LoginSchema } from '@/schemas/user.schema';
+import { getUserByEmail } from '@/data/user';
 
 export default {
   providers: [
