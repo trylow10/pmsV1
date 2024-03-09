@@ -1,97 +1,37 @@
-import NextAuth from 'next-auth';
-import { UserRole } from '@prisma/client';
-import { PrismaAdapter } from '@auth/prisma-adapter';
+import bcrypt from 'bcryptjs';
+import Credentials from 'next-auth/providers/credentials';
+import Google from 'next-auth/providers/google';
 
-import { db } from '@/lib/db';
-import authConfig from '@/auth.config';
-import { getUserById } from '@/data/user';
-import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation';
-import { getAccountByUserId } from './data/account';
+import { LoginSchema } from '@/schemas/user.schema';
+import { getUserByEmail } from '@/data/user';
 
-export const {
-  handlers: { GET, POST },
-  auth,
-  signIn,
-  signOut,
-  update,
-} = NextAuth({
-  pages: {
-    signIn: '/login',
-    error: '/error',
-  },
-  events: {
-    async linkAccount({ user }) {
-      await db.user.update({
-        where: { id: user.id },
-        data: { emailVerified: new Date() },
-      });
-    },
-  },
-  callbacks: {
-    async signIn({ user, account }) {
-      // Allow OAuth without email verification
-      if (account?.provider !== 'credentials') return true;
+export default {
+  providers: [
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+    Credentials({
+      // credentials: {
+      //   username: { label: 'Username', type: 'text' },
+      //   password: { label: 'Password', type: 'password' },
+      // },
+      async authorize(credentials) {
+        const validatedFields = LoginSchema.safeParse(credentials);
 
-      const existingUser = await getUserById(user.id);
+        if (validatedFields.success) {
+          const { email, password } = validatedFields.data;
 
-      // Prevent sign in without email verification
-      if (!existingUser?.emailVerified) return false;
+          const user = await getUserByEmail(email);
+          if (!user || !user.password) return null;
 
-      if (existingUser.isTwoFactorEnabled) {
-        const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(
-          existingUser.id
-        );
+          const passwordsMatch = await bcrypt.compare(password, user.password);
 
-        if (!twoFactorConfirmation) return false;
+          if (passwordsMatch) return user;
+        }
 
-        // Delete two factor confirmation for next sign in
-        await db.twoFactorConfirmation.delete({
-          where: { id: twoFactorConfirmation.id },
-        });
-      }
-
-      return true;
-    },
-    async session({ token, session }) {
-      if (token.sub && session.user) {
-        session.user.id = token.sub;
-      }
-
-      if (token.role && session.user) {
-        session.user.role = token.role as UserRole;
-      }
-
-      if (session.user) {
-        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
-      }
-
-      if (session.user) {
-        session.user.name = token.name;
-        session.user.email = token.email;
-        session.user.isOAuth = token.isOAuth as boolean;
-      }
-
-      return session;
-    },
-    async jwt({ token }) {
-      if (!token.sub) return token;
-
-      const existingUser = await getUserById(token.sub);
-
-      if (!existingUser) return token;
-
-      const existingAccount = await getAccountByUserId(existingUser.id);
-
-      token.isOAuth = !!existingAccount;
-      token.name = existingUser.name;
-      token.email = existingUser.email;
-      token.role = existingUser.role;
-      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
-
-      return token;
-    },
-  },
-  adapter: PrismaAdapter(db),
-  session: { strategy: 'jwt' },
-  ...authConfig,
-});
+        return null;
+      },
+    }),
+  ],
+};

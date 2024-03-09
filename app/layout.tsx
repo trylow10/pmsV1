@@ -1,7 +1,7 @@
 import './globals.css';
 import { Inter } from 'next/font/google';
-import { SessionProvider } from 'next-auth/react';
-import { auth } from '@/auth';
+
+import AuthProvider from '@/context/AuthProvider';
 import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
 import MenuProvider from '@/context/MenuContext';
@@ -22,16 +22,14 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
-
   return (
-    <SessionProvider session={session}>
-      <html lang="en">
-        <body className={`font-sans ${inter.variable}`}>
+    <html lang="en">
+      <body className={`font-sans ${inter.variable}`}>
+        <AuthProvider>
           <Toaster />
           <MenuProvider>{children}</MenuProvider>
-        </body>
-      </html>
-    </SessionProvider>
+        </AuthProvider>
+      </body>
+    </html>
   );
 }
