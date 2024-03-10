@@ -1,30 +1,30 @@
-"use client";
-import React from "react";
-import Link from "next/link";
+'use client';
+import React from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-import { HomeIcon, SettingsIcon } from "./icons";
-import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { HomeIcon, SettingsIcon } from './icons';
+import { cn } from '@/lib/utils';
 
 const links = [
   {
-    href: "/",
-    label: "Home",
+    href: '/',
+    label: 'Home',
     icon: <HomeIcon />,
   },
   {
-    href: "/stocks",
-    label: "Stocks",
+    href: '/stocks',
+    label: 'Stocks',
     icon: <SettingsIcon />,
   },
   {
-    href: "/completed",
-    label: "Completed",
+    href: '/completed',
+    label: 'Completed',
     icon: <HomeIcon />,
   },
   {
-    href: "/settings",
-    label: "Settings",
+    href: '/settings',
+    label: 'Settings',
     icon: <SettingsIcon />,
   },
 ];
@@ -41,13 +41,13 @@ function SideNavlinks() {
           <li
             key={link.href}
             className={cn(
-              "mb-3 p-2",
-              isActive && " rounded border-l-2 border-teal-700 bg-white p-2"
+              'mb-3 p-2',
+              isActive && 'rounded border-l-2 border-teal-700 bg-white p-2'
             )}
           >
             <Link
               href={link.href}
-              className={cn(isActive ? "text-teal-700" : "")}
+              className={cn(isActive ? 'text-teal-700' : '')}
             >
               <div className="flex items-center gap-3">
                 {link.icon}
