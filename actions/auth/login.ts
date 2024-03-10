@@ -3,7 +3,6 @@
 import * as z from 'zod';
 
 import { db } from '@/lib/db';
-import { signIn } from 'next-auth/react';
 import { LoginSchema } from '@/schemas/user.schema';
 import { getUserByEmail } from '@/data/user';
 import { getTwoFactorTokenByEmail } from '@/data/two-factor-token';
@@ -94,11 +93,17 @@ export const login = async (
   }
 
   try {
-    await signIn('credentials', {
-      email,
-      password,
-      redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
-    });
+    return {
+      success: true,
+      signInData: {
+        provider: 'credentials',
+        data: {
+          email,
+          password,
+          callbackUrl: DEFAULT_LOGIN_REDIRECT || callbackUrl,
+        },
+      },
+    };
   } catch (error: any) {
     if (error) {
       console.log(error);

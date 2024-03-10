@@ -12,10 +12,10 @@ export default {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
     Credentials({
-      // credentials: {
-      //   username: { label: 'Username', type: 'text' },
-      //   password: { label: 'Password', type: 'password' },
-      // },
+      credentials: {
+        username: { label: 'Username', type: 'text' },
+        password: { label: 'Password', type: 'password' },
+      },
       async authorize(credentials) {
         const validatedFields = LoginSchema.safeParse(credentials);
 

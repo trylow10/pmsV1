@@ -22,7 +22,7 @@ import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
 import { login } from '@/actions/auth/login';
-
+import { signIn } from 'next-auth/react';
 export const LoginForm = () => {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl');
@@ -50,18 +50,14 @@ export const LoginForm = () => {
 
     startTransition(() => {
       login(values, callbackUrl)
-        .then((data) => {
-          if (data?.error) {
+        .then((response) => {
+          if (response.error) {
             form.reset();
-            setError(data.error);
-          }
-
-          if (data?.success) {
-            form.reset();
-            setSuccess(data.success);
-          }
-
-          if (data?.twoFactor) {
+            setError(response.error);
+          } else if (response.success) {
+            const { provider, data } = response.signInData!;
+            signIn(provider, data);
+          } else if (response.twoFactor) {
             setShowTwoFactor(true);
           }
         })
