@@ -99,7 +99,7 @@ export const login = async (
       password,
       redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
     });
-  } catch (error) {
+  } catch (error: any) {
     if (error) {
       console.log(error);
       switch (error.type) {

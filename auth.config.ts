@@ -20,7 +20,7 @@ export const config = {
     signIn: '/login',
     error: '/error',
   },
-  adapter: PrismaAdapter(db),
+  adapter: PrismaAdapter(db) as any,
   events: {
     async linkAccount({ user }) {
       await db.user.update({
