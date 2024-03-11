@@ -7,7 +7,7 @@ import { LoginSchema } from '@/schemas/user.schema';
 import { getUserByEmail } from '@/data/user';
 import { getTwoFactorTokenByEmail } from '@/data/two-factor-token';
 import { sendVerificationEmail, sendTwoFactorTokenEmail } from '@/lib/mail';
-
+import bcrypt from 'bcryptjs';
 import {
   generateVerificationToken,
   generateTwoFactorToken,
@@ -91,7 +91,11 @@ export const login = async (
       return { twoFactor: true };
     }
   }
+  const passwordsMatch = await bcrypt.compare(password, existingUser.password);
 
+  if (!passwordsMatch) {
+    return { error: 'Invalid credentials!' };
+  }
   try {
     return {
       success: true,
