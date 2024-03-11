@@ -51,13 +51,13 @@ export const LoginForm = () => {
     startTransition(() => {
       login(values, callbackUrl)
         .then((response) => {
-          if (response.error) {
+          if (response?.error) {
             form.reset();
-            setError(response.error);
-          } else if (response.success) {
+            setError(response?.error);
+          } else if (response?.success) {
             const { provider, data } = response.signInData!;
             signIn(provider, data);
-          } else if (response.twoFactor) {
+          } else if (response?.twoFactor) {
             setShowTwoFactor(true);
           }
         })

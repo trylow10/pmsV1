@@ -1,6 +1,5 @@
 'use client';
 
-import { FaUser } from 'react-icons/fa';
 import { ExitIcon } from '@radix-ui/react-icons';
 
 import {
@@ -12,6 +11,8 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { LogoutButton } from '@/components/auth/logout-button';
+import { DropdownMenuLabel } from '@radix-ui/react-dropdown-menu';
+import { PersonIcon } from '../icons';
 
 export const UserButton = () => {
   const user = useCurrentUser();
@@ -22,14 +23,17 @@ export const UserButton = () => {
         <Avatar>
           <AvatarImage src={user?.image || ''} />
           <AvatarFallback className="bg-teal-700">
-            <FaUser className="text-white" />
+            <PersonIcon />
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-40 cursor-pointer" align="end">
+      <DropdownMenuContent className="w-fit px-1" align="end">
+        <DropdownMenuLabel className="mb-1 text-center font-semibold">
+          {user?.name}
+        </DropdownMenuLabel>
         <LogoutButton>
           <DropdownMenuItem>
-            <ExitIcon className="h-4 w-4 mr-2" />
+            <ExitIcon className="h-4 w-4 mr-2 cursor-pointer" />
             Logout
           </DropdownMenuItem>
         </LogoutButton>

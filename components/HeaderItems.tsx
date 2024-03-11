@@ -1,24 +1,50 @@
 'use client';
-import React from 'react';
 import { Input } from '@/components/ui/input';
 import { UserButton } from './auth/user-button';
 import { MenuIcon } from './icons';
 import { Button } from './ui/button';
 import { useMenu } from '@/context/MenuContext';
 
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
+import SideNavlinks from './SideNavlinks';
+
 function Header() {
   const { toggleMenu } = useMenu();
 
   return (
-    <header className="flex items-center justify-between border px-3 py-2 shadow-sm">
-      <Button variant="ghost" onClick={toggleMenu}>
+    <div className="flex items-center justify-between border px-3 py-2 shadow-sm">
+      {/* menu button that handle desktop */}
+      <Button variant="ghost" onClick={toggleMenu} className="hidden lg:block">
         <MenuIcon />
       </Button>
+
+      {/* menu button that handle mobile */}
+      <Sheet>
+        <SheetTrigger className="lg:hidden">
+          <MenuIcon />
+        </SheetTrigger>
+        <SheetContent side="left" className="w-2/3">
+          <SheetHeader>
+            <SheetTitle className="text-xl">Shree Vastralaya</SheetTitle>
+            <SheetDescription>
+              <SideNavlinks />
+            </SheetDescription>
+          </SheetHeader>
+        </SheetContent>
+      </Sheet>
+
       <div className="flex items-center gap-6">
         <Input className="w-72" placeholder="search" />
         <UserButton />
       </div>
-    </header>
+    </div>
   );
 }
 
