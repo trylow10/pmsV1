@@ -1,23 +1,18 @@
 'use client';
-import React from 'react';
 import { Input } from '@/components/ui/input';
 import { UserButton } from './auth/user-button';
 import { MenuIcon } from './icons';
 import { Button } from './ui/button';
 import { useMenu } from '@/context/MenuContext';
 
-type TMenuBtn = {
-  className: string;
-  handleClick: () => void;
-};
-
-function MenuButton({ handleClick, className }: TMenuBtn) {
-  return (
-    <Button variant="ghost" onClick={handleClick} className={className}>
-      <MenuIcon />
-    </Button>
-  );
-}
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 
 function Header() {
   const { toggleMenu } = useMenu();
@@ -25,12 +20,25 @@ function Header() {
   return (
     <div className="flex items-center justify-between border px-3 py-2 shadow-sm">
       {/* menu button that handle desktop */}
-      <MenuButton handleClick={toggleMenu} className="hidden lg:block" />
+      <Button variant="ghost" onClick={toggleMenu} className="hidden lg:block">
+        <MenuIcon />
+      </Button>
+
       {/* menu button that handle mobile */}
-      <MenuButton
-        handleClick={() => console.log('show mobile navigation')}
-        className="lg:hidden"
-      />
+      <Sheet>
+        <SheetTrigger className="lg:hidden">
+          <MenuIcon />
+        </SheetTrigger>
+        <SheetContent side="left">
+          <SheetHeader>
+            <SheetTitle className="text-xl">Shree Vastralaya</SheetTitle>
+            <SheetDescription>
+              <ul className="mt-20"></ul>
+            </SheetDescription>
+          </SheetHeader>
+        </SheetContent>
+      </Sheet>
+
       <div className="flex items-center gap-6">
         <Input className="w-72" placeholder="search" />
         <UserButton />
