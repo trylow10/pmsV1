@@ -13,6 +13,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import SideNavlinks from './SideNavlinks';
 
 function Header() {
   const { toggleMenu } = useMenu();
@@ -29,11 +30,11 @@ function Header() {
         <SheetTrigger className="lg:hidden">
           <MenuIcon />
         </SheetTrigger>
-        <SheetContent side="left">
+        <SheetContent side="left" className="w-2/3">
           <SheetHeader>
             <SheetTitle className="text-xl">Shree Vastralaya</SheetTitle>
             <SheetDescription>
-              <ul className="mt-20"></ul>
+              <SideNavlinks />
             </SheetDescription>
           </SheetHeader>
         </SheetContent>
