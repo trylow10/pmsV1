@@ -24,6 +24,7 @@ model User {
   accounts      Account[]
   isTwoFactorEnabled Boolean @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
+  inventoryBooks Inventory[]
 }
 
 model Account {
@@ -77,6 +78,58 @@ model TwoFactorConfirmation {
 
   userId String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
   @@unique([userId])
+}
+
+
+enum FabricSize {
+  S
+  M
+  L
+  XL
+}
+model Size {
+  id          String    @id @default(cuid())
+  name        FabricSize
+  bundle      Bundle[]
+  inventory   Inventory[]
+}
+model Worker {
+  id            String    @id @default(cuid())
+  name          String
+  assignedJobs  Bundle[]
+  inventories   Inventory[] 
+}
+
+model Bundle {
+  id          String    @id @default(cuid())
+  size        Size      @relation(fields: [sizeId], references: [id])
+  sizeId      String
+  assignedTo  Worker?   @relation(fields: [assignedToId], references: [id])
+  assignedToId String?
+  inventory   Inventory? @relation(fields: [inventoryId], references: [id]) 
+  inventoryId String? 
+}
+
+model Inventory {
+  id              String        @id @default(cuid())
+  name            String
+  cuttingDate     DateTime
+  assignedDate    DateTime
+  receivedDate    DateTime
+  color           String
+  thanNo          String
+  weight          String?
+  length          String?
+  palla           String
+  rate            String
+  quantity        String
+  total           String
+  size            Size          @relation(fields: [sizeId], references: [id])
+  sizeId          String
+  user            User          @relation(fields: [userId], references: [id])
+  userId          String
+  worker          Worker?       @relation(fields: [workerId], references: [id]) 
+  workerId        String? 
+  bundles         Bundle[] 
 }
