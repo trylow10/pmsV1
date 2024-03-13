@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 
 function page() {
-  return <div>inventory page</div>;
+  return <div>Inventory page</div>;
 }
 
 export default page;
