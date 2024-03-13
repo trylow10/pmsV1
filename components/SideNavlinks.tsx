@@ -21,18 +21,8 @@ const links = [
     icon: <HomeIcon />,
   },
   {
-    href: '/stocks',
-    label: 'Stocks',
-    icon: <SettingsIcon />,
-  },
-  {
-    href: '/completed',
-    label: 'Completed',
-    icon: <HomeIcon />,
-  },
-  {
-    href: '/settings',
-    label: 'Settings',
+    href: '/inventory',
+    label: 'Inventory',
     icon: <SettingsIcon />,
   },
 ];
@@ -50,7 +40,7 @@ function SideNavlinks() {
           <li
             key={link.href}
             className={cn(
-              'mb-3 p-2',
+              'mb-3 p-2 ',
               isActive && 'rounded border-l-2 border-teal-700 bg-white p-2',
               isOpen && 'w-fit'
             )}

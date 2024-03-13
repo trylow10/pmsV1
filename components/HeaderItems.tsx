@@ -41,7 +41,6 @@ function Header() {
       </Sheet>
 
       <div className="flex items-center gap-6">
-        <Input className="w-72" placeholder="search" />
         <UserButton />
       </div>
     </div>
