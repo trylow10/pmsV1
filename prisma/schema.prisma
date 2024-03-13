@@ -87,13 +87,17 @@ enum FabricSize {
   M
   L
   XL
+  XXL
+  XXXL
 }
+
 model Size {
   id          String    @id @default(cuid())
   name        FabricSize
   bundle      Bundle[]
   inventory   Inventory[]
 }
+
 model Worker {
   id            String    @id @default(cuid())
   name          String
@@ -102,34 +106,47 @@ model Worker {
 }
 
 model Bundle {
-  id          String    @id @default(cuid())
-  size        Size      @relation(fields: [sizeId], references: [id])
+  id          String     @id @default(cuid())
+  size        Size       @relation(fields: [sizeId], references: [id])
   sizeId      String
-  assignedTo  Worker?   @relation(fields: [assignedToId], references: [id])
+  assignedTo  Worker?    @relation(fields: [assignedToId], references: [id])
   assignedToId String?
-  inventory   Inventory? @relation(fields: [inventoryId], references: [id]) 
-  inventoryId String? 
+  payments    Payment[]
 }
 
 model Inventory {
-  id              String        @id @default(cuid())
+  id              String     @id @default(cuid())
   name            String
   cuttingDate     DateTime
-  assignedDate    DateTime
-  receivedDate    DateTime
   color           String
-  thanNo          String
-  weight          String?
-  length          String?
-  palla           String
-  rate            String
-  quantity        String
-  total           String
-  size            Size          @relation(fields: [sizeId], references: [id])
+  thanNo          Int
+  weight          Int
+  length          Int
+  palla           Int
+  quantity        Int
+  total           Float
+  size            Size       @relation(fields: [sizeId], references: [id])
   sizeId          String
-  user            User          @relation(fields: [userId], references: [id])
+  user            User       @relation(fields: [userId], references: [id])
   userId          String
-  worker          Worker?       @relation(fields: [workerId], references: [id]) 
-  workerId        String? 
-  bundles         Bundle[] 
+  worker          Worker    @relation(fields: [workerId], references: [id])
+  workerId        String
+  company         Company   @relation(fields: [companyId], references: [id])
+  companyId       String
+}
+model Payment {
+  id                String     @id @default(cuid())
+  advance           Float
+  amount            Float
+  remarks           String?
+  bundle            Bundle     @relation(fields: [bundleId], references: [id])
+  bundleId          String
+  createdAt         DateTime   @default(now())
+}
+
+model Company {
+  id          String      @id @default(cuid())
+  name        String
+  inventories Inventory[]
+  inventoryId String
 }
