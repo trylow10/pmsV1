@@ -65,7 +65,7 @@ export function PersonIcon() {
     <svg
       stroke="currentColor"
       fill="currentColor"
-      stroke-width="0"
+      strokeWidth="0"
       viewBox="0 0 448 512"
       className="text-white"
       height="1em"
@@ -73,6 +73,25 @@ export function PersonIcon() {
       xmlns="http://www.w3.org/2000/svg"
     >
       <path d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z"></path>
+    </svg>
+  );
+}
+
+export function FilterIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1rem"
+      height="1rem"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        fill="#6b7280"
+        fillRule="evenodd"
+        d="M0 4a2 2 0 0 1 2-2h20a2 2 0 1 1 0 4H2a2 2 0 0 1-2-2Zm4 8a2 2 0 0 1 2-2h12a2 2 0 1 1 0 4H6a2 2 0 0 1-2-2Zm6 6a2 2 0 1 0 0 4h4a2 2 0 1 0 0-4h-4Z"
+        clipRule="evenodd"
+      ></path>
     </svg>
   );
 }
