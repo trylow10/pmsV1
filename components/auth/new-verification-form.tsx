@@ -40,6 +40,7 @@ export const NewVerificationForm = () => {
   }, [onSubmit]);
 
   return (
+    //token dosnt exist
     <CardWrapper
       headerLabel="Confirming your verification"
       backButtonLabel="Back to login"
