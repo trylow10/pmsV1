@@ -108,6 +108,7 @@ model Bundle {
   assignedTo   Worker?  @relation(fields: [assignedToId], references: [id])
   assignedToId String?
   assignedDate DateTime
+  receivedDate DateTime
   payments     Payment[]
 }
 
@@ -119,15 +120,15 @@ model Inventory {
   thanNo          Int
   weightPerLenght Float
   palla           Int
-  totalOfSize     Int
+  totalSize       Int
   Ssize           Int
   Msize           Int
   Lsize           Int
   XLsize          Int
   XXLsize         Int
   XXXLsize        Int
-  User            User?    @relation(fields: [userId], references: [id])
-  userId          String?
+  User            User    @relation(fields: [userId], references: [id])
+  userId          String
   Worker          Worker[]
   Bundle          Bundle[]
 }
@@ -138,7 +139,7 @@ model Payment {
   rate      Float
   total     Float
   remarks   String
-  bundle    Bundle   @relation(fields: [bundleId], references: [id])
-  bundleId  String
+  bundle    Bundle?   @relation(fields: [bundleId], references: [id])
+  bundleId  String?
   createdAt DateTime @default(now())
 }
