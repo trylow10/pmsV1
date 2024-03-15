@@ -1,66 +1,46 @@
 import * as z from 'zod';
-export const FabricSize = z.enum(['S', 'M', 'L', 'XL']);
 
-export const SizeSchema = z.object({
-  id: z.string(),
-  name: FabricSize,
-  bundle: z.array(z.string()),
-  inventory: z.array(z.string()),
-});
+export const FabricSize = z.enum(['S', 'M', 'L', 'XL', 'XXL', 'XXXL']);
 
 export const WorkerSchema = z.object({
-  id: z.string(),
   name: z.string(),
-  assignedJobs: z.array(z.string()),
-  inventories: z.array(z.string()),
+  assignedJobs: z.array(z.string()).optional(),
+  inventoryId: z.string(),
 });
 
 export const BundleSchema = z.object({
-  id: z.string(),
-  size: z.string(),
-  sizeId: z.string(),
-  assignedTo: z.string().nullable(),
-  assignedToId: z.string().nullable(),
-  inventory: z.string().nullable(),
-  inventoryId: z.string().nullable(),
+  bundleId: z.string(),
+  sizeType: z.enum(['S', 'M', 'L', 'XL', 'XXL', 'XXXL']),
+  bundleSize: z.number(),
+  inventoryId: z.string().optional(),
+  assignedToId: z.string().optional(),
+  assignedDate: z.string().transform((value) => new Date(value)),
+  receivedDate: z.string().transform((value) => new Date(value)),
   payments: z.array(z.string()),
 });
 
 export const InventorySchema = z.object({
-  id: z.string(),
   name: z.string(),
-  cuttingDate: z.date(),
+  cuttingDate: z.string().transform((value) => new Date(value)),
   color: z.string(),
   thanNo: z.number(),
-  weight: z.number(),
-  length: z.number(),
+  weightPerLenght: z.number(),
   palla: z.number(),
-  quantity: z.number(),
-  total: z.number(),
-  size: z.string(),
-  sizeId: z.string(),
-  user: z.string(),
+  totalSize: z.number(),
+  Ssize: z.number(),
+  Msize: z.number(),
+  Lsize: z.number(),
+  XLsize: z.number(),
+  XXLsize: z.number(),
+  XXXLsize: z.number(),
   userId: z.string(),
-  worker: z.string(),
-  workerId: z.string(),
-  bundles: z.array(z.string()),
-  company: z.string(),
-  companyId: z.string(),
 });
 
 export const PaymentSchema = z.object({
-  id: z.string(),
-  advance: z.number(),
-  amount: z.number(),
-  remarks: z.string().nullable(),
-  bundle: z.string(),
+  advance: z.number().default(0),
+  quantity: z.number().default(0),
+  rate: z.number().default(0),
+  total: z.number().default(0),
+  remarks: z.string().default(''),
   bundleId: z.string(),
-  createdAt: z.date(),
-});
-
-export const CompanySchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  inventories: z.array(z.string()),
-  inventoryId: z.string(),
 });
