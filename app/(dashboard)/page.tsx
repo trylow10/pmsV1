@@ -1,11 +1,13 @@
-import InventoryHeader from './_components/InventoryHeader';
-import InventoryList from './_components/InventoryList';
+import InventoryHeader from './inventory/_components/InventoryHeader';
+import SheetList from './inventory/_components/SheetList';
+import SheetPagination from './inventory/_components/SheetPagination';
 
 function page() {
   return (
     <div>
       <InventoryHeader />
-      <InventoryList />
+      <SheetList />
+      <SheetPagination />
     </div>
   );
 }

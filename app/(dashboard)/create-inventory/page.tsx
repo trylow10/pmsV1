@@ -1,5 +1,5 @@
 import React from 'react';
-import InventoryForm from '../_components/InventoryForm';
+import InventoryForm from '../inventory/_components/InventoryForm';
 
 function page() {
   return (

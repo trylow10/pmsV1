@@ -6,19 +6,22 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import InventoryForm from './InventoryForm';
 
-function InventoryList() {
+import SheetTable from './SheetTable';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+
+function SheetList() {
   const items = [
     {
       id: '300aaa09-e99e-4c3a-8765-0dba1e94d0d9',
-      name: 'Rare',
+      name: 'Rare Baggy Tshirt',
       palla: 12,
       size: 'XL',
     },
     {
       id: '3aaa09-e99e-4c3a-8765-0dba1e94d0d9',
-      name: 'Shree vastralaya',
+      name: 'Rare Hoodie',
       palla: 20,
       size: 'M',
     },
@@ -34,7 +37,10 @@ function InventoryList() {
                 {item.name}
               </AccordionTrigger>
               <AccordionContent>
-                <InventoryForm />
+                <SheetTable />
+                <Button size="sm" className="my-3" variant="default">
+                  Edit
+                </Button>
               </AccordionContent>
             </AccordionItem>
           </Accordion>
@@ -44,4 +50,4 @@ function InventoryList() {
   );
 }
 
-export default InventoryList;
+export default SheetList;

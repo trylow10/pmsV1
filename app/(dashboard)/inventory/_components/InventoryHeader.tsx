@@ -8,8 +8,8 @@ function InventoryHeader() {
     <>
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="font-semibold text-xl">Inventory</h2>
-          <span className="text-gray-500 text-sm">51 records found</span>
+          <h2 className="font-semibold text-xl">Cutting sheets</h2>
+          <span className="text-gray-500 text-sm">51 cuttings found</span>
         </div>
 
         <div className="flex gap-3 items-center">
@@ -18,7 +18,7 @@ function InventoryHeader() {
             className="text-white bg-teal-700 hover:bg-teal-800 px-3 py-2 h-full rounded text-sm"
             href="/create-inventory"
           >
-            Add Inventory
+            Add Cutting Sheet
           </Link>
         </div>
       </div>
