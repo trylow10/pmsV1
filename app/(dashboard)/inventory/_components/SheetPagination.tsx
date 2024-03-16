@@ -10,7 +10,7 @@ import {
 
 function SheetPagination() {
   return (
-    <div className="flex justify-end w-full mt-9 ">
+    <div className="text-right w-fit mt-9">
       <Pagination>
         <PaginationContent>
           <PaginationItem>
