@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { InventorySchema } from '@/schemas/inventory.schema';
+import { InventorySchema } from '@/validation/inventory.schema';
 import { Input } from '@/components/ui/input';
 import {
   Form,

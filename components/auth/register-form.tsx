@@ -5,7 +5,7 @@ import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { RegisterSchema } from '@/schemas/user.schema';
+import { RegisterSchema } from '@/validation/user.schema';
 import { Input } from '@/components/ui/input';
 import {
   Form,

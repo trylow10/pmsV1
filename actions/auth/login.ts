@@ -2,7 +2,7 @@
 
 import * as z from 'zod';
 
-import { LoginSchema } from '@/schemas/user.schema';
+import { LoginSchema } from '@/validation/user.schema';
 import { getUserByEmail } from '@/data/user';
 
 import { sendVerificationEmail } from '@/lib/mail';

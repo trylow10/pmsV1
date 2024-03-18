@@ -7,7 +7,7 @@ import { useSearchParams } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 
-import { LoginSchema } from '@/schemas/user.schema';
+import { LoginSchema } from '@/validation/user.schema';
 import { Input } from '@/components/ui/input';
 import {
   Form,
@@ -57,8 +57,6 @@ export const LoginForm = () => {
           } else if (response?.success) {
             const { provider, data } = response.signInData!;
             signIn(provider, data);
-          } else if (response?.twoFactor) {
-            setShowTwoFactor(true);
           }
         })
         .catch(() => setError('Something went wrong'));

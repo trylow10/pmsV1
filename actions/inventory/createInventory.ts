@@ -3,15 +3,20 @@
 import * as z from 'zod';
 import { db } from '@/lib/db';
 import {
-  BrandSchema,
+  ClothSchema,
   BundleSchema,
-  InventorySchema,
+  SheetSchema,
   PaymentSchema,
   WorkerSchema,
-} from '@/schemas/inventory.schema';
+} from '@/validation/inventory.schema';
+// import { handleValidationError } from '@/lib/globalError';
+
 //TODO: create custom error handlers
-export const createBrand = async (values: z.infer<typeof BrandSchema>) => {
-  const validatedFields = BrandSchema.safeParse(values);
+
+export const createClothDesign = async (
+  values: z.infer<typeof ClothSchema>
+) => {
+  const validatedFields = ClothSchema.safeParse(values);
 
   if (!validatedFields.success) {
     const errorFields = validatedFields.error.flatten();
@@ -19,30 +24,28 @@ export const createBrand = async (values: z.infer<typeof BrandSchema>) => {
     return { error: 'Invalid fields!', errorFields };
   }
 
-  const { name, inventory = [], userId } = validatedFields.data;
+  const { companyCloth, sheet = [], userId } = validatedFields.data;
 
   try {
-    const brand = await db.brand.create({
+    const cloth = await db.cloth.create({
       data: {
-        name,
-        inventory: {
-          connect: inventory.map((id) => ({ id })),
+        companyCloth,
+        sheet: {
+          connect: sheet.map((id) => ({ id })),
         },
         userId,
       },
     });
 
-    return brand;
+    return cloth;
   } catch (error) {
-    console.log('Error creating brand object:', error);
-    return { error: 'Error creating brand object', detailedError: error };
+    console.log('Error creating cloth object:', error);
+    return { error: 'Error creating cloth object', detailedError: error };
   }
 };
 
-export const createInventory = async (
-  values: z.infer<typeof InventorySchema>
-) => {
-  const validatedFields = InventorySchema.safeParse(values);
+export const createInventory = async (values: z.infer<typeof SheetSchema>) => {
+  const validatedFields = SheetSchema.safeParse(values);
 
   if (!validatedFields.success) {
     const errorFields = validatedFields.error.flatten();
@@ -51,52 +54,38 @@ export const createInventory = async (
   }
 
   const {
-    name,
     cuttingDate,
     color,
     thanNo,
     weightPerLenght,
     palla,
     totalSize,
-    Ssize,
-    Msize,
-    Lsize,
-    XLsize,
-    XXLsize,
-    XXXLsize,
-    freeSize,
-    brandId,
+    clothId,
+    size = {},
   } = validatedFields.data;
 
   try {
-    const inventory = await db.inventory.create({
+    const sheet = await db.sheet.create({
       data: {
-        name,
         cuttingDate,
         color,
         thanNo,
         weightPerLenght,
         palla,
         totalSize,
-        Ssize,
-        Msize,
-        Lsize,
-        XLsize,
-        XXLsize,
-        XXXLsize,
-        freeSize,
-        brandId,
+        size,
+        clothId,
       },
     });
-    return inventory;
+    return sheet;
   } catch (error) {
-    console.log('Error creating inventory object:', error);
-    return { error: 'Error creating inventory object', detailedError: error };
+    console.log('Error creating sheet object:', error);
+    return { error: 'Error creating sheet object', detailedError: error };
   }
 };
 
-export const createWorker = async (values: z.infer<typeof WorkerSchema>) => {
-  const validatedFields = WorkerSchema.safeParse(values);
+export const createBundle = async (values: z.infer<typeof BundleSchema>) => {
+  const validatedFields = BundleSchema.safeParse(values);
 
   if (!validatedFields.success) {
     const errorFields = validatedFields.error.flatten();
@@ -104,22 +93,37 @@ export const createWorker = async (values: z.infer<typeof WorkerSchema>) => {
     return { error: 'Invalid fields!', errorFields };
   }
 
-  const { name, assignedJobs = [], inventoryId } = validatedFields.data;
+  const {
+    bundleId,
+    sizeType,
+    bundleSize,
+    sheetId,
+    assignedToId,
+    assignedDate,
+    receivedDate,
+    payments = [],
+  } = validatedFields.data;
 
   try {
-    const worker = await db.worker.create({
+    const bundle = await db.bundle.create({
       data: {
-        name,
-        assignedJobs: {
-          connect: assignedJobs.map((jobId) => ({ id: jobId })),
+        bundleId,
+        sizeType,
+        bundleSize,
+        sheet: { connect: { id: sheetId } },
+        assignedTo: { connect: { id: assignedToId } },
+        assignedDate,
+        receivedDate,
+        payments: {
+          connect: payments.map((paymentId) => ({ id: paymentId })),
         },
-        inventory: { connect: { id: inventoryId } },
       },
     });
-    return worker;
+
+    return bundle;
   } catch (error) {
-    console.log('Error creating worker object:', error);
-    return { error: 'Error creating worker object', detailedError: error };
+    console.log('Error creating bundle object:', error);
+    return { error: 'Error creating bundle object', detailedError: error };
   }
 };
 
@@ -153,8 +157,8 @@ export const createPayment = async (values: z.infer<typeof PaymentSchema>) => {
   }
 };
 
-export const createBundle = async (values: z.infer<typeof BundleSchema>) => {
-  const validatedFields = BundleSchema.safeParse(values);
+export const createWorker = async (values: z.infer<typeof WorkerSchema>) => {
+  const validatedFields = WorkerSchema.safeParse(values);
 
   if (!validatedFields.success) {
     const errorFields = validatedFields.error.flatten();
@@ -162,36 +166,21 @@ export const createBundle = async (values: z.infer<typeof BundleSchema>) => {
     return { error: 'Invalid fields!', errorFields };
   }
 
-  const {
-    bundleId,
-    sizeType,
-    bundleSize,
-    inventoryId,
-    assignedToId,
-    assignedDate,
-    receivedDate,
-    payments = [],
-  } = validatedFields.data;
+  const { name, bundle = [], sheetId } = validatedFields.data;
 
   try {
-    const bundle = await db.bundle.create({
+    const worker = await db.worker.create({
       data: {
-        bundleId,
-        sizeType,
-        bundleSize,
-        inventory: { connect: { id: inventoryId } },
-        assignedTo: { connect: { id: assignedToId } },
-        assignedDate,
-        receivedDate,
-        payments: {
-          connect: payments.map((paymentId) => ({ id: paymentId })),
+        name,
+        assignedJobs: {
+          connect: bundle.map((jobId) => ({ id: jobId })),
         },
+        sheet: { connect: { id: sheetId } },
       },
     });
-
-    return bundle;
+    return worker;
   } catch (error) {
-    console.log('Error creating bundle object:', error);
-    return { error: 'Error creating bundle object', detailedError: error };
+    console.log('Error creating worker object:', error);
+    return { error: 'Error creating worker object', detailedError: error };
   }
 };

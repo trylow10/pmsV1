@@ -41,7 +41,7 @@ model PasswordResetToken {
 model Worker {
   id           String    @id @default(cuid())
   name         String
-  assignedJobs Bundle[]
+  bundle       Bundle[]
   sheet        Sheet @relation(fields: [sheetId], references: [id])
   sheetId      String
 }
@@ -50,6 +50,7 @@ model Bundle {
   id           String    @id @default(cuid())
   bundleId     String
   sizeType     String
+  bundleSize   Int
   sheet        Sheet @relation(fields: [sheetId], references: [id])
   sheetId      String
   assignedTo   Worker?   @relation(fields: [assignedToId], references: [id])

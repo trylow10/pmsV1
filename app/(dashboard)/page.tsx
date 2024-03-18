@@ -6,38 +6,38 @@ import {
   getInventoryByBrandId,
 } from '@/data/inventory/inventory.data';
 
-const items = [
-  {
-    id: '300aaa09-e99e-4c3a-8765-0dba1e94d0d9',
-    name: 'Rare Baggy Tshirt',
-    palla: 12,
-    size: 'XL',
-    inventory: [
-      { color: 'Black', weight: 45 },
-      { color: 'Lamo', weight: 69 },
-    ],
-  },
-  {
-    id: '3aaa09-e99e-4c3a-8765-0dba1e94d0d9',
-    name: 'Rare Hoodie',
-    palla: 20,
-    size: 'M',
-    list: [
-      {
-        color: 'Black',
-        weight: 12,
-      },
-      {
-        color: 'Black',
-        weight: 34,
-      },
-      {
-        color: 'Lado',
-        weight: 34,
-      },
-    ],
-  },
-];
+// const items = [
+//   {
+//     id: '300aaa09-e99e-4c3a-8765-0dba1e94d0d9',
+//     name: 'Rare Baggy Tshirt',
+//     palla: 12,
+//     size: 'XL',
+//     inventory: [
+//       { color: 'Black', weight: 45 },
+//       { color: 'Lamo', weight: 69 },
+//     ],
+//   },
+//   {
+//     id: '3aaa09-e99e-4c3a-8765-0dba1e94d0d9',
+//     name: 'Rare Hoodie',
+//     palla: 20,
+//     size: 'M',
+//     list: [
+//       {
+//         color: 'Black',
+//         weight: 12,
+//       },
+//       {
+//         color: 'Black',
+//         weight: 34,
+//       },
+//       {
+//         color: 'Lado',
+//         weight: 34,
+//       },
+//     ],
+//   },
+// ];
 
 // async function getInventory() {
 //   const inventory = await getAllInventory({ page: 1, pageSize: 10 });

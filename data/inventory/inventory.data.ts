@@ -1,4 +1,4 @@
-import { BrandSchema } from './../../schemas/inventory.schema';
+import { BrandSchema } from '../../validation/inventory.schema';
 import { db } from '@/lib/db';
 
 export const getInventoryById = async (id: any) => {
