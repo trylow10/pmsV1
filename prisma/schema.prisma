@@ -81,16 +81,6 @@ model TwoFactorConfirmation {
   @@unique([userId])
 }
 
-
-enum FabricSize {
-  S
-  M
-  L
-  XL
-  XXL
-  XXXL
-}
-
 model Worker {
   id           String    @id @default(cuid())
   name         String
@@ -101,11 +91,11 @@ model Worker {
 model Bundle {
   id           String    @id @default(cuid())
   bundleId     String
-  sizeType     FabricSize
+  sizeType     String
   bundleSize   Int
   inventory    Inventory @relation(fields: [inventoryId], references: [id])
   inventoryId  String
-  assignedTo   Worker?  @relation(fields: [assignedToId], references: [id])
+  assignedTo   Worker?   @relation(fields: [assignedToId], references: [id])
   assignedToId String?
   assignedDate DateTime
   receivedDate DateTime
@@ -127,11 +117,13 @@ model Inventory {
   XLsize          Int
   XXLsize         Int
   XXXLsize        Int
+  freeSize        Int
   User            User    @relation(fields: [userId], references: [id])
   userId          String
   Worker          Worker[]
   Bundle          Bundle[]
 }
+
 model Payment {
   id        String   @id @default(cuid())
   advance   Float

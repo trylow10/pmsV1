@@ -1,16 +1,14 @@
 import * as z from 'zod';
 
-export const FabricSize = z.enum(['S', 'M', 'L', 'XL', 'XXL', 'XXXL']);
-
 export const WorkerSchema = z.object({
   name: z.string(),
   assignedJobs: z.array(z.string()).optional(),
-  inventoryId: z.string(),
+  inventoryId: z.string().optional(),
 });
 
 export const BundleSchema = z.object({
   bundleId: z.string(),
-  sizeType: z.enum(['S', 'M', 'L', 'XL', 'XXL', 'XXXL']),
+  sizeType: z.string(),
   bundleSize: z.number(),
   inventoryId: z.string().optional(),
   assignedToId: z.string().optional(),
@@ -27,12 +25,13 @@ export const InventorySchema = z.object({
   weightPerLenght: z.number(),
   palla: z.number(),
   totalSize: z.number(),
-  Ssize: z.number(),
-  Msize: z.number(),
-  Lsize: z.number(),
-  XLsize: z.number(),
-  XXLsize: z.number(),
-  XXXLsize: z.number(),
+  Ssize: z.number().default(0),
+  Msize: z.number().default(0),
+  Lsize: z.number().default(0),
+  XLsize: z.number().default(0),
+  XXLsize: z.number().default(0),
+  XXXLsize: z.number().default(0),
+  freeSize: z.number().default(0),
   userId: z.string(),
 });
 

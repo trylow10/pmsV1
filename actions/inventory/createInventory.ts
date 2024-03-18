@@ -34,6 +34,7 @@ export const createInventory = async (
     XLsize,
     XXLsize,
     XXXLsize,
+    freeSize,
     userId,
   } = validatedFields.data;
 
@@ -53,6 +54,7 @@ export const createInventory = async (
         XLsize,
         XXLsize,
         XXXLsize,
+        freeSize,
         userId,
       },
     });
