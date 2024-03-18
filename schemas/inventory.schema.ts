@@ -32,7 +32,7 @@ export const InventorySchema = z.object({
   XXLsize: z.number().default(0),
   XXXLsize: z.number().default(0),
   freeSize: z.number().default(0),
-  userId: z.string(),
+  brandId: z.string(),
 });
 
 export const PaymentSchema = z.object({
@@ -42,4 +42,10 @@ export const PaymentSchema = z.object({
   total: z.number().default(0),
   remarks: z.string().default(''),
   bundleId: z.string(),
+});
+
+export const BrandSchema = z.object({
+  name: z.string(),
+  inventory: z.array(z.string()).optional(),
+  userId: z.string(),
 });

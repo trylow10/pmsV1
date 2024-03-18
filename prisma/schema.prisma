@@ -24,7 +24,7 @@ model User {
   accounts      Account[]
   isTwoFactorEnabled Boolean @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
-  inventory             Inventory[]
+  brand             Brand[]
 }
 
 model Account {
@@ -118,10 +118,10 @@ model Inventory {
   XXLsize         Int
   XXXLsize        Int
   freeSize        Int
-  User            User    @relation(fields: [userId], references: [id])
-  userId          String
   Worker          Worker[]
   Bundle          Bundle[]
+  brand           Brand   @relation(fields: [brandId], references: [id])
+  brandId         String 
 }
 
 model Payment {
@@ -134,4 +134,11 @@ model Payment {
   bundle    Bundle?   @relation(fields: [bundleId], references: [id])
   bundleId  String?
   createdAt DateTime @default(now())
+}
+model Brand {
+  id           String @id @default(cuid())
+  name         String
+  inventory    Inventory[]
+  User         User    @relation(fields: [userId], references: [id])
+  userId       String
 }
