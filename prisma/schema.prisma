@@ -8,11 +8,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-enum UserRole {
-  ADMIN
-  USER
-}
-
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -20,30 +15,8 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?
-  role          UserRole @default(USER)
-  accounts      Account[]
   isTwoFactorEnabled Boolean @default(false)
-  twoFactorConfirmation TwoFactorConfirmation?
-  brand             Brand[]
-}
-
-model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
+  cloth Cloth[]
 }
 
 model VerificationToken {
@@ -64,37 +37,22 @@ model PasswordResetToken {
   @@unique([email, token])
 }
 
-model TwoFactorToken {
-  id String @id @default(cuid())
-  email String
-  token String @unique
-  expires DateTime
 
-  @@unique([email, token])
-}
-
-model TwoFactorConfirmation {
-  id String @id @default(cuid())
-
-  userId String
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  @@unique([userId])
-}
 
 model Worker {
   id           String    @id @default(cuid())
   name         String
   assignedJobs Bundle[]
-  inventory    Inventory @relation(fields: [inventoryId], references: [id])
-  inventoryId  String
+  sheet    Sheet @relation(fields: [sheetId], references: [id])
+  sheetId  String
 }
+
 model Bundle {
   id           String    @id @default(cuid())
   bundleId     String
   sizeType     String
-  bundleSize   Int
-  inventory    Inventory @relation(fields: [inventoryId], references: [id])
-  inventoryId  String
+  sheet    Sheet @relation(fields: [sheetId], references: [id])
+  sheetId  String
   assignedTo   Worker?   @relation(fields: [assignedToId], references: [id])
   assignedToId String?
   assignedDate DateTime
@@ -102,26 +60,19 @@ model Bundle {
   payments     Payment[]
 }
 
-model Inventory {
+model Sheet {
   id              String   @id @default(cuid())
-  name            String
   cuttingDate     DateTime
   color           String
   thanNo          Int
   weightPerLenght Float
   palla           Int
   totalSize       Int
-  Ssize           Int
-  Msize           Int
-  Lsize           Int
-  XLsize          Int
-  XXLsize         Int
-  XXXLsize        Int
-  freeSize        Int
   Worker          Worker[]
   Bundle          Bundle[]
-  brand           Brand   @relation(fields: [brandId], references: [id])
-  brandId         String 
+  cloth           Cloth   @relation(fields: [clothId], references: [id])
+  clothId         String 
+  size Json
 }
 
 model Payment {
@@ -135,10 +86,11 @@ model Payment {
   bundleId  String?
   createdAt DateTime @default(now())
 }
-model Brand {
+
+model Cloth {
   id           String @id @default(cuid())
-  name         String
-  inventory    Inventory[]
+  companyCloth         String
+  sheet        Sheet[]
   User         User    @relation(fields: [userId], references: [id])
   userId       String
 }

@@ -22,6 +22,14 @@ import { FormSuccess } from '@/components/form-success';
 import { createInventory } from '@/actions/inventory/createInventory';
 import { useCurrentUser } from '@/hooks/use-current-user';
 
+// Ssize           Int
+// Msize           Int
+// Lsize           Int
+// XLsize          Int
+// XXLsize         Int
+// XXXLsize        Int
+// freeSize        Int
+
 function InventoryForm() {
   const [error, setError] = useState<string | undefined>('');
   const [success, setSuccess] = useState<string | undefined>('');
