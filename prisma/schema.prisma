@@ -15,21 +15,20 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?
-  isTwoFactorEnabled Boolean @default(false)
-  cloth Cloth[]
+  cloth         Cloth[]
 }
 
 model VerificationToken {
-  id String @id @default(cuid())
-  email String
-  token String @unique
-  expires DateTime
+  id        String @id @default(cuid())
+  email     String
+  token     String @unique
+  expires   DateTime
 
   @@unique([email, token])
 }
 
 model PasswordResetToken {
-  id String @id @default(cuid())
+  id    String @id @default(cuid())
   email String
   token String @unique
   expires DateTime
@@ -43,16 +42,16 @@ model Worker {
   id           String    @id @default(cuid())
   name         String
   assignedJobs Bundle[]
-  sheet    Sheet @relation(fields: [sheetId], references: [id])
-  sheetId  String
+  sheet        Sheet @relation(fields: [sheetId], references: [id])
+  sheetId      String
 }
 
 model Bundle {
   id           String    @id @default(cuid())
   bundleId     String
   sizeType     String
-  sheet    Sheet @relation(fields: [sheetId], references: [id])
-  sheetId  String
+  sheet        Sheet @relation(fields: [sheetId], references: [id])
+  sheetId      String
   assignedTo   Worker?   @relation(fields: [assignedToId], references: [id])
   assignedToId String?
   assignedDate DateTime
@@ -72,7 +71,7 @@ model Sheet {
   Bundle          Bundle[]
   cloth           Cloth   @relation(fields: [clothId], references: [id])
   clothId         String 
-  size Json
+  size            Json
 }
 
 model Payment {
@@ -88,9 +87,9 @@ model Payment {
 }
 
 model Cloth {
-  id           String @id @default(cuid())
-  companyCloth         String
-  sheet        Sheet[]
-  User         User    @relation(fields: [userId], references: [id])
-  userId       String
+  id              String @id @default(cuid())
+  companyCloth    String
+  sheet           Sheet[]
+  User            User    @relation(fields: [userId], references: [id])
+  userId          String
 }
