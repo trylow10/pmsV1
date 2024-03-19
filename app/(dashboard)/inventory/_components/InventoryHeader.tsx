@@ -3,13 +3,16 @@ import React from 'react';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 
-function InventoryHeader() {
+type Props = {
+  totalRecord: number;
+};
+function InventoryHeader({ totalRecord }: Props) {
   return (
     <>
       <div className="flex justify-between items-center">
         <div>
           <h2 className="font-semibold text-xl">Cutting sheets</h2>
-          <span className="text-gray-500 text-sm">51 cuttings found</span>
+          <span className="text-gray-500 text-sm">{totalRecord}</span>
         </div>
 
         <div className="flex gap-3 items-center">

@@ -8,11 +8,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-enum UserRole {
-  ADMIN
-  USER
-}
-
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -20,43 +15,20 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?
-  role          UserRole @default(USER)
-  accounts      Account[]
-  isTwoFactorEnabled Boolean @default(false)
-  twoFactorConfirmation TwoFactorConfirmation?
-  inventory             Inventory[]
-}
-
-model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
+  cloth         Cloth[]
 }
 
 model VerificationToken {
-  id String @id @default(cuid())
-  email String
-  token String @unique
-  expires DateTime
+  id        String @id @default(cuid())
+  email     String
+  token     String @unique
+  expires   DateTime
 
   @@unique([email, token])
 }
 
 model PasswordResetToken {
-  id String @id @default(cuid())
+  id    String @id @default(cuid())
   email String
   token String @unique
   expires DateTime
@@ -64,74 +36,45 @@ model PasswordResetToken {
   @@unique([email, token])
 }
 
-model TwoFactorToken {
-  id String @id @default(cuid())
-  email String
-  token String @unique
-  expires DateTime
 
-  @@unique([email, token])
-}
-
-model TwoFactorConfirmation {
-  id String @id @default(cuid())
-
-  userId String
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  @@unique([userId])
-}
-
-
-enum FabricSize {
-  S
-  M
-  L
-  XL
-  XXL
-  XXXL
-}
 
 model Worker {
   id           String    @id @default(cuid())
   name         String
-  assignedJobs Bundle[]
-  inventory    Inventory @relation(fields: [inventoryId], references: [id])
-  inventoryId  String
+  bundle       Bundle[]
+  sheet        Sheet @relation(fields: [sheetId], references: [id])
+  sheetId      String
 }
+
 model Bundle {
   id           String    @id @default(cuid())
   bundleId     String
-  sizeType     FabricSize
+  sizeType     String
   bundleSize   Int
-  inventory    Inventory @relation(fields: [inventoryId], references: [id])
-  inventoryId  String
-  assignedTo   Worker?  @relation(fields: [assignedToId], references: [id])
+  sheet        Sheet @relation(fields: [sheetId], references: [id])
+  sheetId      String
+  assignedTo   Worker?   @relation(fields: [assignedToId], references: [id])
   assignedToId String?
   assignedDate DateTime
   receivedDate DateTime
   payments     Payment[]
 }
 
-model Inventory {
+model Sheet {
   id              String   @id @default(cuid())
-  name            String
   cuttingDate     DateTime
   color           String
   thanNo          Int
   weightPerLenght Float
   palla           Int
   totalSize       Int
-  Ssize           Int
-  Msize           Int
-  Lsize           Int
-  XLsize          Int
-  XXLsize         Int
-  XXXLsize        Int
-  User            User    @relation(fields: [userId], references: [id])
-  userId          String
   Worker          Worker[]
   Bundle          Bundle[]
+  cloth           Cloth   @relation(fields: [clothId], references: [id])
+  clothId         String 
+  size            Json
 }
+
 model Payment {
   id        String   @id @default(cuid())
   advance   Float
@@ -142,4 +85,12 @@ model Payment {
   bundle    Bundle?   @relation(fields: [bundleId], references: [id])
   bundleId  String?
   createdAt DateTime @default(now())
+}
+
+model Cloth {
+  id              String @id @default(cuid())
+  companyCloth    String
+  sheet           Sheet[]
+  User            User    @relation(fields: [userId], references: [id])
+  userId          String
 }

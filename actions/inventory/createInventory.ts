@@ -3,16 +3,49 @@
 import * as z from 'zod';
 import { db } from '@/lib/db';
 import {
+  ClothSchema,
   BundleSchema,
-  InventorySchema,
+  SheetSchema,
   PaymentSchema,
   WorkerSchema,
-} from '@/schemas/inventory.schema';
+} from '@/validation/inventory.schema';
+// import { handleValidationError } from '@/lib/globalError';
 
-export const createInventory = async (
-  values: z.infer<typeof InventorySchema>
+//TODO: create custom error handlers
+
+export const createClothDesign = async (
+  values: z.infer<typeof ClothSchema>
 ) => {
-  const validatedFields = InventorySchema.safeParse(values);
+  const validatedFields = ClothSchema.safeParse(values);
+
+  if (!validatedFields.success) {
+    const errorFields = validatedFields.error.flatten();
+    console.log('Invalid fields:', errorFields);
+    return { error: 'Invalid fields!', errorFields };
+  }
+
+  const { companyCloth, sheet = [], userId } = validatedFields.data;
+
+  try {
+    const cloth = await db.cloth.create({
+      data: {
+        companyCloth,
+        sheet: {
+          connect: sheet.map((id) => ({ id })),
+        },
+        userId,
+      },
+    });
+
+    return cloth;
+  } catch (error) {
+    console.log('Error creating cloth object:', error);
+    return { error: 'Error creating cloth object', detailedError: error };
+  }
+};
+
+export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
+  const validatedFields = SheetSchema.safeParse(values);
 
   if (!validatedFields.success) {
     const errorFields = validatedFields.error.flatten();
@@ -21,45 +54,33 @@ export const createInventory = async (
   }
 
   const {
-    name,
     cuttingDate,
     color,
     thanNo,
     weightPerLenght,
     palla,
     totalSize,
-    Ssize,
-    Msize,
-    Lsize,
-    XLsize,
-    XXLsize,
-    XXXLsize,
-    userId,
+    clothId,
+    size = {},
   } = validatedFields.data;
 
   try {
-    const inventory = await db.inventory.create({
+    const sheet = await db.sheet.create({
       data: {
-        name,
         cuttingDate,
         color,
         thanNo,
         weightPerLenght,
         palla,
         totalSize,
-        Ssize,
-        Msize,
-        Lsize,
-        XLsize,
-        XXLsize,
-        XXXLsize,
-        userId,
+        size,
+        clothId,
       },
     });
-    return inventory;
+    return sheet;
   } catch (error) {
-    console.log('Error creating inventory object:', error);
-    return { error: 'Error creating inventory object', detailedError: error };
+    console.log('Error creating sheet object:', error);
+    return { error: 'Error creating sheet object', detailedError: error };
   }
 };
 
@@ -76,7 +97,7 @@ export const createBundle = async (values: z.infer<typeof BundleSchema>) => {
     bundleId,
     sizeType,
     bundleSize,
-    inventoryId,
+    sheetId,
     assignedToId,
     assignedDate,
     receivedDate,
@@ -89,7 +110,7 @@ export const createBundle = async (values: z.infer<typeof BundleSchema>) => {
         bundleId,
         sizeType,
         bundleSize,
-        inventory: { connect: { id: inventoryId } },
+        sheet: { connect: { id: sheetId } },
         assignedTo: { connect: { id: assignedToId } },
         assignedDate,
         receivedDate,
@@ -98,38 +119,11 @@ export const createBundle = async (values: z.infer<typeof BundleSchema>) => {
         },
       },
     });
+
     return bundle;
   } catch (error) {
     console.log('Error creating bundle object:', error);
     return { error: 'Error creating bundle object', detailedError: error };
-  }
-};
-
-export const createWorker = async (values: z.infer<typeof WorkerSchema>) => {
-  const validatedFields = WorkerSchema.safeParse(values);
-
-  if (!validatedFields.success) {
-    const errorFields = validatedFields.error.flatten();
-    console.log('Invalid fields:', errorFields);
-    return { error: 'Invalid fields!', errorFields };
-  }
-
-  const { name, assignedJobs = [], inventoryId } = validatedFields.data;
-
-  try {
-    const worker = await db.worker.create({
-      data: {
-        name,
-        assignedJobs: {
-          connect: assignedJobs.map((jobId) => ({ id: jobId })),
-        },
-        inventory: { connect: { id: inventoryId } },
-      },
-    });
-    return worker;
-  } catch (error) {
-    console.log('Error creating worker object:', error);
-    return { error: 'Error creating worker object', detailedError: error };
   }
 };
 
@@ -160,5 +154,33 @@ export const createPayment = async (values: z.infer<typeof PaymentSchema>) => {
   } catch (error) {
     console.log('Error creating payment object:', error);
     return { error: 'Error creating payment object', detailedError: error };
+  }
+};
+
+export const createWorker = async (values: z.infer<typeof WorkerSchema>) => {
+  const validatedFields = WorkerSchema.safeParse(values);
+
+  if (!validatedFields.success) {
+    const errorFields = validatedFields.error.flatten();
+    console.log('Invalid fields:', errorFields);
+    return { error: 'Invalid fields!', errorFields };
+  }
+
+  const { name, bundle = [], sheetId } = validatedFields.data;
+
+  try {
+    const worker = await db.worker.create({
+      data: {
+        name,
+        bundle: {
+          connect: bundle.map((jobId) => ({ id: jobId })),
+        },
+        sheet: { connect: { id: sheetId } },
+      },
+    });
+    return worker;
+  } catch (error) {
+    console.log('Error creating worker object:', error);
+    return { error: 'Error creating worker object', detailedError: error };
   }
 };
