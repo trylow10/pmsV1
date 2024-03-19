@@ -21,6 +21,7 @@ import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
 import { createSheet } from '@/actions/inventory/createInventory';
 import { useCurrentUser } from '@/hooks/use-current-user';
+import SearchCloth from '@/components/inventory/SearchCloth';
 
 // Ssize           Int
 // Msize           Int
@@ -58,6 +59,21 @@ function SheetForm() {
           <div className="grid xl:grid-cols-2 xl:gap-3 ">
             <FormField
               control={form.control}
+              name="clothId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cloth </FormLabel>
+                  <FormControl>
+                    <SearchCloth />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="color"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Name</FormLabel>
@@ -157,18 +173,6 @@ function SheetForm() {
                     <Input {...field} placeholder="220 kg" type="number" />
                   </FormControl>
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              // name="userId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input {...field} type="hidden" value={user?.id} />
-                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

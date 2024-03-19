@@ -1,14 +1,16 @@
 import { db } from '@/lib/db';
 
-export const getAllCloths = async (req: any) => {
-  const { page = 1, pageSize = 10 } = req;
-  const skip = (Number(page) - 1) * Number(pageSize);
+import { PAGE_SIZE } from '@/constant';
+
+export const getAllCloths = async ({ page }: { page: number }) => {
+  const skip = (Number(page) - 1) * Number(PAGE_SIZE);
+
   try {
     const totalCloths = await db.cloth.count();
 
     const cloths = await db.cloth.findMany({
       skip,
-      take: Number(pageSize),
+      take: Number(PAGE_SIZE),
       orderBy: { id: 'asc' },
       include: { sheet: true },
     });

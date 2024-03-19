@@ -5,7 +5,7 @@ import { getAllCloths } from '@/data/inventory/inventory.data';
 import { TCloth } from '@/types/cloth.types';
 
 async function getCloth() {
-  const cloth = await getAllCloths({ page: 1, pageSize: 10 });
+  const cloth = await getAllCloths({ page: 1 });
   return cloth;
 }
 async function page() {
@@ -15,7 +15,7 @@ async function page() {
     <div>
       <SheetHeader totalRecord={items?.totalCloths as number} />
       <SheetList items={items?.items as TCloth[]} />
-      <SheetPagination />
+      <SheetPagination count={items?.totalCloths as number} />
     </div>
   );
 }

@@ -8,7 +8,6 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { TSheet } from '@/types/cloth.types';
-import { json } from 'stream/consumers';
 
 type Props = {
   list: TSheet[];
@@ -39,7 +38,7 @@ function SheetTable({ list, editableRow }: Props) {
       <TableBody>
         {list?.map((item) => {
           return (
-            <TableRow className="rounded">
+            <TableRow className="rounded" key={item.id}>
               <TableCell>{item.cuttingDate.toDateString()}</TableCell>
               <TableCell className="font-medium">
                 {item.color.toUpperCase()}{' '}
@@ -47,12 +46,12 @@ function SheetTable({ list, editableRow }: Props) {
               <TableCell>{item.thanNo}</TableCell>
               <TableCell>{item.weightPerLenght}KG</TableCell>
               <TableCell>{item.palla}</TableCell>
-              <TableCell>{item.size['s'] || '-'}</TableCell>
-              <TableCell>{item.size['m'] || '-'}</TableCell>
-              <TableCell>{item.size['l'] || '-' || '-'}</TableCell>
-              <TableCell>{item.size['xl'] || '-' || '-'}</TableCell>
-              <TableCell>{item.size['xxl'] || '-' || '-'}</TableCell>
-              <TableCell>{item.size['f'] || '-' || '-'}</TableCell>
+              <TableCell>{item.size['S'] ?? '-'}</TableCell>
+              <TableCell>{item.size['M'] ?? '-'}</TableCell>
+              <TableCell>{item.size['L'] ?? '-'}</TableCell>
+              <TableCell>{item.size['XL'] ?? '-'}</TableCell>
+              <TableCell>{item.size['XXL'] ?? '-'}</TableCell>
+              <TableCell>{item.size['F'] ?? '-'}</TableCell>
               <TableCell></TableCell>
               <TableCell>0.05165</TableCell>
               {editableRow && (

@@ -19,7 +19,7 @@ function SheetHeader({ totalRecord }: Props) {
           <Input className="w-fit lg:w-72" placeholder="search" />
           <Link
             className="text-white bg-teal-700 hover:bg-teal-800 px-3 py-2 h-full rounded text-sm"
-            href="/create-inventory"
+            href="/create-sheet"
           >
             Add Cutting Sheet
           </Link>
