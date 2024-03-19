@@ -6,13 +6,13 @@ import { Input } from '@/components/ui/input';
 type Props = {
   totalRecord: number;
 };
-function InventoryHeader({ totalRecord }: Props) {
+function SheetHeader({ totalRecord }: Props) {
   return (
     <>
       <div className="flex justify-between items-center">
         <div>
           <h2 className="font-semibold text-xl">Cutting sheets</h2>
-          <span className="text-gray-500 text-sm">{totalRecord}</span>
+          <span className="text-gray-500 text-sm">{totalRecord} records</span>
         </div>
 
         <div className="flex gap-3 items-center">
@@ -29,4 +29,4 @@ function InventoryHeader({ totalRecord }: Props) {
   );
 }
 
-export default InventoryHeader;
+export default SheetHeader;

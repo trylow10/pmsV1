@@ -10,7 +10,7 @@ import {
 import SheetTable from './SheetTable';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { TCloth } from '@/types/inventory.types';
+import { TCloth } from '@/types/cloth.types';
 
 type SheetListProps = {
   items: TCloth[];

@@ -1,10 +1,10 @@
 import React from 'react';
-import InventoryForm from '../inventory/_components/InventoryForm';
+import SheetForm from '../sheet/_components/SheetForm';
 
 function page() {
   return (
     <div>
-      <InventoryForm />
+      <SheetForm />
     </div>
   );
 }

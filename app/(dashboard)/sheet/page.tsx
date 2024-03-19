@@ -1,7 +1,7 @@
 import React from 'react';
 
 function page() {
-  return <div>Inventory page</div>;
+  return <div>Sheet page</div>;
 }
 
 export default page;

@@ -1,8 +1,8 @@
-import InventoryHeader from './inventory/_components/InventoryHeader';
-import SheetList from './inventory/_components/SheetList';
-import SheetPagination from './inventory/_components/SheetPagination';
+import SheetHeader from './sheet/_components/SheetHeader';
+import SheetList from './sheet/_components/SheetList';
+import SheetPagination from './sheet/_components/SheetPagination';
 import { getAllCloths } from '@/data/inventory/inventory.data';
-import { TCloth } from '@/types/inventory.types';
+import { TCloth } from '@/types/cloth.types';
 
 async function getCloth() {
   const cloth = await getAllCloths({ page: 1, pageSize: 10 });
@@ -13,7 +13,7 @@ async function page() {
 
   return (
     <div>
-      <InventoryHeader totalRecord={items?.totalCloths as number} />
+      <SheetHeader totalRecord={items?.totalCloths as number} />
       <SheetList items={items?.items as TCloth[]} />
       <SheetPagination />
     </div>
