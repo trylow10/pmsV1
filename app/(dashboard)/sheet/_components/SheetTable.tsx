@@ -1,3 +1,4 @@
+import Empty from '@/components/Empty';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -36,32 +37,36 @@ function SheetTable({ list, editableRow }: Props) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {list?.map((item) => {
-          return (
-            <TableRow className="rounded" key={item.id}>
-              <TableCell>{item.cuttingDate.toDateString()}</TableCell>
-              <TableCell className="font-medium">
-                {item.color.toUpperCase()}{' '}
-              </TableCell>
-              <TableCell>{item.thanNo}</TableCell>
-              <TableCell>{item.weightPerLenght}KG</TableCell>
-              <TableCell>{item.palla}</TableCell>
-              <TableCell>{item.size['S'] ?? '-'}</TableCell>
-              <TableCell>{item.size['M'] ?? '-'}</TableCell>
-              <TableCell>{item.size['L'] ?? '-'}</TableCell>
-              <TableCell>{item.size['XL'] ?? '-'}</TableCell>
-              <TableCell>{item.size['XXL'] ?? '-'}</TableCell>
-              <TableCell>{item.size['F'] ?? '-'}</TableCell>
-              <TableCell></TableCell>
-              <TableCell>0.05165</TableCell>
-              {editableRow && (
-                <TableCell className="text-right">
-                  <Button size="sm">Edit</Button>
+        {list.length <= 0 ? (
+          <Empty />
+        ) : (
+          list?.map((item) => {
+            return (
+              <TableRow className="rounded" key={item.id}>
+                <TableCell>{item.cuttingDate.toDateString()}</TableCell>
+                <TableCell className="font-medium">
+                  {item.color.toUpperCase()}{' '}
                 </TableCell>
-              )}
-            </TableRow>
-          );
-        })}
+                <TableCell>{item.thanNo}</TableCell>
+                <TableCell>{item.weightPerLenght}KG</TableCell>
+                <TableCell>{item.palla}</TableCell>
+                <TableCell>{item.size['S'] ?? '-'}</TableCell>
+                <TableCell>{item.size['M'] ?? '-'}</TableCell>
+                <TableCell>{item.size['L'] ?? '-'}</TableCell>
+                <TableCell>{item.size['XL'] ?? '-'}</TableCell>
+                <TableCell>{item.size['XXL'] ?? '-'}</TableCell>
+                <TableCell>{item.size['F'] ?? '-'}</TableCell>
+                <TableCell></TableCell>
+                <TableCell>0.05165</TableCell>
+                {editableRow && (
+                  <TableCell className="text-right">
+                    <Button size="sm">Edit</Button>
+                  </TableCell>
+                )}
+              </TableRow>
+            );
+          })
+        )}
       </TableBody>
     </Table>
   );

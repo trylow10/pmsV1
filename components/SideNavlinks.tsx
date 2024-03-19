@@ -10,7 +10,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 
-import { HomeIcon, SettingsIcon } from './icons';
+import { HomeIcon, SettingsIcon, SheetIcon } from './icons';
 import { cn } from '@/lib/utils';
 import { useMenu } from '@/context/MenuContext';
 
@@ -21,9 +21,14 @@ const links = [
     icon: <HomeIcon />,
   },
   {
-    href: '/inventory',
-    label: 'Inventory',
+    href: '/sheet',
+    label: 'Sheet',
     icon: <SettingsIcon />,
+  },
+  {
+    href: '/create-sheet',
+    label: 'Create Sheet',
+    icon: <SheetIcon />,
   },
 ];
 
