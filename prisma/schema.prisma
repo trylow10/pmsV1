@@ -70,7 +70,7 @@ model Sheet {
   totalSize       Int
   Worker          Worker[]
   Bundle          Bundle[]
-  cloth           Cloth   @relation(fields: [clothId], references: [id])
+  cloth           Cloth   @relation(fields: [clothId], references: [id], onDelete: Cascade)
   clothId         String 
   size            Json
 }

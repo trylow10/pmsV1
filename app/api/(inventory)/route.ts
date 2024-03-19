@@ -1,13 +1,10 @@
-import { createInventory } from '@/actions/inventory/createInventory';
-import {
-  getAllInventory,
-  getInventoryByBrandId,
-} from '@/data/inventory/inventory.data';
+import { createSheet } from '@/actions/inventory/createInventory';
+import { getAllSheets, getSheetById } from '@/data/inventory/inventory.data';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const result = await createInventory(body);
+  const result = await createSheet(body);
   return NextResponse.json(result);
 }
 
@@ -29,6 +26,6 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   const url = new URL(request.nextUrl);
   const id = url.searchParams.get('id');
-  const result = await getInventoryByBrandId(id);
+  const result = await getSheetById(id);
   return NextResponse.json(result);
 }

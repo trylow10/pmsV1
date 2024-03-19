@@ -1,22 +1,30 @@
 import { db } from '@/lib/db';
 
-export const getAllCloths = async (req: any) => {
-  const { page = 1, pageSize = 10 } = req;
-  const skip = (Number(page) - 1) * Number(pageSize);
+import { PAGE_SIZE } from '@/constant';
+
+export const getAllCloths = async ({
+  page,
+}: {
+  page: number;
+}): Promise<any> => {
+  const skip = (Number(page) - 1) * Number(PAGE_SIZE);
+
   try {
-    const totalCloths = await db.cloth.count();
+    const count = await db.cloth.count();
 
     const cloths = await db.cloth.findMany({
       skip,
-      take: Number(pageSize),
+      take: Number(PAGE_SIZE),
       orderBy: { id: 'asc' },
       include: { sheet: true },
     });
-    return { items: cloths, totalCloths };
+
+    return { items: cloths, count };
   } catch {
     return null;
   }
 };
+
 export const getClothById = async (id: string) => {
   try {
     const cloth = await db.cloth.findUnique({ where: { id } });

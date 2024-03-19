@@ -59,12 +59,15 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
     thanNo,
     weightPerLenght,
     palla,
-    totalSize,
     clothId,
     size = {},
   } = validatedFields.data;
 
   try {
+    const totalSize = Object.values(size).reduce(
+      (acc: any, curr: any) => acc + curr,
+      0
+    );
     const sheet = await db.sheet.create({
       data: {
         cuttingDate,
@@ -72,7 +75,7 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
         thanNo,
         weightPerLenght,
         palla,
-        totalSize,
+        totalSize: totalSize as number,
         size,
         clothId,
       },

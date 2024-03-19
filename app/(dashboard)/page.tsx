@@ -1,21 +1,28 @@
-import InventoryHeader from './inventory/_components/InventoryHeader';
-import SheetList from './inventory/_components/SheetList';
-import SheetPagination from './inventory/_components/SheetPagination';
+import SheetHeader from './sheet/_components/SheetHeader';
+import SheetList from './sheet/_components/SheetList';
+import Pagination from './_components/Pagination';
 import { getAllCloths } from '@/data/inventory/inventory.data';
-import { TCloth } from '@/types/inventory.types';
 
-async function getCloth() {
-  const cloth = await getAllCloths({ page: 1, pageSize: 10 });
-  return cloth;
+type PageProps = {
+  searchParams?: { [key: string]: string | string[] | undefined };
+};
+
+async function getCloths(page: number) {
+  const { items, count } = await getAllCloths({ page });
+
+  return { items, count };
 }
-async function page() {
-  const items = await getCloth();
+
+async function page(props: PageProps) {
+  const query = props.searchParams;
+  const pageNumber = query?.page ? Number(query.page) : 1;
+  const { items, count } = await getCloths(pageNumber);
 
   return (
     <div>
-      <InventoryHeader totalRecord={items?.totalCloths as number} />
-      <SheetList items={items?.items as TCloth[]} />
-      <SheetPagination />
+      <SheetHeader totalRecord={count} />
+      <SheetList items={items} />
+      <Pagination count={count} />
     </div>
   );
 }
