@@ -29,7 +29,7 @@ function SheetList({ items }: SheetListProps) {
               <AccordionContent>
                 <SheetTable list={item.sheet} />
                 <Button size="sm" className="my-3 mx-1">
-                  <Link href={`/inventory/edit/${item.id}`}>Edit</Link>
+                  <Link href={`/sheet/edit/${item.id}`}>Edit</Link>
                 </Button>
               </AccordionContent>
             </AccordionItem>
