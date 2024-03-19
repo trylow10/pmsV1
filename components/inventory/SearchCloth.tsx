@@ -1,12 +1,15 @@
 'use client';
 import React, { useState } from 'react';
 import { Input } from '../ui/input';
+import { searchCloths } from '@/data/inventory/inventory.data';
 
 function SearchCloth() {
   const [search, setSearch] = useState('');
 
-  function handleChange(value: string) {
+  async function handleChange(value: string) {
     setSearch(value);
+
+    await searchCloths(value);
   }
 
   return (

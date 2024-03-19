@@ -98,3 +98,16 @@ export const getAllPayments = async (req: any) => {
     return null;
   }
 };
+
+export const searchCloths = async (query: string) => {
+  try {
+    const result = await db.cloth.findMany({
+      where: {
+        companyCloth: 'trylow-thokalaya',
+      },
+    });
+    console.log(result);
+  } catch (error: any) {
+    console.log(error.message);
+  }
+};

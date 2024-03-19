@@ -1,7 +1,7 @@
 import React from 'react';
 import SheetForm from '../sheet/_components/SheetForm';
 
-function page() {
+async function page() {
   return (
     <div>
       <SheetForm />

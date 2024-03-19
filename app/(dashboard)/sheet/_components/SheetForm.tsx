@@ -20,7 +20,6 @@ import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
 import { createSheet } from '@/actions/inventory/createInventory';
-import { useCurrentUser } from '@/hooks/use-current-user';
 import SearchCloth from '@/components/inventory/SearchCloth';
 
 // Ssize           Int
@@ -34,8 +33,6 @@ import SearchCloth from '@/components/inventory/SearchCloth';
 function SheetForm() {
   const [error, setError] = useState<string | undefined>('');
   const [success, setSuccess] = useState<string | undefined>('');
-
-  const user = useCurrentUser();
 
   const form = useForm<z.infer<typeof SheetSchema>>({
     resolver: zodResolver(SheetSchema),
