@@ -9,8 +9,7 @@ import {
   PaymentSchema,
   WorkerSchema,
 } from '@/validation/inventory.schema';
-// import { handleValidationError } from '@/lib/globalError';
-
+import { calculateAverageAndTotalSize } from '@/lib/calculation';
 //TODO: create custom error handlers
 
 export const createClothDesign = async (
@@ -63,11 +62,12 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
     size = {},
   } = validatedFields.data;
 
+  const { average, totalSize } = calculateAverageAndTotalSize(
+    weightPerLenght,
+    size
+  );
+
   try {
-    const totalSize = Object.values(size).reduce(
-      (acc: any, curr: any) => acc + curr,
-      0
-    );
     const sheet = await db.sheet.create({
       data: {
         cuttingDate,
@@ -75,7 +75,8 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
         thanNo,
         weightPerLenght,
         palla,
-        totalSize: totalSize as number,
+        totalSize: totalSize,
+        average: average,
         size,
         clothId,
       },

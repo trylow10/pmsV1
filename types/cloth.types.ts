@@ -14,6 +14,7 @@ export type TSheet = {
   palla: number;
   totalSize: number;
   clothId: string;
+  average: number;
   size: {
     [key: string]: string;
   };

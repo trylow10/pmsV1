@@ -68,6 +68,7 @@ model Sheet {
   weightPerLenght Float
   palla           Int
   totalSize       Int
+  average         Float
   Worker          Worker[]
   Bundle          Bundle[]
   cloth           Cloth   @relation(fields: [clothId], references: [id], onDelete: Cascade)

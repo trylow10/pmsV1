@@ -43,13 +43,12 @@ export const getSheetById = async (id: string) => {
   }
 };
 
-export const getAllSheets = async (req: any) => {
-  const { page = 1, pageSize = 10 } = req;
-  const skip = (Number(page) - 1) * Number(pageSize);
+export const getAllSheet = async ({ page }: { page: number }) => {
+  const skip = (Number(page) - 1) * Number(PAGE_SIZE);
   try {
     const sheets = await db.sheet.findMany({
       skip,
-      take: Number(pageSize),
+      take: Number(PAGE_SIZE),
       orderBy: { id: 'asc' },
       // include: { Bundle: true, Worker: true },
     });

@@ -31,8 +31,8 @@ function SheetTable({ list, editableRow }: Props) {
           <TableHead>XLarge</TableHead>
           <TableHead>XXLarge</TableHead>
           <TableHead>FreeSize</TableHead>
-          <TableHead>Price</TableHead>
-          <TableHead>Average KG/Total</TableHead>
+          <TableHead>TotalSize</TableHead>
+          <TableHead>Average</TableHead>
           {editableRow && <TableCell></TableCell>}
         </TableRow>
       </TableHeader>
@@ -48,7 +48,7 @@ function SheetTable({ list, editableRow }: Props) {
                   {item.color.toUpperCase()}{' '}
                 </TableCell>
                 <TableCell>{item.thanNo}</TableCell>
-                <TableCell>{item.weightPerLenght}KG</TableCell>
+                <TableCell>{item.weightPerLenght} KG</TableCell>
                 <TableCell>{item.palla}</TableCell>
                 <TableCell>{item.size['S'] ?? '-'}</TableCell>
                 <TableCell>{item.size['M'] ?? '-'}</TableCell>
@@ -56,8 +56,8 @@ function SheetTable({ list, editableRow }: Props) {
                 <TableCell>{item.size['XL'] ?? '-'}</TableCell>
                 <TableCell>{item.size['XXL'] ?? '-'}</TableCell>
                 <TableCell>{item.size['F'] ?? '-'}</TableCell>
-                <TableCell></TableCell>
-                <TableCell>0.05165</TableCell>
+                <TableCell>{item.totalSize}</TableCell>
+                <TableCell>{item.average}</TableCell>
                 {editableRow && (
                   <TableCell className="text-right">
                     <Button size="sm">Edit</Button>
@@ -73,10 +73,3 @@ function SheetTable({ list, editableRow }: Props) {
 }
 
 export default SheetTable;
-
-const data = {
-  name: 'trilogy',
-  body: 'hello',
-};
-
-console.log();

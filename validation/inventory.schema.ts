@@ -23,8 +23,9 @@ export const SheetSchema = z.object({
   thanNo: z.number(),
   weightPerLenght: z.number(),
   palla: z.number(),
-  totalSize: z.number(),
+  totalSize: z.number().optional(),
   size: z.any(),
+  average: z.number().optional(),
   clothId: z.string(),
 });
 
