@@ -10,18 +10,10 @@ import {
 import SheetTable from './SheetTable';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { TCloth } from '@/types/inventory.types';
 
 type SheetListProps = {
-  items: {
-    id: string;
-    name: string;
-    palla: number;
-    size: string;
-    list: {
-      color: string;
-      weight: number;
-    }[];
-  }[];
+  items: TCloth[];
 };
 
 function SheetList({ items }: SheetListProps) {
@@ -32,10 +24,10 @@ function SheetList({ items }: SheetListProps) {
           <Accordion type="single" collapsible key={item.id}>
             <AccordionItem value={item.id}>
               <AccordionTrigger className="text-base">
-                {item.name}
+                {item.companyCloth}
               </AccordionTrigger>
               <AccordionContent>
-                <SheetTable list={item.list} />
+                <SheetTable list={item.sheet} />
                 <Button size="sm" className="my-3 mx-1">
                   <Link href={`/inventory/edit/${item.id}`}>Edit</Link>
                 </Button>

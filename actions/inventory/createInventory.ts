@@ -44,7 +44,7 @@ export const createClothDesign = async (
   }
 };
 
-export const createInventory = async (values: z.infer<typeof SheetSchema>) => {
+export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
   const validatedFields = SheetSchema.safeParse(values);
 
   if (!validatedFields.success) {
@@ -172,7 +172,7 @@ export const createWorker = async (values: z.infer<typeof WorkerSchema>) => {
     const worker = await db.worker.create({
       data: {
         name,
-        assignedJobs: {
+        bundle: {
           connect: bundle.map((jobId) => ({ id: jobId })),
         },
         sheet: { connect: { id: sheetId } },

@@ -1,12 +1,15 @@
 import React from 'react';
 import SheetTable from '../../_components/SheetTable';
+import { getAllSheets } from '@/data/inventory/inventory.data';
+import { TSheet } from '@/types/inventory.types';
 
-const list = [
-  { color: 'Black', weight: 45 },
-  { color: 'Lamo', weight: 69 },
-];
+async function getSheet() {
+  const data = await getAllSheets({ page: 1, limit: 10 });
+  return data?.items as TSheet[];
+}
 
-function page() {
+async function page() {
+  const list = await getSheet();
   return (
     <div>
       <SheetTable list={list} editableRow />

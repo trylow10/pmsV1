@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { InventorySchema } from '@/validation/inventory.schema';
+import { SheetSchema } from '@/validation/inventory.schema';
 import { Input } from '@/components/ui/input';
 import {
   Form,
@@ -19,7 +19,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
-import { createInventory } from '@/actions/inventory/createInventory';
+import { createSheet } from '@/actions/inventory/createInventory';
 import { useCurrentUser } from '@/hooks/use-current-user';
 
 // Ssize           Int
@@ -30,23 +30,27 @@ import { useCurrentUser } from '@/hooks/use-current-user';
 // XXXLsize        Int
 // freeSize        Int
 
-function InventoryForm() {
+function SheetForm() {
   const [error, setError] = useState<string | undefined>('');
   const [success, setSuccess] = useState<string | undefined>('');
 
   const user = useCurrentUser();
 
-  const form = useForm<z.infer<typeof InventorySchema>>({
-    resolver: zodResolver(InventorySchema),
+  const form = useForm<z.infer<typeof SheetSchema>>({
+    resolver: zodResolver(SheetSchema),
     defaultValues: {},
   });
 
-  const onSubmit = (values: z.infer<typeof InventorySchema>) => {
+  const onSubmit = async (values: z.infer<typeof SheetSchema>) => {
     setError('');
     setSuccess('');
-    console.log(values, 'asa');
+    try {
+      await createSheet(values);
+      setSuccess('Sheet successfully created');
+    } catch (err: any) {
+      setError(err.message || 'An error occurred');
+    }
   };
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -54,7 +58,6 @@ function InventoryForm() {
           <div className="grid xl:grid-cols-2 xl:gap-3 ">
             <FormField
               control={form.control}
-              name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Name</FormLabel>
@@ -160,7 +163,7 @@ function InventoryForm() {
             />
             <FormField
               control={form.control}
-              name="userId"
+              // name="userId"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -175,11 +178,11 @@ function InventoryForm() {
         <FormError message={error} />
         <FormSuccess message={success} />
         <Button type="submit" className="w-fit">
-          Add Inventory
+          Add Sheet
         </Button>
       </form>
     </Form>
   );
 }
 
-export default InventoryForm;
+export default SheetForm;

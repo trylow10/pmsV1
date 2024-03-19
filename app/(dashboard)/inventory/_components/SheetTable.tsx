@@ -7,13 +7,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { TSheet } from '@/types/inventory.types';
 
 type Props = {
-  list: {
-    color: string;
-    weight: number;
-    // add data according
-  }[];
+  list: TSheet[];
   editableRow?: boolean;
 };
 
@@ -38,9 +35,9 @@ function SheetTable({ list, editableRow }: Props) {
           return (
             <TableRow className="rounded">
               <TableCell className="font-medium">{item.color}</TableCell>
-              <TableCell>{item.weight}KG</TableCell>
+              <TableCell>{item.weightPerLenght}KG</TableCell>
               <TableCell>14</TableCell>
-              <TableCell>M-100</TableCell>
+              <TableCell>{item.size.key}</TableCell>
               <TableCell>L-200</TableCell>
               <TableCell>XL-100</TableCell>
               <TableCell>500</TableCell>

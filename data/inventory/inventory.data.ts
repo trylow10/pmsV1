@@ -1,41 +1,62 @@
-import { BrandSchema } from '../../validation/inventory.schema';
 import { db } from '@/lib/db';
 
-export const getInventoryById = async (id: any) => {
-  try {
-    const inventoryById = await db.inventory.findUnique({ where: { id } });
-    return inventoryById;
-  } catch {
-    return null;
-  }
-};
-
-export const getInventoryByBrandId = async (id: any) => {
-  try {
-    const inventoryByBrand = await db.inventory.findMany({
-      where: { brandId: id },
-    });
-    const inventoryByBrandLenght = await db.inventory.count();
-
-    return { inventoryByBrand, inventoryByBrandLenght };
-  } catch {
-    return null;
-  }
-};
-
-export const getAllInventory = async (req: any) => {
+export const getAllCloths = async (req: any) => {
   const { page = 1, pageSize = 10 } = req;
   const skip = (Number(page) - 1) * Number(pageSize);
   try {
-    const inventory = await db.inventory.findMany({
-      skip: skip,
+    const totalCloths = await db.cloth.count();
+
+    const cloths = await db.cloth.findMany({
+      skip,
       take: Number(pageSize),
       orderBy: { id: 'asc' },
-      include: { Bundle: true, Worker: true },
+      include: { sheet: true },
     });
-    const inventoryLenght = await db.inventory.count();
+    return { items: cloths, totalCloths };
+  } catch {
+    return null;
+  }
+};
+export const getClothById = async (id: string) => {
+  try {
+    const cloth = await db.cloth.findUnique({ where: { id } });
+    return cloth;
+  } catch {
+    return null;
+  }
+};
 
-    return { inventory, inventoryLenght };
+export const getSheetById = async (id: string) => {
+  try {
+    const sheet = await db.sheet.findUnique({ where: { id } });
+    return sheet;
+  } catch {
+    return null;
+  }
+};
+
+export const getAllSheets = async (req: any) => {
+  const { page = 1, pageSize = 10 } = req;
+  const skip = (Number(page) - 1) * Number(pageSize);
+  try {
+    const sheets = await db.sheet.findMany({
+      skip,
+      take: Number(pageSize),
+      orderBy: { id: 'asc' },
+      // include: { Bundle: true, Worker: true },
+    });
+    const totalSheets = await db.sheet.count();
+    return { items: sheets, totalSheets };
+  } catch {
+    return null;
+  }
+};
+
+export const getSheetsByClothId = async (id: string) => {
+  try {
+    const sheets = await db.sheet.findMany({ where: { clothId: id } });
+    const totalSheets = await db.sheet.count();
+    return { sheets, totalSheets };
   } catch {
     return null;
   }
@@ -45,23 +66,8 @@ export const getAllBundles = async (req: any) => {
   const { page = 1, pageSize = 10 } = req;
   const skip = (Number(page) - 1) * Number(pageSize);
   try {
-    const payments = await db.payment.findMany({
-      skip: skip,
-      take: Number(pageSize),
-      orderBy: { id: 'asc' },
-    });
-    return payments;
-  } catch {
-    return null;
-  }
-};
-
-export const getPayments = async (req: any) => {
-  const { page = 1, pageSize = 10 } = req;
-  const skip = (Number(page) - 1) * Number(pageSize);
-  try {
     const bundles = await db.bundle.findMany({
-      skip: skip,
+      skip,
       take: Number(pageSize),
       orderBy: { id: 'asc' },
     });
@@ -70,27 +76,17 @@ export const getPayments = async (req: any) => {
     return null;
   }
 };
-export const getBrandById = async (id: any) => {
-  try {
-    const brandById = await db.brand.findUnique({ where: { id } });
-    return brandById;
-  } catch {
-    return null;
-  }
-};
 
-export const getBrands = async (req: any) => {
+export const getAllPayments = async (req: any) => {
   const { page = 1, pageSize = 10 } = req;
   const skip = (Number(page) - 1) * Number(pageSize);
   try {
-    const brand = await db.brand.findMany({
-      skip: skip,
+    const payments = await db.payment.findMany({
+      skip,
       take: Number(pageSize),
       orderBy: { id: 'asc' },
-      include: { inventory: true },
     });
-    const brandLenth = await db.brand.count();
-    return { brand, brandLenth };
+    return payments;
   } catch {
     return null;
   }
