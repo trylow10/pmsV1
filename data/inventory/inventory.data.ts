@@ -50,7 +50,7 @@ export const getAllSheet = async ({ page }: { page: number }) => {
       skip,
       take: Number(PAGE_SIZE),
       orderBy: { id: 'asc' },
-      // include: { Bundle: true, Worker: true },
+      include: { Bundle: true, Worker: true },
     });
     const totalSheets = await db.sheet.count();
     return { items: sheets, totalSheets };
@@ -69,13 +69,12 @@ export const getSheetsByClothId = async (id: string) => {
   }
 };
 
-export const getAllBundles = async (req: any) => {
-  const { page = 1, pageSize = 10 } = req;
-  const skip = (Number(page) - 1) * Number(pageSize);
+export const getAllBundle = async ({ page }: { page: number }) => {
+  const skip = (Number(page) - 1) * Number(PAGE_SIZE);
   try {
     const bundles = await db.bundle.findMany({
       skip,
-      take: Number(pageSize),
+      take: Number(PAGE_SIZE),
       orderBy: { id: 'asc' },
     });
     return bundles;
@@ -84,13 +83,12 @@ export const getAllBundles = async (req: any) => {
   }
 };
 
-export const getAllPayments = async (req: any) => {
-  const { page = 1, pageSize = 10 } = req;
-  const skip = (Number(page) - 1) * Number(pageSize);
+export const getAllPayment = async ({ page }: { page: number }) => {
+  const skip = (Number(page) - 1) * Number(PAGE_SIZE);
   try {
     const payments = await db.payment.findMany({
       skip,
-      take: Number(pageSize),
+      take: Number(PAGE_SIZE),
       orderBy: { id: 'asc' },
     });
     return payments;

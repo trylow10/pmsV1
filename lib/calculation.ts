@@ -1,12 +1,20 @@
-export const calculateAverageAndTotalSize = (
+import { db } from './db';
+
+export const calculateAverageAndTotalSize = async (
   weightPerLenght: number,
-  size: Record<string, number>
+  Size: string[]
 ) => {
-  const totalSize: number = Object.values(size).reduce(
-    (acc: number, curr: any) => acc + Number(curr),
+  const sizes = await Promise.all(
+    Size.map((id) => db.size.findUnique({ where: { id } }))
+  );
+
+  const totalSize: number = sizes.reduce(
+    (acc: number, curr: any) => acc + curr.value,
     0
   );
+  console.log('totalSize:', totalSize);
+
   const average =
     totalSize !== 0 ? Number((weightPerLenght / totalSize).toFixed(5)) : 0;
-  return { average, totalSize };
+  return { average, totalSize, sizes };
 };

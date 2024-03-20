@@ -8,6 +8,7 @@ import {
   SheetSchema,
   PaymentSchema,
   WorkerSchema,
+  SizeSchema,
 } from '@/validation/inventory.schema';
 import { calculateAverageAndTotalSize } from '@/lib/calculation';
 //TODO: create custom error handlers
@@ -23,7 +24,7 @@ export const createClothDesign = async (
     return { error: 'Invalid fields!', errorFields };
   }
 
-  const { companyCloth, sheet = [], userId } = validatedFields.data;
+  const { companyCloth, sheet = [] } = validatedFields.data;
 
   try {
     const cloth = await db.cloth.create({
@@ -32,7 +33,6 @@ export const createClothDesign = async (
         sheet: {
           connect: sheet.map((id) => ({ id })),
         },
-        userId,
       },
     });
 
@@ -40,6 +40,35 @@ export const createClothDesign = async (
   } catch (error) {
     console.log('Error creating cloth object:', error);
     return { error: 'Error creating cloth object', detailedError: error };
+  }
+};
+
+export const createSize = async (values: z.infer<typeof SizeSchema>) => {
+  const validatedFields = SizeSchema.safeParse(values);
+
+  if (!validatedFields.success) {
+    const errorFields = validatedFields.error.flatten();
+    console.log('Invalid fields:', errorFields);
+    return { error: 'Invalid fields!', errorFields };
+  }
+
+  const { type, sheetId, Bundle = [] } = validatedFields.data;
+
+  try {
+    const size = await db.size.create({
+      data: {
+        type,
+        quantity: 0,
+        sheet: { connect: { id: sheetId } },
+        Bundle: {
+          connect: Bundle.map((bundleId) => ({ id: bundleId })),
+        },
+      },
+    });
+    return size;
+  } catch (error) {
+    console.log('Error creating size object:', error);
+    return { error: 'Error creating size object', detailedError: error };
   }
 };
 
@@ -59,12 +88,12 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
     weightPerLenght,
     palla,
     clothId,
-    size = {},
+    Size = [],
   } = validatedFields.data;
 
-  const { average, totalSize } = calculateAverageAndTotalSize(
+  const { average, totalSize } = await calculateAverageAndTotalSize(
     weightPerLenght,
-    size
+    Size
   );
 
   try {
@@ -77,7 +106,9 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
         palla,
         totalSize: totalSize,
         average: average,
-        size,
+        Size: {
+          connect: Size.map((sizeId) => ({ id: sizeId })),
+        },
         clothId,
       },
     });
@@ -99,7 +130,7 @@ export const createBundle = async (values: z.infer<typeof BundleSchema>) => {
 
   const {
     bundleId,
-    sizeType,
+    sizeId,
     bundleSize,
     sheetId,
     assignedToId,
@@ -112,7 +143,7 @@ export const createBundle = async (values: z.infer<typeof BundleSchema>) => {
     const bundle = await db.bundle.create({
       data: {
         bundleId,
-        sizeType,
+        size: { connect: { id: sizeId } },
         bundleSize,
         sheet: { connect: { id: sheetId } },
         assignedTo: { connect: { id: assignedToId } },

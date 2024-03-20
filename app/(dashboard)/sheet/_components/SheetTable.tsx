@@ -13,9 +13,11 @@ import { TSheet } from '@/types/cloth.types';
 type Props = {
   list: TSheet[];
   editableRow?: boolean;
+  deleteRow?: boolean;
+  onDelete: (id: any) => void;
 };
 
-function SheetTable({ list, editableRow }: Props) {
+function SheetTable({ list, editableRow, deleteRow, onDelete }: Props) {
   return (
     <Table className="">
       <TableHeader>
@@ -25,15 +27,16 @@ function SheetTable({ list, editableRow }: Props) {
           <TableHead>Than No</TableHead>
           <TableHead>Kg/Meter</TableHead>
           <TableHead>Palla</TableHead>
-          <TableHead>Small</TableHead>
+          {/* <TableHead>Small</TableHead>
           <TableHead>Medium</TableHead>
           <TableHead>Large</TableHead>
           <TableHead>XLarge</TableHead>
           <TableHead>XXLarge</TableHead>
-          <TableHead>FreeSize</TableHead>
+          <TableHead>FreeSize</TableHead> */}
           <TableHead>TotalSize</TableHead>
           <TableHead>Average</TableHead>
           {editableRow && <TableCell></TableCell>}
+          {deleteRow && <TableCell></TableCell>}
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -50,17 +53,24 @@ function SheetTable({ list, editableRow }: Props) {
                 <TableCell>{item.thanNo}</TableCell>
                 <TableCell>{item.weightPerLenght} KG</TableCell>
                 <TableCell>{item.palla}</TableCell>
-                <TableCell>{item.size['S'] ?? '-'}</TableCell>
+                {/* <TableCell>{item.size['S'] ?? '-'}</TableCell>
                 <TableCell>{item.size['M'] ?? '-'}</TableCell>
                 <TableCell>{item.size['L'] ?? '-'}</TableCell>
                 <TableCell>{item.size['XL'] ?? '-'}</TableCell>
                 <TableCell>{item.size['XXL'] ?? '-'}</TableCell>
-                <TableCell>{item.size['F'] ?? '-'}</TableCell>
+                <TableCell>{item.size['F'] ?? '-'}</TableCell> */}
                 <TableCell>{item.totalSize}</TableCell>
                 <TableCell>{item.average}</TableCell>
                 {editableRow && (
                   <TableCell className="text-right">
                     <Button size="sm">Edit</Button>
+                  </TableCell>
+                )}
+                {deleteRow && (
+                  <TableCell className="text-right">
+                    <Button size="sm" onClick={() => onDelete(item.id)}>
+                      Delete button
+                    </Button>
                   </TableCell>
                 )}
               </TableRow>
