@@ -5,6 +5,8 @@ export type TCloth = {
   sheet: TSheet[];
 };
 
+export type TSize = string[];
+
 export type TSheet = {
   id: string;
   cuttingDate: Date;
@@ -14,9 +16,8 @@ export type TSheet = {
   palla: number;
   totalSize: number;
   clothId: string;
-  size: {
-    [key: string]: string;
-  };
+  average: number;
+  size: TSize;
 };
 
 export type TClothResponse = {

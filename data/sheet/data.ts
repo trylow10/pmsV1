@@ -43,15 +43,14 @@ export const getSheetById = async (id: string) => {
   }
 };
 
-export const getAllSheets = async (req: any) => {
-  const { page = 1, pageSize = 10 } = req;
-  const skip = (Number(page) - 1) * Number(pageSize);
+export const getAllSheet = async ({ page }: { page: number }) => {
+  const skip = (Number(page) - 1) * Number(PAGE_SIZE);
   try {
     const sheets = await db.sheet.findMany({
       skip,
-      take: Number(pageSize),
+      take: Number(PAGE_SIZE),
       orderBy: { id: 'asc' },
-      // include: { Bundle: true, Worker: true },
+      include: { Bundle: true, Worker: true },
     });
     const totalSheets = await db.sheet.count();
     return { items: sheets, totalSheets };
@@ -70,13 +69,12 @@ export const getSheetsByClothId = async (id: string) => {
   }
 };
 
-export const getAllBundles = async (req: any) => {
-  const { page = 1, pageSize = 10 } = req;
-  const skip = (Number(page) - 1) * Number(pageSize);
+export const getAllBundle = async ({ page }: { page: number }) => {
+  const skip = (Number(page) - 1) * Number(PAGE_SIZE);
   try {
     const bundles = await db.bundle.findMany({
       skip,
-      take: Number(pageSize),
+      take: Number(PAGE_SIZE),
       orderBy: { id: 'asc' },
     });
     return bundles;
@@ -85,17 +83,31 @@ export const getAllBundles = async (req: any) => {
   }
 };
 
-export const getAllPayments = async (req: any) => {
-  const { page = 1, pageSize = 10 } = req;
-  const skip = (Number(page) - 1) * Number(pageSize);
+export const getAllPayment = async ({ page }: { page: number }) => {
+  const skip = (Number(page) - 1) * Number(PAGE_SIZE);
   try {
     const payments = await db.payment.findMany({
       skip,
-      take: Number(pageSize),
+      take: Number(PAGE_SIZE),
       orderBy: { id: 'asc' },
     });
     return payments;
   } catch {
     return null;
+  }
+};
+
+export const searchCloths = async (query: string) => {
+  try {
+    const result = await db.cloth.findMany({
+      where: {
+        companyCloth: {
+          search: query,
+        },
+      },
+    });
+    return result;
+  } catch (error: any) {
+    console.log(error.message);
   }
 };

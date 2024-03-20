@@ -2,10 +2,12 @@
 datasource db {
   provider  = "postgresql"
   url  	    = env("DATABASE_URL")
+  
 }
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 model User {
@@ -15,7 +17,6 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?
-  cloth         Cloth[]
 }
 
 model VerificationToken {
@@ -37,28 +38,12 @@ model PasswordResetToken {
 }
 
 
-
-model Worker {
-  id           String    @id @default(cuid())
-  name         String
-  bundle       Bundle[]
-  sheet        Sheet @relation(fields: [sheetId], references: [id])
-  sheetId      String
+model Cloth {
+  id           String  @id @default(cuid())
+  companyCloth String
+  sheet        Sheet[]
 }
 
-model Bundle {
-  id           String    @id @default(cuid())
-  bundleId     String
-  sizeType     String
-  bundleSize   Int
-  sheet        Sheet @relation(fields: [sheetId], references: [id])
-  sheetId      String
-  assignedTo   Worker?   @relation(fields: [assignedToId], references: [id])
-  assignedToId String?
-  assignedDate DateTime
-  receivedDate DateTime
-  payments     Payment[]
-}
 
 model Sheet {
   id              String   @id @default(cuid())
@@ -68,13 +53,42 @@ model Sheet {
   weightPerLenght Float
   palla           Int
   totalSize       Int
+  average         Float
+  Size            Size[]
   Worker          Worker[]
   Bundle          Bundle[]
-  cloth           Cloth   @relation(fields: [clothId], references: [id], onDelete: Cascade)
-  clothId         String 
-  size            Json
+  cloth           Cloth    @relation(fields: [clothId], references: [id], onDelete: Cascade)
+  clothId         String
 }
-
+model Size {
+  id        String   @id @default(cuid())
+  type      String
+  quantity  Int
+  sheet     Sheet    @relation(fields: [sheetId], references: [id])
+  sheetId   String
+  Bundle    Bundle[]
+}
+model Bundle {
+  id           String @id @default(cuid())
+  bundleId     String
+  size         Size   @relation(fields: [sizeId], references: [id])
+  sizeId       String
+  bundleSize   Int
+  sheet        Sheet     @relation(fields: [sheetId], references: [id])
+  sheetId      String
+  assignedTo   Worker?   @relation(fields: [assignedToId], references: [id])
+  assignedToId String?
+  assignedDate DateTime
+  receivedDate DateTime
+  payments     Payment[]
+}
+model Worker {
+  id      String   @id @default(cuid())
+  name    String
+  bundle  Bundle[]
+  sheet   Sheet    @relation(fields: [sheetId], references: [id])
+  sheetId String
+}
 model Payment {
   id        String   @id @default(cuid())
   advance   Float
@@ -82,15 +96,8 @@ model Payment {
   rate      Float
   total     Float
   remarks   String
-  bundle    Bundle?   @relation(fields: [bundleId], references: [id])
+  bundle    Bundle?  @relation(fields: [bundleId], references: [id])
   bundleId  String?
   createdAt DateTime @default(now())
 }
 
-model Cloth {
-  id              String @id @default(cuid())
-  companyCloth    String
-  sheet           Sheet[]
-  User            User    @relation(fields: [userId], references: [id])
-  userId          String
-}

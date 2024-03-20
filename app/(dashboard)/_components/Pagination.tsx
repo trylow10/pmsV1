@@ -42,7 +42,9 @@ function SheetPagination({ count }: { count: number }) {
     router.push(`?${query('page', next.toString())}`);
   }
 
-  if (count < PAGE_SIZE) return null;
+  if (currentPage > pageCount) return null;
+
+  if (pageCount <= 1) return null;
 
   return (
     <div className="flex gap-3 items-center justify-between mt-6">

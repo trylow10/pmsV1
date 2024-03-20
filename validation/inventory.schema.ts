@@ -8,7 +8,7 @@ export const WorkerSchema = z.object({
 
 export const BundleSchema = z.object({
   bundleId: z.string(),
-  sizeType: z.string(),
+  sizeId: z.string(),
   bundleSize: z.number(),
   sheetId: z.string().optional(),
   assignedToId: z.string().optional(),
@@ -23,9 +23,19 @@ export const SheetSchema = z.object({
   thanNo: z.number(),
   weightPerLenght: z.number(),
   palla: z.number(),
-  totalSize: z.number(),
-  size: z.any(),
+  totalSize: z.number().optional(),
+  average: z.number().optional(),
+  Bundle: z.array(z.string()).optional(),
+  Size: z.array(z.string()).optional(),
+  Worker: z.array(z.string()).optional(),
   clothId: z.string(),
+});
+
+export const SizeSchema = z.object({
+  type: z.string(),
+  quantity: z.number().optional(),
+  sheetId: z.string(),
+  Bundle: z.array(z.string()).optional(),
 });
 
 export const PaymentSchema = z.object({
@@ -40,5 +50,4 @@ export const PaymentSchema = z.object({
 export const ClothSchema = z.object({
   companyCloth: z.string(),
   sheet: z.array(z.string()).optional(),
-  userId: z.string(),
 });

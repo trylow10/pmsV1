@@ -19,9 +19,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
-import { createSheet } from '@/actions/inventory/createInventory';
-import { useCurrentUser } from '@/hooks/use-current-user';
-import SearchCloth from '@/components/inventory/SearchCloth';
+import { createSheet } from '@/actions/sheet/create';
+import SearchCloth from '@/components/sheet/SearchCloth';
 
 // Ssize           Int
 // Msize           Int
@@ -31,11 +30,9 @@ import SearchCloth from '@/components/inventory/SearchCloth';
 // XXXLsize        Int
 // freeSize        Int
 
-function SheetForm() {
+function SheetForm({ cloths }: any) {
   const [error, setError] = useState<string | undefined>('');
   const [success, setSuccess] = useState<string | undefined>('');
-
-  const user = useCurrentUser();
 
   const form = useForm<z.infer<typeof SheetSchema>>({
     resolver: zodResolver(SheetSchema),
@@ -64,7 +61,7 @@ function SheetForm() {
                 <FormItem>
                   <FormLabel>Cloth </FormLabel>
                   <FormControl>
-                    <SearchCloth />
+                    <SearchCloth cloths={cloths} />
                   </FormControl>
 
                   <FormMessage />

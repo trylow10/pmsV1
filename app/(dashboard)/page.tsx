@@ -1,7 +1,7 @@
 import SheetHeader from './sheet/_components/SheetHeader';
 import SheetList from './sheet/_components/SheetList';
 import Pagination from './_components/Pagination';
-import { getAllCloths } from '@/data/inventory/inventory.data';
+import { getAllCloths } from '@/data/sheet/data';
 
 type PageProps = {
   searchParams?: { [key: string]: string | string[] | undefined };
