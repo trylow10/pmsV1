@@ -3,18 +3,19 @@ import SheetForm from '../sheet/_components/SheetForm';
 import { searchCloths } from '@/data/inventory/inventory.data';
 
 type PageProps = {
-  searchParams?: { [key: string]: string | string[] | undefined };
+  searchParams?: { [key: string]: string | string[] };
 };
 
 async function page(props: PageProps) {
   const query = props.searchParams;
 
-  const result = await searchCloths(query?.q);
-  console.log(result);
+  const cloths = await searchCloths(
+    typeof query?.q === 'string' ? query.q : ''
+  );
 
   return (
     <div>
-      <SheetForm />
+      <SheetForm cloths={cloths} />
     </div>
   );
 }

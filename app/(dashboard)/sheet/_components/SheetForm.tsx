@@ -30,7 +30,7 @@ import SearchCloth from '@/components/inventory/SearchCloth';
 // XXXLsize        Int
 // freeSize        Int
 
-function SheetForm() {
+function SheetForm({ cloths }: any) {
   const [error, setError] = useState<string | undefined>('');
   const [success, setSuccess] = useState<string | undefined>('');
 
@@ -61,7 +61,7 @@ function SheetForm() {
                 <FormItem>
                   <FormLabel>Cloth </FormLabel>
                   <FormControl>
-                    <SearchCloth />
+                    <SearchCloth cloths={cloths} />
                   </FormControl>
 
                   <FormMessage />

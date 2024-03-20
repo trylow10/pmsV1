@@ -24,13 +24,17 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { TCloth } from '@/types/cloth.types';
 import Empty from '@/components/Empty';
+import { deleteClothDesign } from '@/actions/inventory/deleteInvetory';
+
+import { useRouter } from 'next/navigation';
 
 type SheetListProps = {
   items: TCloth[];
-  onDelete: (id: string) => void;
 };
 
-function SheetList({ items, onDelete }: SheetListProps) {
+function SheetList({ items }: SheetListProps) {
+  const route = useRouter();
+
   return (
     <div className="mt-6 px-3">
       {items.length <= 0 ? (
@@ -66,7 +70,12 @@ function SheetList({ items, onDelete }: SheetListProps) {
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => onDelete(item.id)}>
+                        <AlertDialogAction
+                          onClick={() => {
+                            deleteClothDesign(item.id);
+                            route.refresh();
+                          }}
+                        >
                           Continue
                         </AlertDialogAction>
                       </AlertDialogFooter>

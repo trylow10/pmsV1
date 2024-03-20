@@ -1,9 +1,19 @@
 'use client';
-import React, { useCallback } from 'react';
-import { Input } from '../ui/input';
+import { useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-function SearchCloth() {
+import { Input } from '../ui/input';
+
+type Cloth = {
+  id: string;
+  companyCloth: string;
+};
+
+type TCloth = {
+  cloths: Cloth[];
+};
+
+function SearchCloth({ cloths }: TCloth) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -22,8 +32,7 @@ function SearchCloth() {
 
   return (
     <Input
-      type="search"
-      placeholder="Search Cloth"
+      placeholder="Search cloth..."
       onChange={(e) => handleChange(e.target.value)}
     />
   );
