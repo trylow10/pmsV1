@@ -1,4 +1,4 @@
-import React from 'react';
+'use client';
 
 import {
   Accordion,
@@ -27,19 +27,16 @@ import Empty from '@/components/Empty';
 
 type SheetListProps = {
   items: TCloth[];
+  onDelete: (id: string) => void;
 };
 
-function SheetList({ items }: SheetListProps) {
+function SheetList({ items, onDelete }: SheetListProps) {
   return (
     <div className="mt-6 px-3">
       {items.length <= 0 ? (
         <Empty />
       ) : (
         items.map((item) => {
-          function handleDelete(id: string): void {
-            throw new Error('Function not implemented.');
-          }
-
           return (
             <Accordion type="single" collapsible key={item.id}>
               <AccordionItem value={item.id}>
@@ -47,18 +44,14 @@ function SheetList({ items }: SheetListProps) {
                   {item.companyCloth}
                 </AccordionTrigger>
                 <AccordionContent>
-                  <SheetTable
-                    list={item.sheet}
-                    onDelete={() => handleDelete(item.id)}
-                    deleteRow={true}
-                  />
+                  <SheetTable list={item.sheet} />
                   <Button size="sm" className="my-3 mx-1">
                     <Link href={`/sheet/edit/${item.id}`}>Edit</Link>
                   </Button>
 
                   <AlertDialog>
                     <AlertDialogTrigger>
-                      <Button size="sm" className="my-3 mx-1 w-full">
+                      <Button size="sm" className="my-3 mx-1">
                         Delete
                       </Button>
                     </AlertDialogTrigger>
@@ -73,7 +66,9 @@ function SheetList({ items }: SheetListProps) {
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction>Continue</AlertDialogAction>
+                        <AlertDialogAction onClick={() => onDelete(item.id)}>
+                          Continue
+                        </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>

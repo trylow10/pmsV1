@@ -14,10 +14,10 @@ type Props = {
   list: TSheet[];
   editableRow?: boolean;
   deleteRow?: boolean;
-  onDelete: (id: any) => void;
+  onDelete?: (id: any) => void;
 };
 
-function SheetTable({ list, editableRow, deleteRow, onDelete }: Props) {
+function SheetTable({ list, editableRow, deleteRow }: Props) {
   return (
     <Table className="">
       <TableHeader>
