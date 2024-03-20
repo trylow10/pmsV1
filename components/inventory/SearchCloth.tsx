@@ -1,22 +1,29 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useCallback } from 'react';
 import { Input } from '../ui/input';
-import { searchCloths } from '@/data/inventory/inventory.data';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 function SearchCloth() {
-  const [search, setSearch] = useState('');
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const query = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams);
+      params.set(name, value);
+      return params.toString();
+    },
+    [searchParams]
+  );
 
   async function handleChange(value: string) {
-    setSearch(value);
-
-    await searchCloths(value);
+    router.push(`?${query('q', value)}`);
   }
 
   return (
     <Input
       type="search"
       placeholder="Search Cloth"
-      value={search}
       onChange={(e) => handleChange(e.target.value)}
     />
   );

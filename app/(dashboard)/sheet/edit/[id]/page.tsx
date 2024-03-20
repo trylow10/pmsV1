@@ -15,9 +15,10 @@ async function page() {
       <SheetTable
         list={list}
         editableRow
-        onDelete={() => {
-          console.log('delete');
-        }}
+        deleteRow
+        // onDelete={() => {
+        //   console.log('delete');
+        // }}
       />
     </div>
   );

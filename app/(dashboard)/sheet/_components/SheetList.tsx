@@ -50,6 +50,7 @@ function SheetList({ items }: SheetListProps) {
                   <SheetTable
                     list={item.sheet}
                     onDelete={() => handleDelete(item.id)}
+                    deleteRow={true}
                   />
                   <Button size="sm" className="my-3 mx-1">
                     <Link href={`/sheet/edit/${item.id}`}>Edit</Link>
@@ -58,8 +59,7 @@ function SheetList({ items }: SheetListProps) {
                   <AlertDialog>
                     <AlertDialogTrigger>
                       <Button size="sm" className="my-3 mx-1 w-full">
-                        <Link href="#">Delete</Link>
-                        {/* <Link href={`/sheet/delete/${item.id}`}>Delete</Link> */}
+                        Delete
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>

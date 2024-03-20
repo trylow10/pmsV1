@@ -101,10 +101,12 @@ export const searchCloths = async (query: string) => {
   try {
     const result = await db.cloth.findMany({
       where: {
-        companyCloth: 'trylow-thokalaya',
+        companyCloth: {
+          search: query,
+        },
       },
     });
-    console.log(result);
+    return result;
   } catch (error: any) {
     console.log(error.message);
   }

@@ -100,3 +100,4 @@ model Payment {
   bundleId  String?
   createdAt DateTime @default(now())
 }
+

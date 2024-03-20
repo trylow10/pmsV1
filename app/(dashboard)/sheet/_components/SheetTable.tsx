@@ -67,10 +67,8 @@ function SheetTable({ list, editableRow, deleteRow, onDelete }: Props) {
                   </TableCell>
                 )}
                 {deleteRow && (
-                  <TableCell className="text-right">
-                    <Button size="sm" onClick={() => onDelete(item.id)}>
-                      Delete button
-                    </Button>
+                  <TableCell className="">
+                    <Button size="sm">Delete</Button>
                   </TableCell>
                 )}
               </TableRow>
