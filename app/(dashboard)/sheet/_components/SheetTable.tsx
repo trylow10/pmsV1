@@ -1,3 +1,6 @@
+'use client';
+import { deleteSheet } from '@/actions/sheet/delete';
+import ConfirmDelete from '@/components/ConfirmDelete';
 import Empty from '@/components/Empty';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,7 +17,6 @@ type Props = {
   list: TSheet[];
   editableRow?: boolean;
   deleteRow?: boolean;
-  onDelete?: (id: any) => void;
 };
 
 function SheetTable({ list, editableRow, deleteRow }: Props) {
@@ -68,7 +70,10 @@ function SheetTable({ list, editableRow, deleteRow }: Props) {
                 )}
                 {deleteRow && (
                   <TableCell className="">
-                    <Button size="sm">Delete</Button>
+                    <ConfirmDelete
+                      resourceName="sheet"
+                      deletehandler={() => deleteSheet(item.id)}
+                    />
                   </TableCell>
                 )}
               </TableRow>

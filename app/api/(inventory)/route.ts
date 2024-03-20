@@ -1,5 +1,5 @@
-import { createClothDesign } from '@/actions/inventory/createInventory';
-import { getAllCloths, getClothById } from '@/data/inventory/inventory.data';
+import { createClothDesign } from '@/actions/sheet/create';
+import { getAllCloths, getClothById } from '@/data/sheet/data';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {

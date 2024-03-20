@@ -1,8 +1,8 @@
 import React from 'react';
 import SheetTable from '../../_components/SheetTable';
-import { getAllSheet } from '@/data/inventory/inventory.data';
+import { getAllSheet } from '@/data/sheet/data';
 import { TSheet } from '@/types/cloth.types';
-import { deleteSheet } from '@/actions/inventory/deleteInvetory';
+import { deleteSheet } from '@/actions/sheet/delete';
 
 async function getSheet() {
   const data = await getAllSheet({ page: 1 });

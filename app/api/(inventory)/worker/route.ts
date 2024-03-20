@@ -1,4 +1,4 @@
-import { createWorker } from '@/actions/inventory/createInventory';
+import { createWorker } from '@/actions/sheet/create';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {

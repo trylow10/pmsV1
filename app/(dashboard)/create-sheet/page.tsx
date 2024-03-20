@@ -1,6 +1,6 @@
 import React from 'react';
 import SheetForm from '../sheet/_components/SheetForm';
-import { searchCloths } from '@/data/inventory/inventory.data';
+import { searchCloths } from '@/data/sheet/data';
 
 type PageProps = {
   searchParams?: { [key: string]: string | string[] };

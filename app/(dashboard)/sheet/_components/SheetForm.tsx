@@ -19,7 +19,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
-import { createSheet } from '@/actions/inventory/createInventory';
+import { createSheet } from '@/actions/sheet/create';
 import SearchCloth from '@/components/inventory/SearchCloth';
 
 // Ssize           Int

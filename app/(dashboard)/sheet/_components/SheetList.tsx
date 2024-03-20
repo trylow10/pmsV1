@@ -7,34 +7,20 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-
 import SheetTable from './SheetTable';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { TCloth } from '@/types/cloth.types';
 import Empty from '@/components/Empty';
-import { deleteClothDesign } from '@/actions/inventory/deleteInvetory';
+import { deleteClothDesign } from '@/actions/sheet/delete';
 
-import { useRouter } from 'next/navigation';
+import ConfirmDelete from '@/components/ConfirmDelete';
 
 type SheetListProps = {
   items: TCloth[];
 };
 
 function SheetList({ items }: SheetListProps) {
-  const route = useRouter();
-
   return (
     <div className="mt-6 px-3">
       {items.length <= 0 ? (
@@ -53,34 +39,10 @@ function SheetList({ items }: SheetListProps) {
                     <Link href={`/sheet/edit/${item.id}`}>Edit</Link>
                   </Button>
 
-                  <AlertDialog>
-                    <AlertDialogTrigger>
-                      <Button size="sm" className="my-3 mx-1">
-                        Delete
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          Are you absolutely sure?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This will permanently delete the sheet.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={() => {
-                            deleteClothDesign(item.id);
-                            route.refresh();
-                          }}
-                        >
-                          Continue
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  <ConfirmDelete
+                    resourceName="Cloth"
+                    deletehandler={() => deleteClothDesign(item.id)}
+                  />
                 </AccordionContent>
               </AccordionItem>
             </Accordion>

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllSheet, getSheetById } from '@/data/inventory/inventory.data';
-import { createSheet } from '@/actions/inventory/createInventory';
+import { getAllSheet, getSheetById } from '@/data/sheet/data';
+import { createSheet } from '@/actions/sheet/create';
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);

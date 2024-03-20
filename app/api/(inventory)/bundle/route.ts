@@ -1,4 +1,4 @@
-import { createBundle } from '@/actions/inventory/createInventory';
+import { createBundle } from '@/actions/sheet/create';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {

@@ -1,5 +1,5 @@
-import { createBrand } from '@/actions/inventory/createInventory';
-import { getBrands } from '@/data/inventory/inventory.data';
+import { createBrand } from '@/actions/sheet/create';
+import { getBrands } from '@/data/sheet/data';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
