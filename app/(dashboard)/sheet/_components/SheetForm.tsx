@@ -21,7 +21,7 @@ import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
 import { createSheet } from '@/actions/sheet/create';
 import SearchCloth from '@/components/sheet/SearchCloth';
-import { TCloth } from '@/types/cloth.types';
+
 import { editSheet } from '@/actions/sheet/edit';
 
 // Ssize           Int
@@ -34,7 +34,7 @@ import { editSheet } from '@/actions/sheet/edit';
 
 type SheetFormProps = {
   isEditMode?: boolean;
-  cloths?: TCloth;
+  cloths?: any;
   data?: any;
 };
 

@@ -30,7 +30,7 @@
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
-    "cmdk": "^1.0.0",
+    "cmdk": "0.2.1",
     "lucide-react": "^0.352.0",
     "next": "14.0.4",
     "next-auth": "^4.24.5",
