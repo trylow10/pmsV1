@@ -23,8 +23,11 @@ export const deleteSheet = async (id: string) => {
     const sheet = await db.sheet.delete({
       where: { id },
     });
-
-    return sheet;
+    if (sheet) {
+      return { message: 'Cloth deleted successfully' };
+    } else {
+      return { error: 'No sheet Found' };
+    }
   } catch (error) {
     console.log('Error deleting sheet object:', error);
     return { error: 'Error deleting sheet object', detailedError: error };

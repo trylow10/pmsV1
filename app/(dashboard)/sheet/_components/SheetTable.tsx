@@ -2,7 +2,6 @@
 import { deleteSheet } from '@/actions/sheet/delete';
 import ConfirmDelete from '@/components/ConfirmDelete';
 import Empty from '@/components/Empty';
-import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -12,6 +11,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { TSheet } from '@/types/cloth.types';
+import EditSheet from './EditSheet';
+import { editSheet } from '@/actions/sheet/edit';
 
 type Props = {
   list: TSheet[];
@@ -65,7 +66,11 @@ function SheetTable({ list, editableRow, deleteRow }: Props) {
                 <TableCell>{item.average}</TableCell>
                 {editableRow && (
                   <TableCell className="text-right">
-                    <Button size="sm">Edit</Button>
+                    <EditSheet
+                      resourceName="sheet"
+                      editHandler={() => editSheet(item.id, item)}
+                      data={item}
+                    />
                   </TableCell>
                 )}
                 {deleteRow && (

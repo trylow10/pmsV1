@@ -10,7 +10,7 @@ type Cloth = {
 };
 
 type TCloth = {
-  cloths: Cloth[];
+  cloths?: Cloth[];
 };
 
 function SearchCloth({ cloths }: TCloth) {
