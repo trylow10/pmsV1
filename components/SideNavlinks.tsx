@@ -10,7 +10,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 
-import { HomeIcon, SettingsIcon } from './icons';
+import { HomeIcon, SettingsIcon, SheetIcon } from './icons';
 import { cn } from '@/lib/utils';
 import { useMenu } from '@/context/MenuContext';
 
@@ -21,19 +21,14 @@ const links = [
     icon: <HomeIcon />,
   },
   {
-    href: '/stocks',
-    label: 'Stocks',
+    href: '/sheet',
+    label: 'Sheet',
     icon: <SettingsIcon />,
   },
   {
-    href: '/completed',
-    label: 'Completed',
-    icon: <HomeIcon />,
-  },
-  {
-    href: '/settings',
-    label: 'Settings',
-    icon: <SettingsIcon />,
+    href: '/create-sheet',
+    label: 'Create Sheet',
+    icon: <SheetIcon />,
   },
 ];
 
@@ -50,7 +45,7 @@ function SideNavlinks() {
           <li
             key={link.href}
             className={cn(
-              'mb-3 p-2',
+              'mb-3 p-2 ',
               isActive && 'rounded border-l-2 border-teal-700 bg-white p-2',
               isOpen && 'w-fit'
             )}

@@ -7,7 +7,7 @@ import { useSearchParams } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 
-import { LoginSchema } from '@/schemas/user.schema';
+import { LoginSchema } from '@/validation/user.schema';
 import { Input } from '@/components/ui/input';
 import {
   Form,
@@ -51,14 +51,12 @@ export const LoginForm = () => {
     startTransition(() => {
       login(values, callbackUrl)
         .then((response) => {
-          if (response.error) {
+          if (response?.error) {
             form.reset();
-            setError(response.error);
-          } else if (response.success) {
+            setError(response?.error);
+          } else if (response?.success) {
             const { provider, data } = response.signInData!;
             signIn(provider, data);
-          } else if (response.twoFactor) {
-            setShowTwoFactor(true);
           }
         })
         .catch(() => setError('Something went wrong'));
@@ -70,7 +68,6 @@ export const LoginForm = () => {
       headerLabel="Welcome back"
       backButtonLabel="Don't have an account?"
       backButtonHref="/register"
-      showSocial
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

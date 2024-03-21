@@ -5,7 +5,7 @@ import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { RegisterSchema } from '@/schemas/user.schema';
+import { RegisterSchema } from '@/validation/user.schema';
 import { Input } from '@/components/ui/input';
 import {
   Form,
@@ -52,7 +52,6 @@ export const RegisterForm = () => {
       headerLabel="Create an account"
       backButtonLabel="Already have an account?"
       backButtonHref="/login"
-      showSocial
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

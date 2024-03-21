@@ -27,8 +27,8 @@ export const NewVerificationForm = () => {
 
     newVerification(token)
       .then((data) => {
-        setSuccess(data.success);
-        setError(data.error);
+        setSuccess(data?.success);
+        setError(data?.error);
       })
       .catch(() => {
         setError('Something went wrong!');
@@ -40,6 +40,7 @@ export const NewVerificationForm = () => {
   }, [onSubmit]);
 
   return (
+    //token dosnt exist
     <CardWrapper
       headerLabel="Confirming your verification"
       backButtonLabel="Back to login"
