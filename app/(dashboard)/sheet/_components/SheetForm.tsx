@@ -102,11 +102,11 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                     <Input
                       {...field}
                       type="date"
-                      value={
-                        field.value instanceof Date
-                          ? field.value.toISOString()
-                          : field.value
-                      }
+                      // value={
+                      //   field.value instanceof Date
+                      //     ? field.value.toISOString()
+                      //     : field.value
+                      // }
                       defaultValue={
                         data?.cuttingDate.toISOString().split('T')[0]
                       }

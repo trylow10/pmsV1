@@ -1,8 +1,8 @@
 'use client';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -10,6 +10,7 @@ import {
 
 import { Button } from '@/components/ui/button';
 import SheetForm from './SheetForm';
+
 type EditSheetProps = {
   resourceName: string;
   editHandler: () => any;
@@ -20,9 +21,11 @@ function EditSheet({ resourceName, editHandler, data }: EditSheetProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Edit</Button>
+        <Button variant="default" size="sm">
+          Edit
+        </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[1425px]">
+      <DialogContent className="sm:max-w-[825px]">
         <DialogHeader>
           <DialogTitle>Edit {resourceName}</DialogTitle>
         </DialogHeader>
