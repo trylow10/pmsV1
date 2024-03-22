@@ -23,11 +23,11 @@ import { editCloth } from '@/actions/sheet/edit';
 import { Button } from '@/components/ui/button';
 
 type ClothFormProps = {
-  isEditMode: boolean;
   data: any;
+  isEditCloth?: boolean;
 };
 
-function ClothForm({ data, isEditMode }: ClothFormProps) {
+function ClothForm({ data, isEditCloth }: ClothFormProps) {
   const [error, setError] = useState<string | undefined>('');
   const [success, setSuccess] = useState<string | undefined>('');
 
@@ -42,12 +42,12 @@ function ClothForm({ data, isEditMode }: ClothFormProps) {
     setError('');
     setSuccess('');
     try {
-      if (isEditMode) {
+      if (isEditCloth) {
         await editCloth(data.id, values);
       } else {
         await createClothDesign(values);
       }
-      setSuccess(`Cloth ${isEditMode ? 'Edited' : 'Created'} successfully`);
+      setSuccess(`Cloth ${isEditCloth ? 'Edited' : 'Created'} successfully`);
     } catch (err: any) {
       setError(err.message || 'An error occurred');
     }
@@ -57,29 +57,28 @@ function ClothForm({ data, isEditMode }: ClothFormProps) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="space-y-4">
-          <div className="grid xl:grid-cols-2 xl:gap-3 ">
-            <FormField
-              control={form.control}
-              name="companyCloth"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Company Cloth</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="Company Cloth"
-                      type="text"
-                      defaultValue={data?.companyCloth}
-                    />
-                  </FormControl>
+          <FormField
+            control={form.control}
+            name="companyCloth"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Company Cloth</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="Company Cloth"
+                    type="text"
+                    defaultValue={data?.companyCloth}
+                  />
+                </FormControl>
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <Button type="submit" className="w-fit">
-            {!isEditMode ? 'Add' : 'Edit'} Cloth
+            {isEditCloth ? 'Edit' : 'Add'} Cloth
           </Button>
         </div>
 

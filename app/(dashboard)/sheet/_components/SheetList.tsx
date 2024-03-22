@@ -15,8 +15,8 @@ import Empty from '@/components/Empty';
 import { deleteClothDesign } from '@/actions/sheet/delete';
 
 import ConfirmDelete from '@/components/ConfirmDelete';
-import { editCloth } from '@/actions/sheet/edit';
-import EditCloth from './EditCloth';
+
+import ClothAction from './ClothAction';
 
 type SheetListProps = {
   items: TCloth[];
@@ -37,12 +37,7 @@ function SheetList({ items }: SheetListProps) {
                 </AccordionTrigger>
                 <AccordionContent>
                   <SheetTable list={item.sheet} />
-                  <EditCloth
-                    isEditCloth={true}
-                    resourceName="Cloth"
-                    data={item}
-                    editHandler={() => editCloth(item.id, item)}
-                  />
+                  <ClothAction isEditCloth={true} data={item} />
                   <Button size="sm" className="my-3 mx-1">
                     <Link href={`/sheet/edit/${item.id}`}>View Sheets</Link>
                   </Button>
