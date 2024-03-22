@@ -20,7 +20,7 @@ async function page(props: PageProps) {
 
   return (
     <div>
-      <SheetHeader totalRecord={count} />
+      <SheetHeader totalRecord={count} data={items} />
       <SheetList items={items} />
       <Pagination count={count} />
     </div>
