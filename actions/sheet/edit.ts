@@ -24,3 +24,19 @@ export const editSheet = async (id: string, data: any) => {
     console.error(e);
   }
 };
+
+export const editCloth = async (id: string, data: any) => {
+  try {
+    const cloth = await db.cloth.update({
+      data: {
+        companyCloth: data.companyCloth,
+      },
+      where: {
+        id: id,
+      },
+    });
+    return cloth;
+  } catch (e) {
+    console.error(e);
+  }
+};

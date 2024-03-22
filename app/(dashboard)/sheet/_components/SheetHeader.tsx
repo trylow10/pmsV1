@@ -2,12 +2,15 @@ import React from 'react';
 
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
+import EditCloth from './EditCloth';
+import { TCloth } from '@/types/cloth.types';
 
 type Props = {
   totalRecord: number;
+  data: TCloth;
 };
 
-function SheetHeader({ totalRecord }: Props) {
+function SheetHeader({ totalRecord, data }: Props) {
   return (
     <>
       <div className="flex justify-between items-center">
@@ -25,6 +28,7 @@ function SheetHeader({ totalRecord }: Props) {
           >
             Add Cutting Sheet
           </Link>
+          <EditCloth resourceName="Cloth" data={data} isEditCloth={false} />
         </div>
       </div>
     </>

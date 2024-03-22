@@ -22,7 +22,7 @@ function EditSheet({ resourceName, editHandler, data }: EditSheetProps) {
       <DialogTrigger asChild>
         <Button variant="outline">Edit</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[1425px]">
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit {resourceName}</DialogTitle>
         </DialogHeader>
