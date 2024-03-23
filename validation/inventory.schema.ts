@@ -18,13 +18,13 @@ export const BundleSchema = z.object({
 });
 
 export const SheetSchema = z.object({
-  cuttingDate: z.string().transform((value) => new Date(value)),
+  cuttingDate: z.string(),
   color: z.string(),
-  thanNo: z.number(),
-  weightPerLenght: z.number(),
-  palla: z.number(),
-  totalSize: z.number().optional(),
-  average: z.number().optional(),
+  thanNo: z.coerce.number(),
+  weightPerLenght: z.coerce.number(),
+  palla: z.coerce.number(),
+  totalSize: z.coerce.number().optional(),
+  average: z.coerce.number().optional(),
   Bundle: z.array(z.string()).optional(),
   Size: z.array(z.string()).optional(),
   Worker: z.array(z.string()).optional(),

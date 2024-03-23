@@ -21,7 +21,7 @@ import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
 import { createSheet } from '@/actions/sheet/create';
 import SearchCloth from '@/components/sheet/SearchCloth';
-import { TCloth } from '@/types/cloth.types';
+
 import { editSheet } from '@/actions/sheet/edit';
 
 // Ssize           Int
@@ -34,7 +34,7 @@ import { editSheet } from '@/actions/sheet/edit';
 
 type SheetFormProps = {
   isEditMode?: boolean;
-  cloths?: TCloth;
+  cloths?: any;
   data?: any;
 };
 
@@ -102,11 +102,11 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                     <Input
                       {...field}
                       type="date"
-                      value={
-                        field.value instanceof Date
-                          ? field.value.toISOString()
-                          : field.value
-                      }
+                      // value={
+                      //   field.value instanceof Date
+                      //     ? field.value.toISOString()
+                      //     : field.value
+                      // }
                       defaultValue={
                         data?.cuttingDate.toISOString().split('T')[0]
                       }
