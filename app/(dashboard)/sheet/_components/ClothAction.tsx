@@ -1,7 +1,6 @@
 'use client';
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -9,30 +8,27 @@ import {
 } from '@/components/ui/dialog';
 
 import { Button } from '@/components/ui/button';
-import SheetForm from './SheetForm';
+import ClothForm from './ClothForm';
 
-type EditSheetProps = {
-  resourceName: string;
-  editHandler: () => any;
+type ClothActionProps = {
+  isEditCloth: boolean;
   data?: any;
 };
 
-function EditSheet({ resourceName, editHandler, data }: EditSheetProps) {
+function ClothAction({ data, isEditCloth }: ClothActionProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="default" size="sm">
-          Edit
-        </Button>
+        <Button variant="outline">{isEditCloth ? 'Edit' : 'Add'} Cloth</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit {resourceName}</DialogTitle>
+          <DialogTitle>{isEditCloth ? 'Edit' : 'Add'} Cloth</DialogTitle>
         </DialogHeader>
-        <SheetForm isEditMode data={data} />
+        <ClothForm data={data} isEditCloth={isEditCloth} />
       </DialogContent>
     </Dialog>
   );
 }
 
-export default EditSheet;
+export default ClothAction;

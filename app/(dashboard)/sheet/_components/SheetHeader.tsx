@@ -2,7 +2,7 @@ import React from 'react';
 
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
-import EditCloth from './EditCloth';
+import ClothAction from './ClothAction';
 import { TCloth } from '@/types/cloth.types';
 
 type Props = {
@@ -28,7 +28,7 @@ function SheetHeader({ totalRecord, data }: Props) {
           >
             Add Cutting Sheet
           </Link>
-          <EditCloth resourceName="Cloth" data={data} isEditCloth={false} />
+          <ClothAction data={data} isEditCloth={false} />
         </div>
       </div>
     </>
