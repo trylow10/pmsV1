@@ -217,7 +217,6 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
             )}
           </div>
         </div>
-        <SizeForm />
         <FormError message={error} />
         <FormSuccess message={success} />
         <Button type="submit" className="w-fit">

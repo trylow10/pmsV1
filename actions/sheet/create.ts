@@ -11,6 +11,11 @@ import {
   SizeSchema,
 } from '@/validation/cloth.schema';
 import { calculateAverageAndTotalSize } from '@/lib/calculation';
+import {
+  getClothByName,
+  getSheetByColor,
+  getSizeByType,
+} from '@/data/sheet/data';
 //TODO: create custom error handlers
 
 export const createClothDesign = async (
@@ -26,8 +31,13 @@ export const createClothDesign = async (
 
   const { companyCloth, sheet = [] } = validatedFields.data;
 
+  const existingCloth = await getClothByName(companyCloth);
+  if (existingCloth) {
+    return { error: 'Cloth already exist!' };
+  }
+
   try {
-    const cloth = await db.cloth.create({
+    await db.cloth.create({
       data: {
         companyCloth,
         sheet: {
@@ -35,7 +45,6 @@ export const createClothDesign = async (
         },
       },
     });
-    return cloth;
   } catch (error) {
     console.log('Error creating cloth object:', error);
     return { error: 'Error creating cloth object', detailedError: error };
@@ -52,8 +61,15 @@ export const createSize = async (values: z.infer<typeof SizeSchema>) => {
   }
 
   const { type, quantity, sheetId, Bundle = [] } = validatedFields.data;
+
+  const existingSize = await getSizeByType(type);
+
+  if (existingSize) {
+    return { error: 'Size already exist!' };
+  }
+
   try {
-    const size = await db.size.create({
+    await db.size.create({
       data: {
         type,
         quantity: quantity || 0,
@@ -63,7 +79,6 @@ export const createSize = async (values: z.infer<typeof SizeSchema>) => {
         },
       },
     });
-    return size;
   } catch (error) {
     console.log('Error creating size object:', error);
     return { error: 'Error creating size object', detailedError: error };
@@ -93,11 +108,16 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
     weightPerLenght,
     Size
   );
+  const date = new Date(cuttingDate).toISOString();
+  const existingCloth = await getSheetByColor(color);
+  if (existingCloth) {
+    return { error: 'Sheet with that color exist!' };
+  }
 
   try {
-    const sheet = await db.sheet.create({
+    await db.sheet.create({
       data: {
-        cuttingDate,
+        cuttingDate: date,
         color,
         thanNo,
         weightPerLenght,
@@ -110,7 +130,6 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
         clothId,
       },
     });
-    return sheet;
   } catch (error) {
     console.log('Error creating sheet object:', error);
     return { error: 'Error creating sheet object', detailedError: error };

@@ -25,9 +25,9 @@ export const getAllCloths = async ({
   }
 };
 
-export const getClothById = async (id: string) => {
+export const getClothByName = async (companyCloth: string) => {
   try {
-    const cloth = await db.cloth.findUnique({ where: { id } });
+    const cloth = await db.cloth.findUnique({ where: { companyCloth } });
     return cloth;
   } catch {
     return null;
@@ -37,6 +37,14 @@ export const getClothById = async (id: string) => {
 export const getSheetById = async (id: string) => {
   try {
     const sheet = await db.sheet.findUnique({ where: { id } });
+    return sheet;
+  } catch {
+    return null;
+  }
+};
+export const getSheetByColor = async (color: string) => {
+  try {
+    const sheet = await db.sheet.findUnique({ where: { color } });
     return sheet;
   } catch {
     return null;
@@ -59,11 +67,10 @@ export const getAllSheet = async ({ page }: { page: number }) => {
   }
 };
 
-export const getSheetsByClothId = async (id: string) => {
+export const getSizeByType = async (type: string) => {
   try {
-    const sheets = await db.sheet.findMany({ where: { clothId: id } });
-    const totalSheets = await db.sheet.count();
-    return { sheets, totalSheets };
+    const size = await db.size.findUnique({ where: { type } });
+    return size;
   } catch {
     return null;
   }
