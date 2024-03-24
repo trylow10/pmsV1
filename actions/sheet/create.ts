@@ -9,7 +9,7 @@ import {
   PaymentSchema,
   WorkerSchema,
   SizeSchema,
-} from '@/validation/inventory.schema';
+} from '@/validation/cloth.schema';
 import { calculateAverageAndTotalSize } from '@/lib/calculation';
 //TODO: create custom error handlers
 
@@ -35,7 +35,6 @@ export const createClothDesign = async (
         },
       },
     });
-
     return cloth;
   } catch (error) {
     console.log('Error creating cloth object:', error);
@@ -52,13 +51,12 @@ export const createSize = async (values: z.infer<typeof SizeSchema>) => {
     return { error: 'Invalid fields!', errorFields };
   }
 
-  const { type, sheetId, Bundle = [] } = validatedFields.data;
-
+  const { type, quantity, sheetId, Bundle = [] } = validatedFields.data;
   try {
     const size = await db.size.create({
       data: {
         type,
-        quantity: 0,
+        quantity: quantity || 0,
         sheet: { connect: { id: sheetId } },
         Bundle: {
           connect: Bundle.map((bundleId) => ({ id: bundleId })),

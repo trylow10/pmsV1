@@ -10,4 +10,4 @@ export default withAuth({
   },
 });
 
-export const config = { matcher: ['/', '/inventory', '/create-sheet'] };
+export const config = { matcher: ['/', '/cloth', '/create-sheet'] };

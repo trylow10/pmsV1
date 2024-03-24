@@ -40,7 +40,7 @@ model PasswordResetToken {
 
 model Cloth {
   id           String  @id @default(cuid())
-  companyCloth String
+  companyCloth String  @unique
   sheet        Sheet[]
 }
 
@@ -48,7 +48,7 @@ model Cloth {
 model Sheet {
   id              String   @id @default(cuid())
   cuttingDate     DateTime
-  color           String
+  color           String    @unique
   thanNo          Int
   weightPerLenght Float
   palla           Int
@@ -62,7 +62,7 @@ model Sheet {
 }
 model Size {
   id        String   @id @default(cuid())
-  type      String
+  type      String   @unique
   quantity  Int
   sheet     Sheet    @relation(fields: [sheetId], references: [id])
   sheetId   String

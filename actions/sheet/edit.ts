@@ -3,9 +3,16 @@
 import { db } from '@/lib/db';
 
 export const editSheet = async (id: string, data: any) => {
-  console.log('data', data);
-  console.log('data', id);
   try {
+    const sheetExists = await db.sheet.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!sheetExists) {
+      return { error: 'Sheet with the given id isnt available' };
+    }
     const sheet = await db.sheet.update({
       data: {
         cuttingDate: data.cuttingDate,
@@ -27,12 +34,18 @@ export const editSheet = async (id: string, data: any) => {
 
 export const editCloth = async (id: string, data: any) => {
   try {
+    const isClothExist = await db.cloth.findFirst({
+      where: {
+        id,
+      },
+    });
+    if (!isClothExist) return { error: 'Cloth not found' };
     const cloth = await db.cloth.update({
       data: {
         companyCloth: data.companyCloth,
       },
       where: {
-        id: id,
+        id,
       },
     });
     return cloth;
