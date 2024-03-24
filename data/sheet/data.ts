@@ -36,7 +36,10 @@ export const getClothByName = async (companyCloth: string) => {
 
 export const getSheetById = async (id: string) => {
   try {
-    const sheet = await db.sheet.findUnique({ where: { id } });
+    const sheet = await db.sheet.findUnique({
+      where: { id },
+      include: { Size: true },
+    });
     return sheet;
   } catch {
     return null;
@@ -58,19 +61,9 @@ export const getAllSheet = async ({ page }: { page: number }) => {
       skip,
       take: Number(PAGE_SIZE),
       orderBy: { id: 'asc' },
-      include: { Bundle: true, Worker: true },
+      include: { Size: true },
     });
-    const totalSheets = await db.sheet.count();
-    return { items: sheets, totalSheets };
-  } catch {
-    return null;
-  }
-};
-
-export const getSizeByType = async (type: string) => {
-  try {
-    const size = await db.size.findUnique({ where: { type } });
-    return size;
+    return { items: sheets };
   } catch {
     return null;
   }

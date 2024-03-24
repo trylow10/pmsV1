@@ -1,20 +1,18 @@
+import { getSheetById } from '@/data/sheet/data';
 import { db } from './db';
 
-export const calculateAverageAndTotalSize = async (
-  weightPerLenght: number,
-  Size: string[]
-) => {
-  const sizes = await Promise.all(
-    Size.map((id) => db.size.findUnique({ where: { id } }))
-  );
-
-  const totalSize: number = sizes.reduce(
-    (acc: number, curr: any) => acc + curr.value,
+export const calculation = async (sheetId: string) => {
+  const sheet: any = await getSheetById(sheetId);
+  const totalSize: number = sheet.Size.reduce(
+    (acc: number, curr: any) => acc + curr.quantity,
     0
   );
-  console.log('totalSize:', totalSize);
-
   const average =
-    totalSize !== 0 ? Number((weightPerLenght / totalSize).toFixed(5)) : 0;
-  return { average, totalSize, sizes };
+    totalSize !== 0
+      ? Number((sheet.weightPerLenght / totalSize).toFixed(5))
+      : 0;
+  await db.sheet.update({
+    where: { id: sheetId },
+    data: { totalSize, average },
+  });
 };
