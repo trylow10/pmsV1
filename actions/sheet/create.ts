@@ -9,11 +9,7 @@ import {
   PaymentSchema,
   WorkerSchema,
   SizeSchema,
-<<<<<<< HEAD
 } from '@/validation/cloth.schema';
-=======
-} from '@/validation/sheet.schema';
->>>>>>> e4792b6 (ok)
 import { calculateAverageAndTotalSize } from '@/lib/calculation';
 import {
   getClothByName,
