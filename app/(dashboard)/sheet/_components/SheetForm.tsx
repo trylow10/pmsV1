@@ -20,7 +20,6 @@ import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
 import { createSheet } from '@/actions/sheet/create';
-import SearchCloth from '@/components/sheet/SearchCloth';
 
 import { editSheet } from '@/actions/sheet/edit';
 
@@ -34,7 +33,10 @@ import { editSheet } from '@/actions/sheet/edit';
 
 type SheetFormProps = {
   isEditMode?: boolean;
-  cloths?: any;
+  cloths?: {
+    id: string;
+    companyCloth: string;
+  }[];
   data?: any;
 };
 
@@ -56,6 +58,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
   });
 
   const onSubmit = async (values: z.infer<typeof SheetSchema>) => {
+    console.log(values);
     setError('');
     setSuccess('');
     try {
@@ -75,23 +78,32 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="space-y-4">
           <div className="grid xl:grid-cols-2 xl:gap-3 ">
+            {/* For search field */}
+            {/* {!isEditMode && <SearchCloth cloths={cloths} form={form} />} */}
             {!isEditMode && (
               <FormField
                 control={form.control}
                 name="clothId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Cloth </FormLabel>
+                    <FormLabel>Cloth</FormLabel>
                     <FormControl>
-                      <SearchCloth cloths={cloths} />
+                      <select
+                        {...field}
+                        className="w-full border rounded h-fit p-2"
+                      >
+                        {cloths?.map((cloth) => (
+                          <option key={cloth.id} value={cloth.id}>
+                            {cloth.companyCloth}
+                          </option>
+                        ))}
+                      </select>
                     </FormControl>
-
                     <FormMessage />
                   </FormItem>
                 )}
               />
             )}
-
             <FormField
               control={form.control}
               name="cuttingDate"
@@ -102,11 +114,6 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                     <Input
                       {...field}
                       type="date"
-                      // value={
-                      //   field.value instanceof Date
-                      //     ? field.value.toISOString()
-                      //     : field.value
-                      // }
                       defaultValue={
                         data?.cuttingDate.toISOString().split('T')[0]
                       }

@@ -97,17 +97,26 @@ export const getAllPayment = async ({ page }: { page: number }) => {
   }
 };
 
-export const searchCloths = async (query: string) => {
+export const getCloths = async () => {
   try {
-    const result = await db.cloth.findMany({
-      where: {
-        companyCloth: {
-          search: query,
-        },
-      },
-    });
-    return result;
-  } catch (error: any) {
-    console.log(error.message);
+    const cloths = await db.cloth.findMany({});
+    return cloths;
+  } catch {
+    return null;
   }
 };
+
+// export const searchCloths = async (query: string) => {
+//   try {
+//     const result = await db.cloth.findMany({
+//       where: {
+//         companyCloth: {
+//           search: query,
+//         },
+//       },
+//     });
+//     return result;
+//   } catch (error: any) {
+//     console.log(error.message);
+//   }
+// };
