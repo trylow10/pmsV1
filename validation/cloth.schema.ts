@@ -17,12 +17,15 @@ export const BundleSchema = z.object({
   payments: z.array(z.string()),
 });
 
-export const SizeSchema = z.object({
-  type: z.string(),
-  quantity: z.coerce.number().optional(),
-  sheetId: z.string(),
-  Bundle: z.array(z.string()).optional(),
-});
+export const SizeSchema = z.array(
+  z.object({
+    type: z.string(),
+    sheetId: z.string().optional(),
+    quantity: z.number().optional(),
+    Bundle: z.array(z.string()).optional(),
+  })
+);
+
 export const SheetSchema = z.object({
   cuttingDate: z.string(),
   color: z.string(),
@@ -32,7 +35,7 @@ export const SheetSchema = z.object({
   totalSize: z.coerce.number().optional(),
   average: z.coerce.number().optional(),
   Bundle: z.array(z.string()).optional(),
-  Size: z.array(z.object({ value: z.string() })),
+  Size: SizeSchema.optional(),
   Worker: z.array(z.string()).optional(),
   clothId: z.string(),
 });
