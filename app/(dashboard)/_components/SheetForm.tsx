@@ -2,8 +2,13 @@
 
 import * as z from 'zod';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
+import Select from 'react-select';
+
+import { Pencil1Icon } from '@radix-ui/react-icons';
+import type { GroupBase } from 'react-select';
+
 import { SheetSchema } from '@/validation/cloth.schema';
 import { Input } from '@/components/ui/input';
 import {
@@ -31,6 +36,17 @@ type SheetFormProps = {
   data?: any;
 };
 
+const options: GroupBase<any>[] = [
+  {
+    label: 'Sizes',
+    options: [
+      { value: 'S', label: 'S' },
+      { value: 'M', label: 'M' },
+      { value: 'L', label: 'L' },
+    ],
+  },
+];
+
 function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
   const [error, setError] = useState<string | undefined>('');
   const [success, setSuccess] = useState<string | undefined>('');
@@ -49,6 +65,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
   });
 
   const onSubmit = async (values: z.infer<typeof SheetSchema>) => {
+    console.log(values.Size);
     setError('');
     setSuccess('');
     try {
@@ -63,9 +80,19 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
     }
   };
 
+  const sizeData = form.getValues('Size');
+
+  function handleChange() {
+    console.log(form.getValues('Size'));
+  }
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-6"
+        onChange={handleChange}
+      >
         <div className="space-y-4">
           <div className="grid xl:grid-cols-2 xl:gap-3 ">
             {/* For search field */}
@@ -213,6 +240,50 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                 )}
               />
             )}
+
+            <FormField
+              control={form.control}
+              name="Size"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Size</FormLabel>
+                  <FormControl>
+                    <Select
+                      styles={{
+                        control: (baseStyles, state) => ({
+                          ...baseStyles,
+                          borderColor: state.isFocused ? 'grey' : 'grey',
+                        }),
+                      }}
+                      {...field}
+                      options={options}
+                      isMulti
+                      required
+                    />
+                  </FormControl>
+                  <FormMessage />
+
+                  {/* {sizeData && (
+                    <div>
+                      <div className="flex justify-between items-center border p-2">
+                        <h3>size</h3>
+                        <h3>action</h3>
+                      </div>
+                      {sizeData?.map((item: any) => {
+                        return (
+                          <div className="flex items-center justify-between bg-gray-100 px-3">
+                            <div key={item.value}>{item.label}</div>
+                            <Button variant="ghost" type="button">
+                              <Pencil1Icon stroke="2" />
+                            </Button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )} */}
+                </FormItem>
+              )}
+            />
           </div>
         </div>
         <FormError message={error} />

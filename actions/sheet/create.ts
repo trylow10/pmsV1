@@ -94,15 +94,8 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
     return { error: 'Invalid fields!', errorFields };
   }
 
-  const {
-    cuttingDate,
-    color,
-    thanNo,
-    weightPerLenght,
-    palla,
-    clothId,
-    Size = [],
-  } = validatedFields.data;
+  const { cuttingDate, color, thanNo, weightPerLenght, palla, clothId, Size } =
+    validatedFields.data;
 
   const { average, totalSize } = await calculateAverageAndTotalSize(
     weightPerLenght,
@@ -115,7 +108,7 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
   }
 
   try {
-    await db.sheet.create({
+    const data = await db.sheet.create({
       data: {
         cuttingDate: date,
         color,
@@ -124,12 +117,14 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
         palla,
         totalSize: totalSize,
         average: average,
-        Size: {
-          connect: Size.map((sizeId) => ({ id: sizeId })),
-        },
+        Size,
         clothId,
       },
     });
+
+    const { id: sheetId } = data;
+
+    await createSize({ sheetId: sheetId, type: 'x', quantity: 1 });
   } catch (error) {
     console.log('Error creating sheet object:', error);
     return { error: 'Error creating sheet object', detailedError: error };

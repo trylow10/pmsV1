@@ -32,7 +32,7 @@ export const SheetSchema = z.object({
   totalSize: z.coerce.number().optional(),
   average: z.coerce.number().optional(),
   Bundle: z.array(z.string()).optional(),
-  Size: z.array(z.string()).optional(),
+  Size: z.array(z.object({ value: z.string() })),
   Worker: z.array(z.string()).optional(),
   clothId: z.string(),
 });
