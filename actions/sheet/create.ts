@@ -9,7 +9,7 @@ import {
   PaymentSchema,
   WorkerSchema,
   SizeSchema,
-} from '@/validation/inventory.schema';
+} from '@/validation/cloth.schema';
 import { calculateAverageAndTotalSize } from '@/lib/calculation';
 //TODO: create custom error handlers
 
@@ -27,16 +27,25 @@ export const createClothDesign = async (
   const { companyCloth, sheet = [] } = validatedFields.data;
 
   try {
-    const cloth = await db.cloth.create({
-      data: {
+    const isClothNameExist = await db.cloth.findFirst({
+      where: {
         companyCloth,
-        sheet: {
-          connect: sheet.map((id) => ({ id })),
-        },
       },
     });
 
-    return cloth;
+    if (isClothNameExist) {
+      return { error: 'Cloth name already exist!' };
+    } else {
+      const cloth = await db.cloth.create({
+        data: {
+          companyCloth,
+          sheet: {
+            connect: sheet.map((id) => ({ id })),
+          },
+        },
+      });
+      return cloth;
+    }
   } catch (error) {
     console.log('Error creating cloth object:', error);
     return { error: 'Error creating cloth object', detailedError: error };
@@ -52,20 +61,30 @@ export const createSize = async (values: z.infer<typeof SizeSchema>) => {
     return { error: 'Invalid fields!', errorFields };
   }
 
-  const { type, sheetId, Bundle = [] } = validatedFields.data;
-
+  const { type, quantity, sheetId, Bundle = [] } = validatedFields.data;
   try {
-    const size = await db.size.create({
-      data: {
+    const isTypeExist = await db.size.findFirst({
+      where: {
         type,
-        quantity: 0,
-        sheet: { connect: { id: sheetId } },
-        Bundle: {
-          connect: Bundle.map((bundleId) => ({ id: bundleId })),
-        },
+        sheetId,
       },
     });
-    return size;
+
+    if (isTypeExist) {
+      return { error: 'Size already exist!' };
+    } else {
+      const size = await db.size.create({
+        data: {
+          type,
+          quantity: quantity || 0,
+          sheet: { connect: { id: sheetId } },
+          Bundle: {
+            connect: Bundle.map((bundleId) => ({ id: bundleId })),
+          },
+        },
+      });
+      return size;
+    }
   } catch (error) {
     console.log('Error creating size object:', error);
     return { error: 'Error creating size object', detailedError: error };
@@ -97,22 +116,33 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
   );
 
   try {
-    const sheet = await db.sheet.create({
-      data: {
-        cuttingDate,
+    const isColorExist = await db.sheet.findFirst({
+      where: {
         color,
-        thanNo,
-        weightPerLenght,
-        palla,
-        totalSize: totalSize,
-        average: average,
-        Size: {
-          connect: Size.map((sizeId) => ({ id: sizeId })),
-        },
         clothId,
       },
     });
-    return sheet;
+
+    if (isColorExist) {
+      return { error: 'Sheet Color already exist!' };
+    } else {
+      const sheet = await db.sheet.create({
+        data: {
+          cuttingDate,
+          color,
+          thanNo,
+          weightPerLenght,
+          palla,
+          totalSize: totalSize,
+          average: average,
+          Size: {
+            connect: Size.map((sizeId) => ({ id: sizeId })),
+          },
+          clothId,
+        },
+      });
+      return sheet;
+    }
   } catch (error) {
     console.log('Error creating sheet object:', error);
     return { error: 'Error creating sheet object', detailedError: error };

@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { SheetSchema } from '@/validation/inventory.schema';
+import { SheetSchema } from '@/validation/cloth.schema';
 import { Input } from '@/components/ui/input';
 import {
   Form,
@@ -23,14 +23,7 @@ import { createSheet } from '@/actions/sheet/create';
 import SearchCloth from '@/components/sheet/SearchCloth';
 
 import { editSheet } from '@/actions/sheet/edit';
-
-// Ssize           Int
-// Msize           Int
-// Lsize           Int
-// XLsize          Int
-// XXLsize         Int
-// XXXLsize        Int
-// freeSize        Int
+import SizeForm from './SizeForm';
 
 type SheetFormProps = {
   isEditMode?: boolean;
@@ -217,6 +210,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
             )}
           </div>
         </div>
+        <SizeForm />
         <FormError message={error} />
         <FormSuccess message={success} />
         <Button type="submit" className="w-fit">

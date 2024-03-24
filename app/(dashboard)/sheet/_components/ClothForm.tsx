@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { ClothSchema } from '@/validation/inventory.schema';
+import { ClothSchema } from '@/validation/cloth.schema';
 import { Input } from '@/components/ui/input';
 import {
   Form,

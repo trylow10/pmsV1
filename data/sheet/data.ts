@@ -102,7 +102,7 @@ export const searchCloths = async (query: string) => {
     const result = await db.cloth.findMany({
       where: {
         companyCloth: {
-          search: query,
+          search: query.toLowerCase(),
         },
       },
     });
