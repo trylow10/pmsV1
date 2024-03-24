@@ -1,5 +1,5 @@
 import React from 'react';
-import SheetTable from '../../_components/SheetTable';
+import SheetTable from '_compo/SheetTable';
 import { getAllSheet } from '@/data/sheet/data';
 import { TSheet } from '@/types/cloth.types';
 

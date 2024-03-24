@@ -22,7 +22,6 @@ import { FormSuccess } from '@/components/form-success';
 import { createSheet } from '@/actions/sheet/create';
 
 import { editSheet } from '@/actions/sheet/edit';
-import SizeForm from './SizeForm';
 
 type SheetFormProps = {
   isEditMode?: boolean;
@@ -51,7 +50,6 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
   });
 
   const onSubmit = async (values: z.infer<typeof SheetSchema>) => {
-    console.log(values);
     setError('');
     setSuccess('');
     try {
@@ -83,8 +81,9 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                     <FormControl>
                       <select
                         {...field}
-                        className="w-full border rounded h-fit p-2"
+                        className="bg-transparent w-full border rounded h-fit p-2"
                       >
+                        <option>select cloth</option>
                         {cloths?.map((cloth) => (
                           <option key={cloth.id} value={cloth.id}>
                             {cloth.companyCloth}

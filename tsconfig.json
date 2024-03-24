@@ -19,7 +19,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "_compo/*": ["./app/(dashboard)/_components/*"]
     }
   },
   "include": [

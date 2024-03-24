@@ -1,6 +1,6 @@
-import SheetHeader from './sheet/_components/SheetHeader';
-import SheetList from './sheet/_components/SheetList';
-import Pagination from './_components/Pagination';
+import SheetHeader from '_compo/SheetHeader';
+import SheetList from '_compo/SheetList';
+import Pagination from '_compo/Pagination';
 import { getAllCloths } from '@/data/sheet/data';
 
 type PageProps = {
