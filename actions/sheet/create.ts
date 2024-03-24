@@ -27,25 +27,15 @@ export const createClothDesign = async (
   const { companyCloth, sheet = [] } = validatedFields.data;
 
   try {
-    const isClothNameExist = await db.cloth.findFirst({
-      where: {
+    const cloth = await db.cloth.create({
+      data: {
         companyCloth,
+        sheet: {
+          connect: sheet.map((id) => ({ id })),
+        },
       },
     });
-
-    if (isClothNameExist) {
-      return { error: 'Cloth name already exist!' };
-    } else {
-      const cloth = await db.cloth.create({
-        data: {
-          companyCloth,
-          sheet: {
-            connect: sheet.map((id) => ({ id })),
-          },
-        },
-      });
-      return cloth;
-    }
+    return cloth;
   } catch (error) {
     console.log('Error creating cloth object:', error);
     return { error: 'Error creating cloth object', detailedError: error };
@@ -63,28 +53,17 @@ export const createSize = async (values: z.infer<typeof SizeSchema>) => {
 
   const { type, quantity, sheetId, Bundle = [] } = validatedFields.data;
   try {
-    const isTypeExist = await db.size.findFirst({
-      where: {
+    const size = await db.size.create({
+      data: {
         type,
-        sheetId,
+        quantity: quantity || 0,
+        sheet: { connect: { id: sheetId } },
+        Bundle: {
+          connect: Bundle.map((bundleId) => ({ id: bundleId })),
+        },
       },
     });
-
-    if (isTypeExist) {
-      return { error: 'Size already exist!' };
-    } else {
-      const size = await db.size.create({
-        data: {
-          type,
-          quantity: quantity || 0,
-          sheet: { connect: { id: sheetId } },
-          Bundle: {
-            connect: Bundle.map((bundleId) => ({ id: bundleId })),
-          },
-        },
-      });
-      return size;
-    }
+    return size;
   } catch (error) {
     console.log('Error creating size object:', error);
     return { error: 'Error creating size object', detailedError: error };
@@ -116,33 +95,22 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
   );
 
   try {
-    const isColorExist = await db.sheet.findFirst({
-      where: {
+    const sheet = await db.sheet.create({
+      data: {
+        cuttingDate,
         color,
+        thanNo,
+        weightPerLenght,
+        palla,
+        totalSize: totalSize,
+        average: average,
+        Size: {
+          connect: Size.map((sizeId) => ({ id: sizeId })),
+        },
         clothId,
       },
     });
-
-    if (isColorExist) {
-      return { error: 'Sheet Color already exist!' };
-    } else {
-      const sheet = await db.sheet.create({
-        data: {
-          cuttingDate,
-          color,
-          thanNo,
-          weightPerLenght,
-          palla,
-          totalSize: totalSize,
-          average: average,
-          Size: {
-            connect: Size.map((sizeId) => ({ id: sizeId })),
-          },
-          clothId,
-        },
-      });
-      return sheet;
-    }
+    return sheet;
   } catch (error) {
     console.log('Error creating sheet object:', error);
     return { error: 'Error creating sheet object', detailedError: error };

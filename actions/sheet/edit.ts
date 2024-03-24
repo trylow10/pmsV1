@@ -13,33 +13,20 @@ export const editSheet = async (id: string, data: any) => {
     if (!sheetExists) {
       return { error: 'Sheet with the given id isnt available' };
     }
-
-    if (data.color) {
-      const isColorExist = await db.sheet.findFirst({
-        where: {
-          color: data.color,
-        },
-      });
-
-      if (isColorExist) {
-        return { error: 'Color already exist!' };
-      }
-    } else {
-      const sheet = await db.sheet.update({
-        data: {
-          cuttingDate: data.cuttingDate,
-          color: data.color,
-          thanNo: data.thanNo,
-          weightPerLenght: data.weightPerLenght,
-          palla: data.palla,
-          totalSize: data.totalSize,
-        },
-        where: {
-          id: id,
-        },
-      });
-      return sheet;
-    }
+    const sheet = await db.sheet.update({
+      data: {
+        cuttingDate: data.cuttingDate,
+        color: data.color,
+        thanNo: data.thanNo,
+        weightPerLenght: data.weightPerLenght,
+        palla: data.palla,
+        totalSize: data.totalSize,
+      },
+      where: {
+        id: id,
+      },
+    });
+    return sheet;
   } catch (e) {
     console.error(e);
   }
