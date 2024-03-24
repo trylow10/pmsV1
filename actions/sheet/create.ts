@@ -10,12 +10,8 @@ import {
   WorkerSchema,
   SizeSchema,
 } from '@/validation/cloth.schema';
-import { calculateAverageAndTotalSize } from '@/lib/calculation';
-import {
-  getClothByName,
-  getSheetByColor,
-  getSizeByType,
-} from '@/data/sheet/data';
+import { getClothByName, getSheetByColor } from '@/data/sheet/data';
+import { calculation } from '@/lib/calculation';
 //TODO: create custom error handlers
 
 export const createClothDesign = async (
@@ -51,8 +47,10 @@ export const createClothDesign = async (
   }
 };
 
-export const createSize = async (values: z.infer<typeof SizeSchema>) => {
-  const validatedFields = SizeSchema.safeParse(values);
+export const createSize = async (values: z.infer<typeof SizeSchema>[]) => {
+  console.log('Creating size object values:', values);
+
+  const validatedFields = SizeSchema.safeParse([values]);
 
   if (!validatedFields.success) {
     const errorFields = validatedFields.error.flatten();
@@ -60,28 +58,23 @@ export const createSize = async (values: z.infer<typeof SizeSchema>) => {
     return { error: 'Invalid fields!', errorFields };
   }
 
-  const { type, quantity, sheetId, Bundle = [] } = validatedFields.data;
+  for (const item of validatedFields.data) {
+    const { type, quantity, sheetId, Bundle = [] } = item;
 
-  const existingSize = await getSizeByType(type);
-
-  if (existingSize) {
-    return { error: 'Size already exist!' };
-  }
-
-  try {
-    await db.size.create({
-      data: {
-        type,
-        quantity: quantity || 0,
-        sheet: { connect: { id: sheetId } },
-        Bundle: {
-          connect: Bundle.map((bundleId) => ({ id: bundleId })),
+    try {
+      await db.size.create({
+        data: {
+          type,
+          quantity: quantity || 0,
+          sheet: { connect: { id: sheetId } },
+          Bundle: {
+            connect: Bundle.map((bundleId) => ({ id: bundleId })),
+          },
         },
-      },
-    });
-  } catch (error) {
-    console.log('Error creating size object:', error);
-    return { error: 'Error creating size object', detailedError: error };
+      });
+    } catch (error) {
+      return { error: 'Error creating size object', detailedError: error };
+    }
   }
 };
 
@@ -94,15 +87,19 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
     return { error: 'Invalid fields!', errorFields };
   }
 
-  const { cuttingDate, color, thanNo, weightPerLenght, palla, clothId, Size } =
-    validatedFields.data;
-
-  const { average, totalSize } = await calculateAverageAndTotalSize(
+  const {
+    cuttingDate,
+    color,
+    thanNo,
     weightPerLenght,
-    Size
-  );
+    palla,
+    clothId,
+    Size = [],
+  } = validatedFields.data;
+
   const date = new Date(cuttingDate).toISOString();
   const existingCloth = await getSheetByColor(color);
+
   if (existingCloth) {
     return { error: 'Sheet with that color exist!' };
   }
@@ -115,16 +112,21 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
         thanNo,
         weightPerLenght,
         palla,
-        totalSize: totalSize,
-        average: average,
-        Size,
+        totalSize: 0,
+        average: 0,
         clothId,
       },
     });
 
     const { id: sheetId } = data;
+    const newSizeArray = Size.map((size) => ({ ...size, sheetId }));
+    const createSizePromises = newSizeArray.map((size) =>
+      createSize(size as any)
+    );
+    await Promise.all(createSizePromises);
+    await calculation(sheetId);
 
-    await createSize({ sheetId: sheetId, type: 'x', quantity: 1 });
+    return { message: 'Sheet created successfully!' };
   } catch (error) {
     console.log('Error creating sheet object:', error);
     return { error: 'Error creating sheet object', detailedError: error };

@@ -30,12 +30,12 @@ function SheetTable({ list, editableRow, deleteRow }: Props) {
           <TableHead>Than No</TableHead>
           <TableHead>Kg/Meter</TableHead>
           <TableHead>Palla</TableHead>
-          {/* <TableHead>Small</TableHead>
+          <TableHead>Small</TableHead>
           <TableHead>Medium</TableHead>
           <TableHead>Large</TableHead>
-          <TableHead>XLarge</TableHead>
-          <TableHead>XXLarge</TableHead>
-          <TableHead>FreeSize</TableHead> */}
+          <TableHead>XL</TableHead>
+          <TableHead>XXL</TableHead>
+          <TableHead>FreeSize</TableHead>
           <TableHead>TotalSize</TableHead>
           <TableHead>Average</TableHead>
           {editableRow && <TableCell></TableCell>}
@@ -47,6 +47,14 @@ function SheetTable({ list, editableRow, deleteRow }: Props) {
           <Empty />
         ) : (
           list?.map((item) => {
+            const sizeQuantities: { [key: string]: number } = item.Size.reduce(
+              (acc: any, size: any) => {
+                acc[size.type] = size.quantity;
+                return acc;
+              },
+              {}
+            );
+
             return (
               <TableRow className="rounded" key={item.id}>
                 <TableCell>{item.cuttingDate.toDateString()}</TableCell>
@@ -56,12 +64,12 @@ function SheetTable({ list, editableRow, deleteRow }: Props) {
                 <TableCell>{item.thanNo}</TableCell>
                 <TableCell>{item.weightPerLenght} KG</TableCell>
                 <TableCell>{item.palla}</TableCell>
-                {/* <TableCell>{item.size['S'] ?? '-'}</TableCell>
-                <TableCell>{item.size['M'] ?? '-'}</TableCell>
-                <TableCell>{item.size['L'] ?? '-'}</TableCell>
-                <TableCell>{item.size['XL'] ?? '-'}</TableCell>
-                <TableCell>{item.size['XXL'] ?? '-'}</TableCell>
-                <TableCell>{item.size['F'] ?? '-'}</TableCell> */}
+                <TableCell>{sizeQuantities['s'] || 0}</TableCell>
+                <TableCell>{sizeQuantities['m'] || 0}</TableCell>
+                <TableCell>{sizeQuantities['l'] || 0}</TableCell>
+                <TableCell>{sizeQuantities['xl'] || 0}</TableCell>
+                <TableCell>{sizeQuantities['xxl'] || 0}</TableCell>
+                <TableCell>{sizeQuantities['freesize'] || 0}</TableCell>
                 <TableCell>{item.totalSize}</TableCell>
                 <TableCell>{item.average}</TableCell>
                 {editableRow && (

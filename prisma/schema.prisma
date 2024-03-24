@@ -62,7 +62,7 @@ model Sheet {
 }
 model Size {
   id        String   @id @default(cuid())
-  type      String   @unique
+  type      String   
   quantity  Int
   sheet     Sheet    @relation(fields: [sheetId], references: [id])
   sheetId   String
