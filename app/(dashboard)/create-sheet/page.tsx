@@ -1,5 +1,5 @@
 import React from 'react';
-import SheetForm from '../sheet/_components/SheetForm';
+import SheetForm from '_compo/SheetForm';
 // import { searchCloths } from '@/data/sheet/data';
 
 import { getCloths } from '@/data/sheet/data';

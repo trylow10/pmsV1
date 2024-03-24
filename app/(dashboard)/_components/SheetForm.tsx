@@ -4,7 +4,6 @@ import * as z from 'zod';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-
 import { SheetSchema } from '@/validation/cloth.schema';
 import { Input } from '@/components/ui/input';
 import {
@@ -22,7 +21,6 @@ import { FormSuccess } from '@/components/form-success';
 import { createSheet } from '@/actions/sheet/create';
 
 import { editSheet } from '@/actions/sheet/edit';
-import SizeForm from './SizeForm';
 
 type SheetFormProps = {
   isEditMode?: boolean;
@@ -51,7 +49,6 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
   });
 
   const onSubmit = async (values: z.infer<typeof SheetSchema>) => {
-    console.log(values);
     setError('');
     setSuccess('');
     try {
@@ -83,8 +80,9 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                     <FormControl>
                       <select
                         {...field}
-                        className="w-full border rounded h-fit p-2"
+                        className="bg-transparent w-full border rounded h-fit p-2"
                       >
+                        <option>select cloth</option>
                         {cloths?.map((cloth) => (
                           <option key={cloth.id} value={cloth.id}>
                             {cloth.companyCloth}
@@ -217,7 +215,6 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
             )}
           </div>
         </div>
-        <SizeForm />
         <FormError message={error} />
         <FormSuccess message={success} />
         <Button type="submit" className="w-fit">
