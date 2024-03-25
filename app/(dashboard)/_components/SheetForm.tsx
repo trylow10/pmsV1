@@ -82,7 +82,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
   const optionCloth = cloths?.map((cloth) => ({
     label: cloth.companyCloth,
     value: cloth.id,
-  }));
+  })) as any;
 
   return (
     <Form {...form}>
@@ -262,7 +262,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                   <FormMessage />
                   {field.value && field.value.length > 0 && (
                     <div>
-                      <header className="flex justify-between items-center border p-2">
+                      <header className="flex justify-between items-center border p-2 rounded-t-md">
                         <h3>size</h3>
                         <h3>action</h3>
                         {/* <h3>quantity</h3> */}
@@ -270,10 +270,15 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                       {field.value.map((item, index) => (
                         <div
                           key={index}
-                          className="flex items-center justify-between bg-[#8f8f8f20] px-3"
+                          className="flex items-center justify-between border-b border-x px-3  last:rounded-b-md"
                         >
                           <span>{item.type}</span>
-                          <Button variant="ghost" type="button">
+                          <Button
+                            variant="ghost"
+                            type="button"
+                            size="sm"
+                            className="hover:bg-[#8f8f8f20]"
+                          >
                             <Pencil1Icon stroke="2" />
                           </Button>
                           {/* {item && (
