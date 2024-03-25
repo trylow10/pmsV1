@@ -2,7 +2,7 @@
 
 import * as z from 'zod';
 import { Controller, useForm } from 'react-hook-form';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Select from 'react-select';
 
@@ -65,14 +65,13 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
   });
 
   const onSubmit = async (values: z.infer<typeof SheetSchema>) => {
-    console.log(values.Size);
     setError('');
     setSuccess('');
     try {
       if (isEditMode) {
-        await editSheet(data.id, values);
+        await editSheet(data.id, { ...values, Size: form.getValues('Size') });
       } else {
-        await createSheet(values);
+        await createSheet({ ...values, Size: form.getValues('Size') });
       }
       setSuccess(`Sheet ${isEditMode ? 'Edited' : 'Created'} successfully`);
     } catch (err: any) {
@@ -80,23 +79,11 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
     }
   };
 
-  const sizeData = form.getValues('Size');
-
-  function handleChange() {
-    console.log(form.getValues('Size'));
-  }
-
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6"
-        onChange={handleChange}
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="space-y-4">
           <div className="grid xl:grid-cols-2 xl:gap-3 ">
-            {/* For search field */}
-            {/* {!isEditMode && <SearchCloth cloths={cloths} form={form} />} */}
             {!isEditMode && (
               <FormField
                 control={form.control}
@@ -219,72 +206,94 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                 </FormItem>
               )}
             />
-            {!isEditMode && (
-              <FormField
-                control={form.control}
-                name="totalSize"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Total size</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="220 kg"
-                        type="number"
-                        defaultValue={data?.totalSize}
-                      />
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-
             <Controller
               control={form.control}
               name="Size"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Size</FormLabel>
-                  <FormControl>
-                    <Select
-                      styles={{
-                        control: (baseStyles, state) => ({
-                          ...baseStyles,
-                          borderColor: state.isFocused ? 'grey' : 'grey',
-                        }),
-                      }}
-                      value={options[0].options.filter(
-                        (option) =>
-                          field.value &&
-                          field.value.some(({ type }) => type === option.value)
-                      )} // match the selected options with field.value
-                      onChange={(selectedOptions) => {
-                        console.log(selectedOptions); // log the selected options
-                        field.onChange(
-                          selectedOptions.map(({ value }) => ({
-                            type: value,
-                            quantity: 0, // default quantity
-                          }))
-                        );
-                      }}
-                      options={options[0].options}
-                      isMulti
-                      required
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <>
+                  <FormItem>
+                    <FormLabel>Size</FormLabel>
+                    <FormControl>
+                      <Select
+                        styles={{
+                          control: (baseStyles, state) => ({
+                            ...baseStyles,
+                            borderColor: state.isFocused ? 'grey' : 'grey',
+                          }),
+                        }}
+                        value={options[0].options.filter(
+                          (option) =>
+                            field.value &&
+                            field.value.some(
+                              ({ type }) => type === option.value
+                            )
+                        )}
+                        onChange={(selectedOptions) => {
+                          field.onChange(
+                            selectedOptions.map(({ value }) => ({
+                              type: value,
+                              quantity:
+                                field.value?.find((size) => size.type === value)
+                                  ?.quantity ?? 0,
+                            }))
+                          );
+                        }}
+                        options={options[0].options}
+                        isMulti
+                        required
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                  {field.value && (
+                    <div>
+                      <div className="flex justify-between items-center border p-2">
+                        <h3>size</h3>
+                        <h3>action</h3>
+                      </div>
+                      {field.value.map((item, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between bg-gray-100 px-3"
+                        >
+                          <div>{item.type}</div>
+                          <Button variant="ghost" type="button">
+                            <Pencil1Icon stroke="2" />
+                          </Button>
+                          {item && (
+                            <input
+                              type="number"
+                              value={item.quantity}
+                              onChange={(e) => {
+                                const newSizeData = [
+                                  ...(field?.value as {
+                                    type: string;
+                                    sheetId?: string | undefined;
+                                    quantity?: number | undefined;
+                                    Bundle?: string[] | undefined;
+                                  }[]),
+                                ];
+                                newSizeData[index].quantity = parseInt(
+                                  e.target.value
+                                );
+                                field.onChange(newSizeData);
+                              }}
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <FormError message={error} />
+                  <FormSuccess message={success} />
+                  <Button type="submit" className="w-fit">
+                    {!isEditMode ? 'Add' : 'Edit'} Sheet
+                  </Button>
+                </>
               )}
             />
           </div>
         </div>
-        <FormError message={error} />
-        <FormSuccess message={success} />
-        <Button type="submit" className="w-fit">
-          {!isEditMode ? 'Add' : 'Edit'} Sheet
-        </Button>
       </form>
     </Form>
   );
