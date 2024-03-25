@@ -21,6 +21,7 @@ import { FormSuccess } from '@/components/form-success';
 import { createClothDesign } from '@/actions/sheet/create';
 import { editCloth } from '@/actions/sheet/edit';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 type ClothFormProps = {
   data: any;
@@ -47,24 +48,25 @@ function ClothForm({ data, isEditCloth }: ClothFormProps) {
         editCloth(data.id, values)
           .then((response: any) => {
             if (response?.error) {
-              setError(response?.error);
-            } else if (response?.message) {
-              setSuccess(response?.message);
-            }
-          })
-          .catch(() => setError('Something went wrong'));
-      } else {
-        createClothDesign(values)
-          .then((response: any) => {
-            if (response?.error) {
-              setError(response?.error);
-            } else if (response?.message) {
-              console.log(response?.message);
-              setSuccess(response?.message);
+              toast.error(response?.error);
+            } else if (response?.success) {
+              toast.success(response?.success);
             }
           })
           .catch(() => setError('Something went wrong'));
       }
+    });
+
+    startTransition(() => {
+      createClothDesign(values)
+        .then((response: any) => {
+          if (response?.error) {
+            toast.error(response?.error);
+          } else if (response?.success) {
+            toast.success(response?.success);
+          }
+        })
+        .catch(() => setError('Something went wrong'));
     });
   };
 

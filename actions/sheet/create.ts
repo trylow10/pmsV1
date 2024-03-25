@@ -33,7 +33,7 @@ export const createClothDesign = async (
   }
 
   try {
-    await db.cloth.create({
+    const colth = await db.cloth.create({
       data: {
         companyCloth,
         sheet: {
@@ -41,6 +41,10 @@ export const createClothDesign = async (
         },
       },
     });
+
+    if (colth) {
+      return { success: 'Cloth created successfully' };
+    }
   } catch (error) {
     console.log('Error creating cloth object:', error);
     return { error: 'Error creating cloth object', detailedError: error };
