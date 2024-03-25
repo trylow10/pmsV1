@@ -22,12 +22,6 @@ function SheetHeader({ totalRecord, data }: Props) {
 
         <div className="flex gap-3 items-center">
           <Input className="w-fit lg:w-72" placeholder="search" />
-          <Link
-            className="text-white bg-teal-700 hover:bg-teal-800 px-3 py-2 h-full rounded text-sm"
-            href="/create-sheet"
-          >
-            Add Cutting Sheet
-          </Link>
           <ClothAction data={data} isEditCloth={false} />
         </div>
       </div>

@@ -123,6 +123,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                         value={optionCloth?.find(
                           (option: any) => option.value === field.value
                         )}
+                        required
                       />
                     </FormControl>
                     <FormMessage />

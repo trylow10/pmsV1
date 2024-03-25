@@ -13,6 +13,7 @@ import {
 import { TSheet } from '@/types/cloth.types';
 import EditSheet from './EditSheet';
 import { editSheet } from '@/actions/sheet/edit';
+import Actions from './Actions';
 
 type Props = {
   list: TSheet[];
@@ -38,8 +39,7 @@ function SheetTable({ list, editableRow, deleteRow }: Props) {
           <TableHead>FreeSize</TableHead>
           <TableHead>TotalSize</TableHead>
           <TableHead>Average</TableHead>
-          {editableRow && <TableCell></TableCell>}
-          {deleteRow && <TableCell></TableCell>}
+          {editableRow && deleteRow && <TableCell></TableCell>}
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -71,21 +71,19 @@ function SheetTable({ list, editableRow, deleteRow }: Props) {
                 <TableCell>{sizeQuantities['freesize'] || '-'}</TableCell>
                 <TableCell>{item.totalSize}</TableCell>
                 <TableCell>{item.average}</TableCell>
-                {editableRow && (
-                  <TableCell className="text-right">
-                    <EditSheet
-                      resourceName="sheet"
-                      editHandler={() => editSheet(item.id, item)}
-                      data={item}
-                    />
-                  </TableCell>
-                )}
-                {deleteRow && (
-                  <TableCell className="">
-                    <ConfirmDelete
-                      resourceName="sheet"
-                      deletehandler={() => deleteSheet(item.id)}
-                    />
+                {editableRow && deleteRow && (
+                  <TableCell>
+                    <Actions>
+                      <EditSheet
+                        resourceName="sheet"
+                        editHandler={() => editSheet(item.id, item)}
+                        data={item}
+                      />
+                      <ConfirmDelete
+                        resourceName="sheet"
+                        deletehandler={() => deleteSheet(item.id)}
+                      />
+                    </Actions>
                   </TableCell>
                 )}
               </TableRow>

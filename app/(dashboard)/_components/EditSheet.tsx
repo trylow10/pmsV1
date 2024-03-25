@@ -10,6 +10,7 @@ import {
 
 import { Button } from '@/components/ui/button';
 import SheetForm from './SheetForm';
+import { PenIcon } from '@/components/icons';
 
 type EditSheetProps = {
   resourceName: string;
@@ -21,8 +22,13 @@ function EditSheet({ resourceName, editHandler, data }: EditSheetProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="default" size="sm">
-          Edit
+        <Button
+          variant="ghost"
+          size="sm"
+          className="w-full text-left p-4 flex items-center gap-4 rounded-none text-gray-700"
+        >
+          <PenIcon />
+          <span>Edit</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[525px]">

@@ -37,7 +37,6 @@ function ClothForm({ data, isEditCloth }: ClothFormProps) {
       companyCloth: data?.companyCloth,
     },
   });
-  console.log(isEditCloth);
 
   const onSubmit = async (values: z.infer<typeof ClothSchema>) => {
     setError('');

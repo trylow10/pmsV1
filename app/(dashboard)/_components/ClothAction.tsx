@@ -19,7 +19,7 @@ function ClothAction({ data, isEditCloth }: ClothActionProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">{isEditCloth ? 'Edit' : 'Add'} Cloth</Button>
+        <Button variant="default">{isEditCloth ? 'Edit' : 'Add'} Cloth</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
