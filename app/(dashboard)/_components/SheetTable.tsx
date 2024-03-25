@@ -22,7 +22,7 @@ type Props = {
 
 function SheetTable({ list, editableRow, deleteRow }: Props) {
   return (
-    <Table className="">
+    <Table>
       <TableHeader>
         <TableRow>
           <TableHead>Cutting Date</TableHead>

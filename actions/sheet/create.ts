@@ -48,8 +48,6 @@ export const createClothDesign = async (
 };
 
 export const createSize = async (values: z.infer<typeof SizeSchema>[]) => {
-  console.log('Creating size object values:', values);
-
   const validatedFields = SizeSchema.safeParse([values]);
 
   if (!validatedFields.success) {

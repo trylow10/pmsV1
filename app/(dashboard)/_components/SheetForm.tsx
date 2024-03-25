@@ -6,8 +6,9 @@ import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Select from 'react-select';
 
+import { options } from '@/constant';
+
 import { Pencil1Icon } from '@radix-ui/react-icons';
-import type { GroupBase } from 'react-select';
 
 import { SheetSchema } from '@/validation/cloth.schema';
 import { Input } from '@/components/ui/input';
@@ -26,6 +27,7 @@ import { FormSuccess } from '@/components/form-success';
 import { createSheet } from '@/actions/sheet/create';
 
 import { editSheet } from '@/actions/sheet/edit';
+import { TSheet } from '@/types/cloth.types';
 
 type SheetFormProps = {
   isEditMode?: boolean;
@@ -35,17 +37,6 @@ type SheetFormProps = {
   }[];
   data?: any;
 };
-
-const options: GroupBase<any>[] = [
-  {
-    label: 'Sizes',
-    options: [
-      { value: 's', label: 'S' },
-      { value: 'm', label: 'M' },
-      { value: 'l', label: 'L' },
-    ],
-  },
-];
 
 function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
   const [error, setError] = useState<string | undefined>('');
@@ -69,7 +60,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
     setSuccess('');
     try {
       if (isEditMode) {
-        await editSheet(data.id, { ...values, Size: form.getValues('Size') });
+        await editSheet(data?.id, { ...values, Size: form.getValues('Size') });
       } else {
         await createSheet({ ...values, Size: form.getValues('Size') });
       }
@@ -83,7 +74,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="space-y-4">
-          <div className="grid xl:grid-cols-2 xl:gap-3 ">
+          <div className="grid xl:grid-cols-2 xl:gap-3">
             {!isEditMode && (
               <FormField
                 control={form.control}
@@ -96,7 +87,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                         {...field}
                         className="bg-transparent w-full border rounded h-fit p-2"
                       >
-                        <option>select cloth</option>
+                        <option className="">select cloth</option>
                         {cloths?.map((cloth) => (
                           <option key={cloth.id} value={cloth.id}>
                             {cloth.companyCloth}
@@ -161,6 +152,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                       placeholder="001"
                       type="number"
                       defaultValue={data?.thanNo}
+                      min={0}
                     />
                   </FormControl>
 
@@ -179,6 +171,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                       {...field}
                       placeholder="10 kg"
                       type="number"
+                      min={0}
                       defaultValue={data?.weightPerLenght}
                     />
                   </FormControl>
@@ -198,6 +191,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                       {...field}
                       placeholder="10 palla"
                       type="number"
+                      min={0}
                       defaultValue={data?.palla}
                     />
                   </FormControl>
@@ -210,57 +204,56 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
               control={form.control}
               name="Size"
               render={({ field }) => (
-                <>
-                  <FormItem>
-                    <FormLabel>Size</FormLabel>
-                    <FormControl>
-                      <Select
-                        styles={{
-                          control: (baseStyles, state) => ({
-                            ...baseStyles,
-                            borderColor: state.isFocused ? 'grey' : 'grey',
-                          }),
-                        }}
-                        value={options[0].options.filter(
-                          (option) =>
-                            field.value &&
-                            field.value.some(
-                              ({ type }) => type === option.value
-                            )
-                        )}
-                        onChange={(selectedOptions) => {
-                          field.onChange(
-                            selectedOptions.map(({ value }) => ({
-                              type: value,
-                              quantity:
-                                field.value?.find((size) => size.type === value)
-                                  ?.quantity ?? 0,
-                            }))
-                          );
-                        }}
-                        options={options[0].options}
-                        isMulti
-                        required
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                  {field.value && (
+                <FormItem>
+                  <FormLabel>Size</FormLabel>
+                  <FormControl>
+                    <Select
+                      theme={(theme) => ({
+                        ...theme,
+                        borderRadius: 6,
+                        colors: {
+                          ...theme.colors,
+                          primary25: '#8f8f8f20',
+                          primary: 'none',
+                        },
+                      })}
+                      value={options[0].options.filter(
+                        (option) =>
+                          field.value &&
+                          field.value.some(({ type }) => type === option.value)
+                      )}
+                      onChange={(selectedOptions) => {
+                        field.onChange(
+                          selectedOptions.map(({ value }) => ({
+                            type: value,
+                            quantity:
+                              field.value?.find((size) => size.type === value)
+                                ?.quantity ?? 0,
+                          }))
+                        );
+                      }}
+                      options={options[0].options}
+                      isMulti
+                    />
+                  </FormControl>
+                  <FormMessage />
+                  {field.value && field.value.length > 0 && (
                     <div>
-                      <div className="flex justify-between items-center border p-2">
+                      <header className="flex justify-between items-center border p-2">
                         <h3>size</h3>
                         <h3>action</h3>
-                      </div>
+                        {/* <h3>quantity</h3> */}
+                      </header>
                       {field.value.map((item, index) => (
                         <div
                           key={index}
-                          className="flex items-center justify-between bg-gray-100 px-3"
+                          className="flex items-center justify-between bg-[#8f8f8f20] px-3"
                         >
-                          <div>{item.type}</div>
+                          <span>{item.type}</span>
                           <Button variant="ghost" type="button">
                             <Pencil1Icon stroke="2" />
                           </Button>
-                          {item && (
+                          {/* {item && (
                             <input
                               type="number"
                               value={item.quantity}
@@ -279,20 +272,22 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                                 field.onChange(newSizeData);
                               }}
                             />
-                          )}
+                          )} */}
                         </div>
                       ))}
                     </div>
                   )}
-                  <FormError message={error} />
-                  <FormSuccess message={success} />
-                  <Button type="submit" className="w-fit">
-                    {!isEditMode ? 'Add' : 'Edit'} Sheet
-                  </Button>
-                </>
+                </FormItem>
               )}
             />
+            <div className="w-full mt-8 h-fit">
+              <Button type="submit" className="h-fit">
+                {!isEditMode ? 'Add' : 'Edit'} Sheet
+              </Button>
+            </div>
           </div>
+          <FormSuccess message={success} />
+          <FormError message={error} />
         </div>
       </form>
     </Form>

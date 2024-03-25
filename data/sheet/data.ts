@@ -16,7 +16,7 @@ export const getAllCloths = async ({
       skip,
       take: Number(PAGE_SIZE),
       orderBy: { id: 'asc' },
-      include: { sheet: true },
+      include: { sheet: { include: { Size: true } } },
     });
 
     return { items: cloths, count };
