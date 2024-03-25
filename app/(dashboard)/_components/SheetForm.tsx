@@ -90,7 +90,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
         <div className="space-y-4">
           <div className="grid xl:grid-cols-2 xl:gap-3">
             {!isEditMode && (
-              <FormField
+              <Controller
                 control={form.control}
                 name="clothId"
                 render={({ field }) => (
@@ -112,6 +112,10 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                             primary50: SELECT_GRAY_THEME_COLOR_PRESSED,
                           },
                         })}
+                        onChange={(option) => field.onChange(option?.value)}
+                        value={optionCloth?.find(
+                          (option) => option.value === field.value
+                        )} // set the value prop to the selected option
                       />
                     </FormControl>
                     <FormMessage />

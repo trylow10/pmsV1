@@ -16,3 +16,15 @@ export const calculation = async (sheetId: string) => {
     data: { totalSize, average },
   });
 };
+
+// let sizeCounters: { [key: string]: number } = {};
+
+// export const generateSerialNumber = async (sizeId: string) => {
+// const size = await getSiz
+
+//   if (!sizeCounters[size]) {
+//     sizeCounters[size] = 0;
+//   }
+//   sizeCounters[size]++;
+//   return `${size}-${String(sizeCounters[size]).padStart(3, '0')}`;
+// };

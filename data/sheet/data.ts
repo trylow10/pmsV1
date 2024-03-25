@@ -69,6 +69,15 @@ export const getAllSheet = async ({ page }: { page: number }) => {
   }
 };
 
+// export const getSizeById = async (id: string) => {
+//   try {
+//     const size = await db.size.findUnique({ where: { id } });
+//     return size;
+//   } catch {
+//     return null;
+//   }
+// };
+
 export const getAllBundle = async ({ page }: { page: number }) => {
   const skip = (Number(page) - 1) * Number(PAGE_SIZE);
   try {
