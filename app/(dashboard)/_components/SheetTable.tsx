@@ -47,13 +47,12 @@ function SheetTable({ list, editableRow, deleteRow }: Props) {
           <Empty />
         ) : (
           list?.map((item) => {
-            const sizeQuantities: { [key: string]: number } = item.Size.reduce(
-              (acc: any, size: any) => {
-                acc[size.type] = size.quantity;
-                return acc;
-              },
-              {}
-            );
+            const sizeQuantities: { [key: string]: number } = (
+              item?.Size || []
+            ).reduce((acc: any, size: any) => {
+              acc[size.type] = size.quantity;
+              return acc;
+            }, {});
 
             return (
               <TableRow className="rounded" key={item.id}>
@@ -64,12 +63,12 @@ function SheetTable({ list, editableRow, deleteRow }: Props) {
                 <TableCell>{item.thanNo}</TableCell>
                 <TableCell>{item.weightPerLenght} KG</TableCell>
                 <TableCell>{item.palla}</TableCell>
-                <TableCell>{sizeQuantities['s'] || 0}</TableCell>
-                <TableCell>{sizeQuantities['m'] || 0}</TableCell>
-                <TableCell>{sizeQuantities['l'] || 0}</TableCell>
-                <TableCell>{sizeQuantities['xl'] || 0}</TableCell>
-                <TableCell>{sizeQuantities['xxl'] || 0}</TableCell>
-                <TableCell>{sizeQuantities['freesize'] || 0}</TableCell>
+                <TableCell>{sizeQuantities['s'] || '-'}</TableCell>
+                <TableCell>{sizeQuantities['m'] || '-'}</TableCell>
+                <TableCell>{sizeQuantities['l'] || '-'}</TableCell>
+                <TableCell>{sizeQuantities['xl'] || '-'}</TableCell>
+                <TableCell>{sizeQuantities['xxl'] || '-'}</TableCell>
+                <TableCell>{sizeQuantities['freesize'] || '-'}</TableCell>
                 <TableCell>{item.totalSize}</TableCell>
                 <TableCell>{item.average}</TableCell>
                 {editableRow && (

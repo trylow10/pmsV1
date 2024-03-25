@@ -1,7 +1,7 @@
 'use client';
 
 import * as z from 'zod';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Select from 'react-select';
@@ -40,9 +40,9 @@ const options: GroupBase<any>[] = [
   {
     label: 'Sizes',
     options: [
-      { value: 'S', label: 'S' },
-      { value: 'M', label: 'M' },
-      { value: 'L', label: 'L' },
+      { value: 's', label: 'S' },
+      { value: 'm', label: 'M' },
+      { value: 'l', label: 'L' },
     ],
   },
 ];
@@ -241,7 +241,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
               />
             )}
 
-            <FormField
+            <Controller
               control={form.control}
               name="Size"
               render={({ field }) => (
@@ -255,32 +255,26 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                           borderColor: state.isFocused ? 'grey' : 'grey',
                         }),
                       }}
-                      {...field}
-                      options={options}
+                      value={options[0].options.filter(
+                        (option) =>
+                          field.value &&
+                          field.value.some(({ type }) => type === option.value)
+                      )} // match the selected options with field.value
+                      onChange={(selectedOptions) => {
+                        console.log(selectedOptions); // log the selected options
+                        field.onChange(
+                          selectedOptions.map(({ value }) => ({
+                            type: value,
+                            quantity: 0, // default quantity
+                          }))
+                        );
+                      }}
+                      options={options[0].options}
                       isMulti
                       required
                     />
                   </FormControl>
                   <FormMessage />
-
-                  {/* {sizeData && (
-                    <div>
-                      <div className="flex justify-between items-center border p-2">
-                        <h3>size</h3>
-                        <h3>action</h3>
-                      </div>
-                      {sizeData?.map((item: any) => {
-                        return (
-                          <div className="flex items-center justify-between bg-gray-100 px-3">
-                            <div key={item.value}>{item.label}</div>
-                            <Button variant="ghost" type="button">
-                              <Pencil1Icon stroke="2" />
-                            </Button>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )} */}
                 </FormItem>
               )}
             />
