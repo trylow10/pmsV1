@@ -12,3 +12,6 @@ export const options: GroupBase<any>[] = [
     ],
   },
 ];
+
+export const SELECT_GRAY_THEME_COLOR = '#8f8f8f20';
+export const SELECT_GRAY_THEME_COLOR_PRESSED = '#8f8f8f40';

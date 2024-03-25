@@ -6,7 +6,11 @@ import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Select from 'react-select';
 
-import { options } from '@/constant';
+import {
+  SELECT_GRAY_THEME_COLOR,
+  SELECT_GRAY_THEME_COLOR_PRESSED,
+  options,
+} from '@/constant';
 
 import { Pencil1Icon } from '@radix-ui/react-icons';
 
@@ -27,7 +31,6 @@ import { FormSuccess } from '@/components/form-success';
 import { createSheet } from '@/actions/sheet/create';
 
 import { editSheet } from '@/actions/sheet/edit';
-import { TSheet } from '@/types/cloth.types';
 
 type SheetFormProps = {
   isEditMode?: boolean;
@@ -83,17 +86,27 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                   <FormItem>
                     <FormLabel>Cloth</FormLabel>
                     <FormControl>
-                      <select
+                      <Select
                         {...field}
-                        className="bg-transparent w-full border rounded h-fit p-2"
-                      >
-                        <option className="">select cloth</option>
-                        {cloths?.map((cloth) => (
-                          <option key={cloth.id} value={cloth.id}>
-                            {cloth.companyCloth}
-                          </option>
-                        ))}
-                      </select>
+                        options={
+                          (cloths?.map((cloth) => ({
+                            label: cloth.companyCloth,
+                            value: cloth.id,
+                          })) || []) as any[]
+                        }
+                        theme={(theme) => ({
+                          ...theme,
+                          borderRadius: 6,
+                          colors: {
+                            ...theme.colors,
+                            primary: '#3333334e',
+                            primary25: SELECT_GRAY_THEME_COLOR,
+                            dangerLight: '#f1c0c0',
+                            danger: '#5d3535',
+                            primary50: SELECT_GRAY_THEME_COLOR_PRESSED,
+                          },
+                        })}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -213,8 +226,12 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                         borderRadius: 6,
                         colors: {
                           ...theme.colors,
-                          primary25: '#8f8f8f20',
-                          primary: 'none',
+                          primary25: SELECT_GRAY_THEME_COLOR,
+                          neutral10: SELECT_GRAY_THEME_COLOR,
+                          dangerLight: '#f1c0c0',
+                          danger: '#5d3535',
+                          primary: SELECT_GRAY_THEME_COLOR,
+                          primary50: SELECT_GRAY_THEME_COLOR_PRESSED,
                         },
                       })}
                       value={options[0].options.filter(
