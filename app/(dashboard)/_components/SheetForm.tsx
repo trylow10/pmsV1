@@ -63,15 +63,26 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
     setSuccess('');
     try {
       if (isEditMode) {
-        await editSheet(data?.id, { ...values, Size: form.getValues('Size') });
+        await editSheet(data?.id, {
+          ...values,
+          Size: form.getValues('Size'),
+        });
       } else {
-        await createSheet({ ...values, Size: form.getValues('Size') });
+        await createSheet({
+          ...values,
+          Size: form.getValues('Size'),
+        });
       }
       setSuccess(`Sheet ${isEditMode ? 'Edited' : 'Created'} successfully`);
     } catch (err: any) {
       setError(err.message || 'An error occurred');
     }
   };
+
+  const optionCloth = cloths?.map((cloth) => ({
+    label: cloth.companyCloth,
+    value: cloth.id,
+  }));
 
   return (
     <Form {...form}>
@@ -88,12 +99,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                     <FormControl>
                       <Select
                         {...field}
-                        options={
-                          (cloths?.map((cloth) => ({
-                            label: cloth.companyCloth,
-                            value: cloth.id,
-                          })) || []) as any[]
-                        }
+                        options={optionCloth}
                         theme={(theme) => ({
                           ...theme,
                           borderRadius: 6,
