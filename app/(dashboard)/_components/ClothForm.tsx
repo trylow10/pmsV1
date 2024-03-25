@@ -2,7 +2,7 @@
 
 import * as z from 'zod';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import { startTransition, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { ClothSchema } from '@/validation/cloth.schema';
@@ -37,20 +37,36 @@ function ClothForm({ data, isEditCloth }: ClothFormProps) {
       companyCloth: data?.companyCloth,
     },
   });
+  console.log(isEditCloth);
 
   const onSubmit = async (values: z.infer<typeof ClothSchema>) => {
     setError('');
     setSuccess('');
-    try {
+
+    startTransition(() => {
       if (isEditCloth) {
-        await editCloth(data.id, values);
+        editCloth(data.id, values)
+          .then((response: any) => {
+            if (response?.error) {
+              setError(response?.error);
+            } else if (response?.message) {
+              setSuccess(response?.message);
+            }
+          })
+          .catch(() => setError('Something went wrong'));
       } else {
-        await createClothDesign(values);
+        createClothDesign(values)
+          .then((response: any) => {
+            if (response?.error) {
+              setError(response?.error);
+            } else if (response?.message) {
+              console.log(response?.message);
+              setSuccess(response?.message);
+            }
+          })
+          .catch(() => setError('Something went wrong'));
       }
-      setSuccess(`Cloth ${isEditCloth ? 'Edited' : 'Created'} successfully`);
-    } catch (err: any) {
-      setError(err.message || 'An error occurred');
-    }
+    });
   };
 
   return (

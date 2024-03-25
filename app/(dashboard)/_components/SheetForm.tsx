@@ -2,7 +2,7 @@
 
 import * as z from 'zod';
 import { Controller, useForm } from 'react-hook-form';
-import { useState } from 'react';
+import { startTransition, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Select from 'react-select';
 
@@ -49,7 +49,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
     resolver: zodResolver(SheetSchema),
     defaultValues: {
       clothId: data?.clothId,
-      cuttingDate: data?.cuttingDate.toISOString().split('T')[0],
+      cuttingDate: data?.cuttingDate,
       color: data?.color,
       thanNo: data?.thanNo,
       weightPerLenght: data?.weightPerLenght,
@@ -61,22 +61,30 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
   const onSubmit = async (values: z.infer<typeof SheetSchema>) => {
     setError('');
     setSuccess('');
-    try {
+
+    startTransition(() => {
       if (isEditMode) {
-        await editSheet(data?.id, {
-          ...values,
-          Size: form.getValues('Size'),
-        });
+        editSheet(data?.id, values)
+          .then((response: any) => {
+            if (response?.error) {
+              setError(response?.error);
+            } else if (response?.message) {
+              setSuccess(response?.message);
+            }
+          })
+          .catch(() => setError('Something went wrong'));
       } else {
-        await createSheet({
-          ...values,
-          Size: form.getValues('Size'),
-        });
+        createSheet(values)
+          .then((response: any) => {
+            if (response?.error) {
+              setError(response?.error);
+            } else if (response?.message) {
+              setSuccess(response?.message);
+            }
+          })
+          .catch(() => setError('Something went wrong'));
       }
-      setSuccess(`Sheet ${isEditMode ? 'Edited' : 'Created'} successfully`);
-    } catch (err: any) {
-      setError(err.message || 'An error occurred');
-    }
+    });
   };
 
   const optionCloth = cloths?.map((cloth) => ({
@@ -98,7 +106,6 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                     <FormLabel>Cloth</FormLabel>
                     <FormControl>
                       <Select
-                        {...field}
                         options={optionCloth}
                         theme={(theme) => ({
                           ...theme,
@@ -114,8 +121,8 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                         })}
                         onChange={(option) => field.onChange(option?.value)}
                         value={optionCloth?.find(
-                          (option) => option.value === field.value
-                        )} // set the value prop to the selected option
+                          (option: any) => option.value === field.value
+                        )}
                       />
                     </FormControl>
                     <FormMessage />

@@ -96,13 +96,14 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
   } = validatedFields.data;
 
   const date = new Date(cuttingDate).toISOString();
-  const existingCloth = await getSheetByColor(color);
-
-  if (existingCloth) {
-    return { error: 'Sheet with that color exist!' };
-  }
 
   try {
+    const existingCloth = await getSheetByColor(color);
+
+    if (existingCloth) {
+      return { error: 'Color already exixts in this sheet!' };
+    }
+
     const data = await db.sheet.create({
       data: {
         cuttingDate: date,

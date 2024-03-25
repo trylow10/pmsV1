@@ -48,8 +48,9 @@ export const getSheetById = async (id: string) => {
 export const getSheetByColor = async (color: string) => {
   try {
     const sheet = await db.sheet.findUnique({ where: { color } });
+
     return sheet;
-  } catch {
+  } catch (error) {
     return null;
   }
 };
