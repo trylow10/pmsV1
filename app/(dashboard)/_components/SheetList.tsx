@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/accordion';
 
 import SheetTable from './SheetTable';
-import { Button } from '@/components/ui/button';
+
 import Link from 'next/link';
 import { TCloth } from '@/types/cloth.types';
 import Empty from '@/components/Empty';
@@ -18,6 +18,8 @@ import ConfirmDelete from '@/components/ConfirmDelete';
 
 import ClothAction from './ClothAction';
 import Actions from './Actions';
+
+import { EyeIcon } from '@/components/icons';
 
 type SheetListProps = {
   items: TCloth[];
@@ -32,17 +34,22 @@ function SheetList({ items }: SheetListProps) {
         items.map((item) => {
           return (
             <Accordion type="single" collapsible key={item.id}>
-              <AccordionItem value={item.id}>
+              <AccordionItem value={item.id} className="">
                 <AccordionTrigger className="text-base">
                   {item.companyCloth}
                 </AccordionTrigger>
+
                 <AccordionContent>
                   <SheetTable list={item.sheet} />
                   <Actions>
                     <ClothAction isEditCloth={true} data={item} />
-                    <Button size="sm" className="my-3 mx-1">
-                      <Link href={`/sheet/edit/${item.id}`}>View Sheets</Link>
-                    </Button>
+                    <Link
+                      href={`/sheet/edit/${item.id}`}
+                      className="flex w-full items-center justify-center gap-3 hover:bg-accent p-1 text-gray-700 hover:text-accent-foreground"
+                    >
+                      <EyeIcon />
+                      <span>View</span>
+                    </Link>
 
                     <ConfirmDelete
                       resourceName="Cloth"
