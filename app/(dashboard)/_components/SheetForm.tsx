@@ -31,6 +31,7 @@ import { FormSuccess } from '@/components/form-success';
 import { createSheet } from '@/actions/sheet/create';
 
 import { editSheet } from '@/actions/sheet/edit';
+import { toast } from 'sonner';
 
 type SheetFormProps = {
   isEditMode?: boolean;
@@ -54,7 +55,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
       thanNo: data?.thanNo,
       weightPerLenght: data?.weightPerLenght,
       palla: data?.palla,
-      totalSize: data?.totalSize,
+      Size: data?.Size,
     },
   });
 
@@ -67,22 +68,22 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
         editSheet(data?.id, values)
           .then((response: any) => {
             if (response?.error) {
-              setError(response?.error);
-            } else if (response?.message) {
-              setSuccess(response?.message);
+              toast.error(response?.error);
+            } else if (response?.success) {
+              toast.success(response?.success);
             }
           })
-          .catch(() => setError('Something went wrong'));
+          .catch(() => toast.error('Something went wrong'));
       } else {
         createSheet(values)
           .then((response: any) => {
             if (response?.error) {
-              setError(response?.error);
-            } else if (response?.message) {
-              setSuccess(response?.message);
+              toast.error(response?.error);
+            } else if (response?.success) {
+              toast.success(response?.success);
             }
           })
-          .catch(() => setError('Something went wrong'));
+          .catch(() => toast.error('Something went wrong'));
       }
     });
   };
@@ -141,8 +142,10 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                     <Input
                       {...field}
                       type="date"
-                      defaultValue={
-                        data?.cuttingDate.toISOString().split('T')[0]
+                      value={
+                        field.value
+                          ? new Date(field.value).toISOString().split('T')[0]
+                          : ''
                       }
                     />
                   </FormControl>
@@ -161,7 +164,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="red, blue"
+                      placeholder="color of sheet"
                       type="text"
                       defaultValue={data?.color}
                     />
@@ -180,10 +183,10 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="001"
+                      placeholder="number of than"
                       type="number"
                       defaultValue={data?.thanNo}
-                      min={0}
+                      min={1}
                     />
                   </FormControl>
 
@@ -200,9 +203,9 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="10 kg"
+                      placeholder="number of kg / m"
                       type="number"
-                      min={0}
+                      min={1}
                       defaultValue={data?.weightPerLenght}
                     />
                   </FormControl>
@@ -220,9 +223,9 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="10 palla"
+                      placeholder="Number of palla"
                       type="number"
-                      min={0}
+                      min={1}
                       defaultValue={data?.palla}
                     />
                   </FormControl>
@@ -293,7 +296,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                           >
                             <Pencil1Icon stroke="2" />
                           </Button>
-                          {/* {item && (
+                          {item && (
                             <input
                               type="number"
                               value={item.quantity}
@@ -312,7 +315,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                                 field.onChange(newSizeData);
                               }}
                             />
-                          )} */}
+                          )}
                         </div>
                       ))}
                     </div>

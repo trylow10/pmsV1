@@ -5,8 +5,9 @@ export type TCloth = {
 };
 
 export type TSize = {
+  id: string;
   type: string;
-  size: number;
+  quantity: number;
 }[];
 
 export type TSheet = {
