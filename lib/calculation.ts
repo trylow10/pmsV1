@@ -9,7 +9,7 @@ export const calculation = async (sheetId: string) => {
   );
   const average =
     totalSize !== 0
-      ? Number((sheet.weightPerLenght / totalSize).toFixed(5))
+      ? Number((sheet.weightPerLenght / totalSize).toFixed(2))
       : 0;
   await db.sheet.update({
     where: { id: sheetId },
