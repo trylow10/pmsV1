@@ -1,5 +1,6 @@
 'use server';
 
+import { getClothByName } from '@/data/sheet/data';
 import { db } from '@/lib/db';
 
 export const editSheet = async (id: string, data: any) => {
@@ -40,6 +41,13 @@ export const editCloth = async (id: string, data: any) => {
       },
     });
     if (!isClothExist) return { error: 'Cloth not found' };
+
+    const existingCloth = await getClothByName(data.companyCloth);
+
+    if (existingCloth) {
+      return { error: 'Cloth already exist!' };
+    }
+
     const cloth = await db.cloth.update({
       data: {
         companyCloth: data.companyCloth,
@@ -48,6 +56,9 @@ export const editCloth = async (id: string, data: any) => {
         id,
       },
     });
+
+    if (cloth) return { success: 'Successfully updated cloth!' };
+
     return cloth;
   } catch (e) {
     console.error(e);

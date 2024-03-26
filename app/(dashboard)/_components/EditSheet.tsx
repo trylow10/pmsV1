@@ -9,22 +9,26 @@ import {
 
 import SheetForm from './SheetForm';
 import { PenIcon } from '@/components/icons';
-import ActionButton from './ActionButton';
+import { Button } from '@/components/ui/button';
 
 type EditSheetProps = {
   resourceName: string;
-  editHandler: () => any;
+
   data?: any;
 };
 
-function EditSheet({ resourceName, editHandler, data }: EditSheetProps) {
+function EditSheet({ resourceName, data }: EditSheetProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <ActionButton>
+        <Button
+          className="flex items-center gap-3 w-full"
+          variant="ghost"
+          size="sm"
+        >
           <PenIcon />
           <span>Edit</span>
-        </ActionButton>
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[525px]">
         <DialogHeader>

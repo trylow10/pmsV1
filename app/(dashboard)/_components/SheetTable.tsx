@@ -74,11 +74,7 @@ function SheetTable({ list, editableRow, deleteRow }: Props) {
                 {editableRow && deleteRow && (
                   <TableCell>
                     <Actions>
-                      <EditSheet
-                        resourceName="sheet"
-                        editHandler={() => editSheet(item.id, item)}
-                        data={item}
-                      />
+                      <EditSheet resourceName="sheet" data={item} />
                       <ConfirmDelete
                         resourceName="sheet"
                         deletehandler={() => deleteSheet(item.id)}

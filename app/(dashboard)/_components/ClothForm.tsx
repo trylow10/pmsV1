@@ -2,7 +2,7 @@
 
 import * as z from 'zod';
 import { useForm } from 'react-hook-form';
-import { startTransition, useState } from 'react';
+import { startTransition } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { ClothSchema } from '@/validation/cloth.schema';
@@ -16,8 +16,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 
-import { FormError } from '@/components/form-error';
-import { FormSuccess } from '@/components/form-success';
 import { createClothDesign } from '@/actions/sheet/create';
 import { editCloth } from '@/actions/sheet/edit';
 import { Button } from '@/components/ui/button';
@@ -29,9 +27,6 @@ type ClothFormProps = {
 };
 
 function ClothForm({ data, isEditCloth }: ClothFormProps) {
-  const [error, setError] = useState<string | undefined>('');
-  const [success, setSuccess] = useState<string | undefined>('');
-
   const form = useForm<z.infer<typeof ClothSchema>>({
     resolver: zodResolver(ClothSchema),
     defaultValues: {
@@ -40,9 +35,6 @@ function ClothForm({ data, isEditCloth }: ClothFormProps) {
   });
 
   const onSubmit = async (values: z.infer<typeof ClothSchema>) => {
-    setError('');
-    setSuccess('');
-
     startTransition(() => {
       if (isEditCloth) {
         editCloth(data.id, values)
@@ -53,20 +45,18 @@ function ClothForm({ data, isEditCloth }: ClothFormProps) {
               toast.success(response?.success);
             }
           })
-          .catch(() => setError('Something went wrong'));
+          .catch(() => toast.error('Something went wrong'));
+      } else {
+        createClothDesign(values)
+          .then((response: any) => {
+            if (response?.error) {
+              toast.error(response?.error);
+            } else if (response?.success) {
+              toast.success(response?.success);
+            }
+          })
+          .catch(() => toast.error('Something went wrong'));
       }
-    });
-
-    startTransition(() => {
-      createClothDesign(values)
-        .then((response: any) => {
-          if (response?.error) {
-            toast.error(response?.error);
-          } else if (response?.success) {
-            toast.success(response?.success);
-          }
-        })
-        .catch(() => setError('Something went wrong'));
     });
   };
 
@@ -98,9 +88,6 @@ function ClothForm({ data, isEditCloth }: ClothFormProps) {
             {isEditCloth ? 'Edit' : 'Add'} Cloth
           </Button>
         </div>
-
-        <FormError message={error} />
-        <FormSuccess message={success} />
       </form>
     </Form>
   );

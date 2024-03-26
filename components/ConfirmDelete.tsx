@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useRouter } from 'next/navigation';
 import { TrashCan } from './icons';
-import ActionButton from '@/app/(dashboard)/_components/ActionButton';
+import { Button } from './ui/button';
 
 function ConfirmDelete({
   resourceName,
@@ -26,10 +26,14 @@ function ConfirmDelete({
   return (
     <AlertDialog>
       <AlertDialogTrigger>
-        <ActionButton>
+        <Button
+          className="flex items-center gap-3 w-full"
+          variant="ghost"
+          size="sm"
+        >
           <TrashCan />
           <span>Delete</span>
-        </ActionButton>
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
