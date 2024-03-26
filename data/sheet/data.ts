@@ -43,13 +43,14 @@ export const getClothByName = async (companyCloth: string) => {
   }
 };
 
-export const getSheetByClothId = async (id: string) => {
+export const getSheetByClothId = async (id: string): Promise<any> => {
   try {
     const cloth = await db.cloth.findUnique({
       where: { id },
-      include: { sheet: true },
+      include: { sheet: { include: { Size: true } } },
     });
-    return { cloth };
+    const count = await db.sheet.count({ where: { clothId: id } });
+    return { cloth, count };
   } catch {
     return null;
   }
@@ -67,11 +68,21 @@ export const getSheetById = async (id: string) => {
   }
 };
 
-export const getSheetByColor = async (color: string) => {
+export const getSheetByColor = async (id: string, color: string) => {
   try {
-    const sheet = await db.sheet.findUnique({ where: { color } });
+    const sheets = await db.cloth.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        sheet: {
+          where: { color: color },
+        },
+      },
+    });
+    console.log(sheets);
 
-    return sheet;
+    return sheets;
   } catch (error) {
     return null;
   }

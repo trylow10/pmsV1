@@ -9,6 +9,9 @@ export const options: GroupBase<any>[] = [
       { value: 's', label: 'S' },
       { value: 'm', label: 'M' },
       { value: 'l', label: 'L' },
+      { value: 'xl', label: 'XL' },
+      { value: 'xxl', label: 'XXL' },
+      { value: 'f', label: 'Free' },
     ],
   },
 ];

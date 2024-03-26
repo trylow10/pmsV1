@@ -48,7 +48,7 @@ model Cloth {
 model Sheet {
   id              String   @id @default(cuid())
   cuttingDate     DateTime
-  color           String    @unique
+  color           String    
   thanNo          Int
   weightPerLenght Float
   palla           Int
