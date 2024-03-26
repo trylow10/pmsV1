@@ -1,15 +1,17 @@
-import React from 'react';
 import SheetTable from '_compo/SheetTable';
-import { getAllSheet } from '@/data/sheet/data';
+import { getSheetByClothId } from '@/data/sheet/data';
 import { TSheet } from '@/types/cloth.types';
 
-async function getSheet() {
-  const data = await getAllSheet({ page: 1 });
-  return data?.items as unknown as TSheet[];
+async function getSheet(id: string) {
+  const data = await getSheetByClothId(id);
+  return data?.cloth?.sheet as TSheet[];
 }
 
 async function page() {
-  const list = await getSheet();
+  // TODO:id tanna ayena
+  const list = await getSheet('clu84x7vc0001vva1522m9wcz');
+  console.log('list of sheets of bra', list);
+
   return (
     <div>
       <SheetTable list={list} editableRow deleteRow />

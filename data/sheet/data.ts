@@ -2,6 +2,15 @@ import { db } from '@/lib/db';
 
 import { PAGE_SIZE } from '@/constant';
 
+export const getCloths = async () => {
+  try {
+    const cloths = await db.cloth.findMany({});
+    return cloths;
+  } catch {
+    return null;
+  }
+};
+
 export const getAllCloths = async ({
   page,
 }: {
@@ -34,6 +43,18 @@ export const getClothByName = async (companyCloth: string) => {
   }
 };
 
+export const getSheetByClothId = async (id: string) => {
+  try {
+    const cloth = await db.cloth.findUnique({
+      where: { id },
+      include: { sheet: true },
+    });
+    return { cloth };
+  } catch {
+    return null;
+  }
+};
+
 export const getSheetById = async (id: string) => {
   try {
     const sheet = await db.sheet.findUnique({
@@ -45,6 +66,7 @@ export const getSheetById = async (id: string) => {
     return null;
   }
 };
+
 export const getSheetByColor = async (color: string) => {
   try {
     const sheet = await db.sheet.findUnique({ where: { color } });
@@ -70,14 +92,14 @@ export const getAllSheet = async ({ page }: { page: number }) => {
   }
 };
 
-// export const getSizeById = async (id: string) => {
-//   try {
-//     const size = await db.size.findUnique({ where: { id } });
-//     return size;
-//   } catch {
-//     return null;
-//   }
-// };
+export const getSizeById = async (id: string) => {
+  try {
+    const size = await db.size.findUnique({ where: { id } });
+    return size;
+  } catch {
+    return null;
+  }
+};
 
 export const getAllBundle = async ({ page }: { page: number }) => {
   const skip = (Number(page) - 1) * Number(PAGE_SIZE);
@@ -102,15 +124,6 @@ export const getAllPayment = async ({ page }: { page: number }) => {
       orderBy: { id: 'asc' },
     });
     return payments;
-  } catch {
-    return null;
-  }
-};
-
-export const getCloths = async () => {
-  try {
-    const cloths = await db.cloth.findMany({});
-    return cloths;
   } catch {
     return null;
   }
