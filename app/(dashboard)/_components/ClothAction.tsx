@@ -7,8 +7,10 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-import { Button } from '@/components/ui/button';
 import ClothForm from './ClothForm';
+
+import { PenIcon } from '@/components/icons';
+import { Button } from '@/components/ui/button';
 
 type ClothActionProps = {
   isEditCloth: boolean;
@@ -19,7 +21,14 @@ function ClothAction({ data, isEditCloth }: ClothActionProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">{isEditCloth ? 'Edit' : 'Add'} Cloth</Button>
+        <Button
+          className="flex items-center gap-3"
+          variant={isEditCloth ? 'ghost' : 'default'}
+          size="sm"
+        >
+          <PenIcon />
+          {isEditCloth ? 'Edit' : 'Add Cloth'}
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

@@ -1,13 +1,18 @@
 'use client';
 
 import * as z from 'zod';
-import { useForm } from 'react-hook-form';
-import { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { startTransition, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Select from 'react-select';
 
+import {
+  SELECT_GRAY_THEME_COLOR,
+  SELECT_GRAY_THEME_COLOR_PRESSED,
+  options,
+} from '@/constant';
+
 import { Pencil1Icon } from '@radix-ui/react-icons';
-import type { GroupBase } from 'react-select';
 
 import { SheetSchema } from '@/validation/cloth.schema';
 import { Input } from '@/components/ui/input';
@@ -36,17 +41,6 @@ type SheetFormProps = {
   data?: any;
 };
 
-const options: GroupBase<any>[] = [
-  {
-    label: 'Sizes',
-    options: [
-      { value: 'S', label: 'S' },
-      { value: 'M', label: 'M' },
-      { value: 'L', label: 'L' },
-    ],
-  },
-];
-
 function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
   const [error, setError] = useState<string | undefined>('');
   const [success, setSuccess] = useState<string | undefined>('');
@@ -55,7 +49,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
     resolver: zodResolver(SheetSchema),
     defaultValues: {
       clothId: data?.clothId,
-      cuttingDate: data?.cuttingDate.toISOString().split('T')[0],
+      cuttingDate: data?.cuttingDate,
       color: data?.color,
       thanNo: data?.thanNo,
       weightPerLenght: data?.weightPerLenght,
@@ -65,57 +59,72 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
   });
 
   const onSubmit = async (values: z.infer<typeof SheetSchema>) => {
-    console.log(values.Size);
     setError('');
     setSuccess('');
-    try {
+
+    startTransition(() => {
       if (isEditMode) {
-        await editSheet(data.id, values);
+        editSheet(data?.id, values)
+          .then((response: any) => {
+            if (response?.error) {
+              setError(response?.error);
+            } else if (response?.message) {
+              setSuccess(response?.message);
+            }
+          })
+          .catch(() => setError('Something went wrong'));
       } else {
-        await createSheet(values);
+        createSheet(values)
+          .then((response: any) => {
+            if (response?.error) {
+              setError(response?.error);
+            } else if (response?.message) {
+              setSuccess(response?.message);
+            }
+          })
+          .catch(() => setError('Something went wrong'));
       }
-      setSuccess(`Sheet ${isEditMode ? 'Edited' : 'Created'} successfully`);
-    } catch (err: any) {
-      setError(err.message || 'An error occurred');
-    }
+    });
   };
 
-  const sizeData = form.getValues('Size');
-
-  function handleChange() {
-    console.log(form.getValues('Size'));
-  }
+  const optionCloth = cloths?.map((cloth) => ({
+    label: cloth.companyCloth,
+    value: cloth.id,
+  })) as any;
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6"
-        onChange={handleChange}
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="space-y-4">
-          <div className="grid xl:grid-cols-2 xl:gap-3 ">
-            {/* For search field */}
-            {/* {!isEditMode && <SearchCloth cloths={cloths} form={form} />} */}
+          <div className="grid xl:grid-cols-2 xl:gap-3">
             {!isEditMode && (
-              <FormField
+              <Controller
                 control={form.control}
                 name="clothId"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Cloth</FormLabel>
                     <FormControl>
-                      <select
-                        {...field}
-                        className="bg-transparent w-full border rounded h-fit p-2"
-                      >
-                        <option>select cloth</option>
-                        {cloths?.map((cloth) => (
-                          <option key={cloth.id} value={cloth.id}>
-                            {cloth.companyCloth}
-                          </option>
-                        ))}
-                      </select>
+                      <Select
+                        options={optionCloth}
+                        theme={(theme) => ({
+                          ...theme,
+                          borderRadius: 6,
+                          colors: {
+                            ...theme.colors,
+                            primary: '#3333334e',
+                            primary25: SELECT_GRAY_THEME_COLOR,
+                            dangerLight: '#f1c0c0',
+                            danger: '#5d3535',
+                            primary50: SELECT_GRAY_THEME_COLOR_PRESSED,
+                          },
+                        })}
+                        onChange={(option) => field.onChange(option?.value)}
+                        value={optionCloth?.find(
+                          (option: any) => option.value === field.value
+                        )}
+                        required
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -174,6 +183,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                       placeholder="001"
                       type="number"
                       defaultValue={data?.thanNo}
+                      min={0}
                     />
                   </FormControl>
 
@@ -192,6 +202,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                       {...field}
                       placeholder="10 kg"
                       type="number"
+                      min={0}
                       defaultValue={data?.weightPerLenght}
                     />
                   </FormControl>
@@ -211,6 +222,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                       {...field}
                       placeholder="10 palla"
                       type="number"
+                      min={0}
                       defaultValue={data?.palla}
                     />
                   </FormControl>
@@ -219,29 +231,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                 </FormItem>
               )}
             />
-            {!isEditMode && (
-              <FormField
-                control={form.control}
-                name="totalSize"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Total size</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="220 kg"
-                        type="number"
-                        defaultValue={data?.totalSize}
-                      />
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-
-            <FormField
+            <Controller
               control={form.control}
               name="Size"
               render={({ field }) => (
@@ -249,48 +239,96 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                   <FormLabel>Size</FormLabel>
                   <FormControl>
                     <Select
-                      styles={{
-                        control: (baseStyles, state) => ({
-                          ...baseStyles,
-                          borderColor: state.isFocused ? 'grey' : 'grey',
-                        }),
+                      theme={(theme) => ({
+                        ...theme,
+                        borderRadius: 6,
+                        colors: {
+                          ...theme.colors,
+                          primary25: SELECT_GRAY_THEME_COLOR,
+                          neutral10: SELECT_GRAY_THEME_COLOR,
+                          dangerLight: '#f1c0c0',
+                          danger: '#5d3535',
+                          primary: SELECT_GRAY_THEME_COLOR,
+                          primary50: SELECT_GRAY_THEME_COLOR_PRESSED,
+                        },
+                      })}
+                      value={options[0].options.filter(
+                        (option) =>
+                          field.value &&
+                          field.value.some(({ type }) => type === option.value)
+                      )}
+                      onChange={(selectedOptions) => {
+                        field.onChange(
+                          selectedOptions.map(({ value }) => ({
+                            type: value,
+                            quantity:
+                              field.value?.find((size) => size.type === value)
+                                ?.quantity ?? 0,
+                          }))
+                        );
                       }}
-                      {...field}
-                      options={options}
+                      options={options[0].options}
                       isMulti
-                      required
                     />
                   </FormControl>
                   <FormMessage />
-
-                  {/* {sizeData && (
+                  {field.value && field.value.length > 0 && (
                     <div>
-                      <div className="flex justify-between items-center border p-2">
+                      <header className="flex justify-between items-center border p-2 rounded-t-md">
                         <h3>size</h3>
                         <h3>action</h3>
-                      </div>
-                      {sizeData?.map((item: any) => {
-                        return (
-                          <div className="flex items-center justify-between bg-gray-100 px-3">
-                            <div key={item.value}>{item.label}</div>
-                            <Button variant="ghost" type="button">
-                              <Pencil1Icon stroke="2" />
-                            </Button>
-                          </div>
-                        );
-                      })}
+                        {/* <h3>quantity</h3> */}
+                      </header>
+                      {field.value.map((item, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between border-b border-x px-3  last:rounded-b-md"
+                        >
+                          <span>{item.type}</span>
+                          <Button
+                            variant="ghost"
+                            type="button"
+                            size="sm"
+                            className="hover:bg-[#8f8f8f20]"
+                          >
+                            <Pencil1Icon stroke="2" />
+                          </Button>
+                          {/* {item && (
+                            <input
+                              type="number"
+                              value={item.quantity}
+                              onChange={(e) => {
+                                const newSizeData = [
+                                  ...(field?.value as {
+                                    type: string;
+                                    sheetId?: string | undefined;
+                                    quantity?: number | undefined;
+                                    Bundle?: string[] | undefined;
+                                  }[]),
+                                ];
+                                newSizeData[index].quantity = parseInt(
+                                  e.target.value
+                                );
+                                field.onChange(newSizeData);
+                              }}
+                            />
+                          )} */}
+                        </div>
+                      ))}
                     </div>
-                  )} */}
+                  )}
                 </FormItem>
               )}
             />
+            <div className="w-full mt-8 h-fit">
+              <Button type="submit" className="h-fit">
+                {!isEditMode ? 'Add' : 'Edit'} Sheet
+              </Button>
+            </div>
           </div>
+          <FormSuccess message={success} />
+          <FormError message={error} />
         </div>
-        <FormError message={error} />
-        <FormSuccess message={success} />
-        <Button type="submit" className="w-fit">
-          {!isEditMode ? 'Add' : 'Edit'} Sheet
-        </Button>
       </form>
     </Form>
   );

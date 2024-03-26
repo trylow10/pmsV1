@@ -1,7 +1,6 @@
 export type TCloth = {
   id: string;
   companyCloth: string;
-  userId: string;
   sheet: TSheet[];
 };
 

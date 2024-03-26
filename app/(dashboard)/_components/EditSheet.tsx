@@ -1,31 +1,36 @@
 'use client';
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-import { Button } from '@/components/ui/button';
 import SheetForm from './SheetForm';
+import { PenIcon } from '@/components/icons';
+import { Button } from '@/components/ui/button';
 
 type EditSheetProps = {
   resourceName: string;
-  editHandler: () => any;
+
   data?: any;
 };
 
-function EditSheet({ resourceName, editHandler, data }: EditSheetProps) {
+function EditSheet({ resourceName, data }: EditSheetProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="default" size="sm">
-          Edit
+        <Button
+          className="flex items-center gap-3 w-full"
+          variant="ghost"
+          size="sm"
+        >
+          <PenIcon />
+          <span>Edit</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[525px]">
         <DialogHeader>
           <DialogTitle>Edit {resourceName}</DialogTitle>
         </DialogHeader>

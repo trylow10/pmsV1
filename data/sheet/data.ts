@@ -16,7 +16,7 @@ export const getAllCloths = async ({
       skip,
       take: Number(PAGE_SIZE),
       orderBy: { id: 'asc' },
-      include: { sheet: true },
+      include: { sheet: { include: { Size: true } } },
     });
 
     return { items: cloths, count };
@@ -48,8 +48,9 @@ export const getSheetById = async (id: string) => {
 export const getSheetByColor = async (color: string) => {
   try {
     const sheet = await db.sheet.findUnique({ where: { color } });
+
     return sheet;
-  } catch {
+  } catch (error) {
     return null;
   }
 };
@@ -68,6 +69,15 @@ export const getAllSheet = async ({ page }: { page: number }) => {
     return null;
   }
 };
+
+// export const getSizeById = async (id: string) => {
+//   try {
+//     const size = await db.size.findUnique({ where: { id } });
+//     return size;
+//   } catch {
+//     return null;
+//   }
+// };
 
 export const getAllBundle = async ({ page }: { page: number }) => {
   const skip = (Number(page) - 1) * Number(PAGE_SIZE);

@@ -11,8 +11,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
+import { TrashCan } from './icons';
+import { Button } from './ui/button';
 
 function ConfirmDelete({
   resourceName,
@@ -21,12 +22,17 @@ function ConfirmDelete({
   resourceName: string;
   deletehandler: () => void;
 }) {
-  const route = useRouter();
+  const router = useRouter();
   return (
     <AlertDialog>
       <AlertDialogTrigger>
-        <Button size="sm" className="my-3 mx-1">
-          Delete
+        <Button
+          className="flex items-center gap-3 w-full"
+          variant="ghost"
+          size="sm"
+        >
+          <TrashCan />
+          <span>Delete</span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
@@ -41,7 +47,7 @@ function ConfirmDelete({
           <AlertDialogAction
             onClick={() => {
               deletehandler();
-              route.refresh();
+              router.refresh();
             }}
           >
             Continue

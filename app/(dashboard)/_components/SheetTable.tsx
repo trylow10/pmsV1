@@ -13,6 +13,7 @@ import {
 import { TSheet } from '@/types/cloth.types';
 import EditSheet from './EditSheet';
 import { editSheet } from '@/actions/sheet/edit';
+import Actions from './Actions';
 
 type Props = {
   list: TSheet[];
@@ -22,7 +23,7 @@ type Props = {
 
 function SheetTable({ list, editableRow, deleteRow }: Props) {
   return (
-    <Table className="">
+    <Table>
       <TableHeader>
         <TableRow>
           <TableHead>Cutting Date</TableHead>
@@ -38,8 +39,7 @@ function SheetTable({ list, editableRow, deleteRow }: Props) {
           <TableHead>FreeSize</TableHead>
           <TableHead>TotalSize</TableHead>
           <TableHead>Average</TableHead>
-          {editableRow && <TableCell></TableCell>}
-          {deleteRow && <TableCell></TableCell>}
+          {editableRow && deleteRow && <TableCell></TableCell>}
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -47,13 +47,12 @@ function SheetTable({ list, editableRow, deleteRow }: Props) {
           <Empty />
         ) : (
           list?.map((item) => {
-            const sizeQuantities: { [key: string]: number } = item.Size.reduce(
-              (acc: any, size: any) => {
-                acc[size.type] = size.quantity;
-                return acc;
-              },
-              {}
-            );
+            const sizeQuantities: { [key: string]: number } = (
+              item?.Size || []
+            ).reduce((acc: any, size: any) => {
+              acc[size.type] = size.quantity;
+              return acc;
+            }, {});
 
             return (
               <TableRow className="rounded" key={item.id}>
@@ -64,29 +63,23 @@ function SheetTable({ list, editableRow, deleteRow }: Props) {
                 <TableCell>{item.thanNo}</TableCell>
                 <TableCell>{item.weightPerLenght} KG</TableCell>
                 <TableCell>{item.palla}</TableCell>
-                <TableCell>{sizeQuantities['s'] || 0}</TableCell>
-                <TableCell>{sizeQuantities['m'] || 0}</TableCell>
-                <TableCell>{sizeQuantities['l'] || 0}</TableCell>
-                <TableCell>{sizeQuantities['xl'] || 0}</TableCell>
-                <TableCell>{sizeQuantities['xxl'] || 0}</TableCell>
-                <TableCell>{sizeQuantities['freesize'] || 0}</TableCell>
+                <TableCell>{sizeQuantities['s'] || '-'}</TableCell>
+                <TableCell>{sizeQuantities['m'] || '-'}</TableCell>
+                <TableCell>{sizeQuantities['l'] || '-'}</TableCell>
+                <TableCell>{sizeQuantities['xl'] || '-'}</TableCell>
+                <TableCell>{sizeQuantities['xxl'] || '-'}</TableCell>
+                <TableCell>{sizeQuantities['freesize'] || '-'}</TableCell>
                 <TableCell>{item.totalSize}</TableCell>
                 <TableCell>{item.average}</TableCell>
-                {editableRow && (
-                  <TableCell className="text-right">
-                    <EditSheet
-                      resourceName="sheet"
-                      editHandler={() => editSheet(item.id, item)}
-                      data={item}
-                    />
-                  </TableCell>
-                )}
-                {deleteRow && (
-                  <TableCell className="">
-                    <ConfirmDelete
-                      resourceName="sheet"
-                      deletehandler={() => deleteSheet(item.id)}
-                    />
+                {editableRow && deleteRow && (
+                  <TableCell>
+                    <Actions>
+                      <EditSheet resourceName="sheet" data={item} />
+                      <ConfirmDelete
+                        resourceName="sheet"
+                        deletehandler={() => deleteSheet(item.id)}
+                      />
+                    </Actions>
                   </TableCell>
                 )}
               </TableRow>

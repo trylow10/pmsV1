@@ -33,7 +33,7 @@ export const createClothDesign = async (
   }
 
   try {
-    await db.cloth.create({
+    const colth = await db.cloth.create({
       data: {
         companyCloth,
         sheet: {
@@ -41,6 +41,10 @@ export const createClothDesign = async (
         },
       },
     });
+
+    if (colth) {
+      return { success: 'Cloth created successfully' };
+    }
   } catch (error) {
     console.log('Error creating cloth object:', error);
     return { error: 'Error creating cloth object', detailedError: error };
@@ -48,8 +52,6 @@ export const createClothDesign = async (
 };
 
 export const createSize = async (values: z.infer<typeof SizeSchema>[]) => {
-  console.log('Creating size object values:', values);
-
   const validatedFields = SizeSchema.safeParse([values]);
 
   if (!validatedFields.success) {
@@ -98,13 +100,14 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
   } = validatedFields.data;
 
   const date = new Date(cuttingDate).toISOString();
-  const existingCloth = await getSheetByColor(color);
-
-  if (existingCloth) {
-    return { error: 'Sheet with that color exist!' };
-  }
 
   try {
+    const existingCloth = await getSheetByColor(color);
+
+    if (existingCloth) {
+      return { error: 'Color already exixts in this sheet!' };
+    }
+
     const data = await db.sheet.create({
       data: {
         cuttingDate: date,

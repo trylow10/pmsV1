@@ -21,11 +21,6 @@ const links = [
     icon: <HomeIcon />,
   },
   {
-    href: '/sheet',
-    label: 'Sheet',
-    icon: <SettingsIcon />,
-  },
-  {
     href: '/create-sheet',
     label: 'Create Sheet',
     icon: <SheetIcon />,
@@ -46,14 +41,11 @@ function SideNavlinks() {
             key={link.href}
             className={cn(
               'mb-3 p-2 ',
-              isActive && 'rounded border-l-2 border-teal-700 bg-white p-2',
+              isActive && 'rounded border-l-2 bg-white p-2',
               isOpen && 'w-fit'
             )}
           >
-            <Link
-              href={link.href}
-              className={cn(isActive ? 'text-teal-700' : '')}
-            >
+            <Link href={link.href} className={cn(isActive ? 'text-black' : '')}>
               <div className="flex items-center gap-3">
                 {/* for menu close */}
                 {!isOpen && link.icon}
