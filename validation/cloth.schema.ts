@@ -27,7 +27,7 @@ export const SizeSchema = z.array(
 );
 
 export const SheetSchema = z.object({
-  cuttingDate: z.string(),
+  cuttingDate: z.coerce.date(),
   color: z.string(),
   thanNo: z.coerce.number(),
   weightPerLenght: z.coerce.number(),

@@ -99,18 +99,17 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
     Size = [],
   } = validatedFields.data;
 
-  const date = new Date(cuttingDate).toISOString();
-
   try {
     const existingCloth = await getSheetByColor(color);
 
     if (existingCloth) {
       return { error: 'Color already exixts in this sheet!' };
     }
-
+    const date = new Date(cuttingDate);
+    const formattedDate = date.toISOString();
     const data = await db.sheet.create({
       data: {
-        cuttingDate: date,
+        cuttingDate: formattedDate,
         color,
         thanNo,
         weightPerLenght,
@@ -129,7 +128,9 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
     await Promise.all(createSizePromises);
     await calculation(sheetId);
 
-    return { message: 'Sheet created successfully!' };
+    if (data) {
+      return { success: 'Sheet created successfully!' };
+    }
   } catch (error) {
     console.log('Error creating sheet object:', error);
     return { error: 'Error creating sheet object', detailedError: error };
