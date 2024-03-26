@@ -2,19 +2,30 @@ import SheetTable from '_compo/SheetTable';
 import { getSheetByClothId } from '@/data/sheet/data';
 import { TSheet } from '@/types/cloth.types';
 
+type TParams = {
+  params: {
+    id: string;
+  };
+};
+
 async function getSheet(id: string) {
-  const data = await getSheetByClothId(id);
-  return data?.cloth?.sheet as TSheet[];
+  const { cloth, count } = await getSheetByClothId(id);
+  const list = cloth?.sheet as TSheet[];
+  const companyCloth = cloth?.companyCloth;
+  return { list, count, companyCloth };
 }
-
-async function page() {
-  // TODO:id tanna ayena
-  const list = await getSheet('clu84x7vc0001vva1522m9wcz');
-  console.log('list of sheets of bra', list);
-
+async function page({ params }: TParams) {
+  const { id } = params;
+  const { list, count, companyCloth } = await getSheet(id);
   return (
     <div>
-      <SheetTable list={list} editableRow deleteRow />
+      <SheetTable
+        list={list}
+        count={count}
+        companyCloth={companyCloth}
+        editableRow
+        deleteRow
+      />
     </div>
   );
 }
