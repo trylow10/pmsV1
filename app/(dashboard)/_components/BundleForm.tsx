@@ -26,7 +26,7 @@ type BundleProps = {
   isEditBundle?: boolean;
 };
 
-function BundleForm({ data, isEditBundle }: BundleProps) {
+function BundleForm({ data, isEditBundle, size, setSize }: BundleProps) {
   const form = useForm<z.infer<typeof BundleSchema>>({
     resolver: zodResolver(BundleSchema),
     defaultValues: {
@@ -40,31 +40,10 @@ function BundleForm({ data, isEditBundle }: BundleProps) {
       payments: data?.payments,
     },
   });
+  console.log(size);
 
   const onSubmit = async (values: z.infer<typeof BundleSchema>) => {
-    startTransition(() => {
-      if (isEditBundle) {
-        editBundle(data.id, values)
-          .then((response: any) => {
-            if (response?.error) {
-              toast.error(response?.error);
-            } else if (response?.success) {
-              toast.success(response?.success);
-            }
-          })
-          .catch(() => toast.error('Something went wrong'));
-      } else {
-        createBundle(values)
-          .then((response: any) => {
-            if (response?.error) {
-              toast.error(response?.error);
-            } else if (response?.success) {
-              toast.success(response?.success);
-            }
-          })
-          .catch(() => toast.error('Something went wrong'));
-      }
-    });
+    // when submitting this form this fields should set the value in another componentonsole.log
   };
 
   return (
@@ -79,7 +58,8 @@ function BundleForm({ data, isEditBundle }: BundleProps) {
                 <FormLabel>BundleId</FormLabel>
                 <FormControl>
                   <Input
-                    {...field}
+                    value={size}
+                    onChange={(e) => setSize(e.target.value)}
                     placeholder="bundleId"
                     type="text"
                     defaultValue={data?.bundleId}

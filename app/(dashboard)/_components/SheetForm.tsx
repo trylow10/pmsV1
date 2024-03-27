@@ -12,8 +12,6 @@ import {
   options,
 } from '@/constant';
 
-import { Pencil1Icon } from '@radix-ui/react-icons';
-
 import { SheetSchema } from '@/validation/cloth.schema';
 import { Input } from '@/components/ui/input';
 import {
@@ -26,12 +24,11 @@ import {
 } from '@/components/ui/form';
 
 import { Button } from '@/components/ui/button';
-import { FormError } from '@/components/form-error';
-import { FormSuccess } from '@/components/form-success';
 import { createSheet } from '@/actions/sheet/create';
 
 import { editSheet } from '@/actions/sheet/edit';
 import { toast } from 'sonner';
+import { BundleAction } from './BundleAction';
 
 type SheetFormProps = {
   isEditMode?: boolean;
@@ -43,8 +40,8 @@ type SheetFormProps = {
 };
 
 function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
-  const [error, setError] = useState<string | undefined>('');
-  const [success, setSuccess] = useState<string | undefined>('');
+  const [size, setSize] = useState('');
+  console.log(size);
 
   const form = useForm<z.infer<typeof SheetSchema>>({
     resolver: zodResolver(SheetSchema),
@@ -59,10 +56,9 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof SheetSchema>) => {
-    setError('');
-    setSuccess('');
+  // when submitting this form this fields should set the value in another component
 
+  const onSubmit = async (values: z.infer<typeof SheetSchema>) => {
     startTransition(() => {
       if (isEditMode) {
         editSheet(data?.id, values)
@@ -288,14 +284,8 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                           className="flex items-center justify-between border-b border-x px-3  last:rounded-b-md"
                         >
                           <span>{item.type}</span>
-                          <Button
-                            variant="ghost"
-                            type="button"
-                            size="sm"
-                            className="hover:bg-[#8f8f8f20]"
-                          >
-                            <Pencil1Icon stroke="2" />
-                          </Button>
+
+                          <BundleAction size={size} setSize={setSize} />
                           {item && (
                             <input
                               type="number"
@@ -329,8 +319,6 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
               </Button>
             </div>
           </div>
-          <FormSuccess message={success} />
-          <FormError message={error} />
         </div>
       </form>
     </Form>
