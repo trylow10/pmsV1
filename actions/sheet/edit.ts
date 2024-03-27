@@ -6,6 +6,45 @@ import { db } from '@/lib/db';
 
 import { TSize } from '@/types/cloth.types';
 
+
+export const editBundle = async (id: string, data: any) => {
+  try {
+    const isBundleExist = await db.bundle.findFirst({
+      where: {
+        id,
+      },
+    });
+    if (!isBundleExist) return { error: 'Bundle not found' };
+
+    const existingBundle = await db.bundle.findFirst({
+      where: {
+        bundleId: data.bundleId,
+      },
+    });
+
+    if (existingBundle) {
+      return { error: 'Bundle already exist!' };
+    }
+
+    const bundle = await db.bundle.update({
+      data: {
+        bundleId: data.bundleId,
+      },
+      where: {
+        id,
+      },
+    });
+
+    if (bundle) return { success: 'Successfully updated bundle!' };
+
+    return bundle;
+  } catch (e) {
+    console.error(e);
+  }
+
+}
+
+
 export const editSize = async (
   existingSizesIds: string[],
   sizes: TSize,
@@ -58,7 +97,6 @@ export const editSize = async (
 export const editSheet = async (id: string, data: any) => {
   try {
     const sheetExists = await getSheetById(id);
-    console.log('sheetExists');
     const existingSizesIds = sheetExists?.Size.map((size) => size.id);
 
     if (!sheetExists) {

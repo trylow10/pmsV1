@@ -17,14 +17,21 @@ export const calculation = async (sheetId: string) => {
   });
 };
 
-// let sizeCounters: { [key: string]: number } = {};
+export const DateConverter = (date: Date) => {
+  const strDate = new Date(date);
+  return strDate.toISOString();
+};
 
-// export const generateSerialNumber = async (sizeId: string) => {
-// const size = await getSiz
+export const generateSerialNumber = async (sheetId: string) => {
+  // let sizeCounters: { [key: string]: number } = {};
+  const sheet = await getSheetById(sheetId);
+  const sizeList = sheet?.Size?.map((size: any) => size.size);
 
-//   if (!sizeCounters[size]) {
-//     sizeCounters[size] = 0;
-//   }
-//   sizeCounters[size]++;
-//   return `${size}-${String(sizeCounters[size]).padStart(3, '0')}`;
-// };
+  console.log(sizeList);
+  return sizeList;
+  // if (!sizeCounters[size]) {
+  //   sizeCounters[size] = 0;
+  // }
+  // sizeCounters[size]++;
+  // return `${size}-${String(sizeCounters[size]).padStart(3, '0')}`;
+};

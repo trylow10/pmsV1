@@ -12,9 +12,9 @@ export const BundleSchema = z.object({
   bundleSize: z.number(),
   sheetId: z.string().optional(),
   assignedToId: z.string().optional(),
-  assignedDate: z.string().transform((value) => new Date(value)),
-  receivedDate: z.string().transform((value) => new Date(value)),
-  payments: z.array(z.string()),
+  assignedDate: z.coerce.date(),
+  receivedDate: z.coerce.date(),
+  payments: z.array(z.string()).optional(),
 });
 
 export const SizeSchema = z.array(

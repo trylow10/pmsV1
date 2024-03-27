@@ -11,7 +11,11 @@ import {
   SizeSchema,
 } from '@/validation/cloth.schema';
 import { getClothByName, getSheetByColor } from '@/data/sheet/data';
-import { calculation } from '@/lib/calculation';
+import {
+  DateConverter,
+  calculation,
+  generateSerialNumber,
+} from '@/lib/calculation';
 //TODO: create custom error handlers
 
 export const createClothDesign = async (
@@ -105,8 +109,8 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
     if (existingCloth?.sheet.length) {
       return { error: 'Color already exixts in this sheet!' };
     }
-    const date = new Date(cuttingDate);
-    const formattedDate = date.toISOString();
+    const formattedDate = DateConverter(cuttingDate);
+
     const data = await db.sheet.create({
       data: {
         cuttingDate: formattedDate,
@@ -157,6 +161,8 @@ export const createBundle = async (values: z.infer<typeof BundleSchema>) => {
     payments = [],
   } = validatedFields.data;
 
+  const assignedDateFormatted = DateConverter(assignedDate);
+  const receivedDateFormatted = DateConverter(receivedDate);
   try {
     const bundle = await db.bundle.create({
       data: {
@@ -165,13 +171,17 @@ export const createBundle = async (values: z.infer<typeof BundleSchema>) => {
         bundleSize,
         sheet: { connect: { id: sheetId } },
         assignedTo: { connect: { id: assignedToId } },
-        assignedDate,
-        receivedDate,
+        assignedDate: assignedDateFormatted,
+        receivedDate: receivedDateFormatted,
         payments: {
           connect: payments.map((paymentId) => ({ id: paymentId })),
         },
       },
     });
+
+    if (bundle) {
+      return { success: 'Bundle created successfully!' };
+    }
 
     return bundle;
   } catch (error) {
