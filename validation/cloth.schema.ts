@@ -22,7 +22,7 @@ export const SizeSchema = z.array(
     type: z.string(),
     sheetId: z.string().optional(),
     quantity: z.number().optional(),
-    Bundle: z.array(z.string()).optional(),
+    Bundle: BundleSchema.optional(),
   })
 );
 
@@ -34,7 +34,7 @@ export const SheetSchema = z.object({
   palla: z.coerce.number(),
   totalSize: z.coerce.number().optional(),
   average: z.coerce.number().optional(),
-  Bundle: z.array(z.string()).optional(),
+  Bundle: BundleSchema.optional(),
   Size: SizeSchema.optional(),
   Worker: z.array(z.string()).optional(),
   clothId: z.string(),

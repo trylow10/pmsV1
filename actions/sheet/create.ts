@@ -65,6 +65,8 @@ export const createSize = async (values: z.infer<typeof SizeSchema>[]) => {
   }
 
   for (const item of validatedFields.data) {
+    console.log('Item:', item);
+
     const { type, quantity, sheetId, Bundle = [] } = item;
 
     try {
@@ -73,9 +75,6 @@ export const createSize = async (values: z.infer<typeof SizeSchema>[]) => {
           type,
           quantity: quantity || 0,
           sheet: { connect: { id: sheetId } },
-          Bundle: {
-            connect: Bundle.map((bundleId) => ({ id: bundleId })),
-          },
         },
       });
     } catch (error) {
@@ -85,6 +84,8 @@ export const createSize = async (values: z.infer<typeof SizeSchema>[]) => {
 };
 
 export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
+  console.log('--', values);
+
   const validatedFields = SheetSchema.safeParse(values);
 
   if (!validatedFields.success) {
@@ -101,6 +102,7 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
     palla,
     clothId,
     Size = [],
+    Bundle = [],
   } = validatedFields.data;
 
   try {
@@ -126,6 +128,16 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
 
     const { id: sheetId } = data;
     const newSizeArray = Size.map((size) => ({ ...size, sheetId }));
+    console.log('newSizeArray', newSizeArray);
+
+    const newBundleArry = Bundle.map((bundle) => ({
+      ...bundle,
+      sheetId,
+      sizeId: bundle.sizeId,
+    }));
+
+    console.log('newBundleArry', newBundleArry);
+
     const createSizePromises = newSizeArray.map((size) =>
       createSize(size as any)
     );
@@ -142,51 +154,53 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
 };
 
 export const createBundle = async (values: z.infer<typeof BundleSchema>) => {
-  const validatedFields = BundleSchema.safeParse(values);
+  const validatedFields = BundleSchema.safeParse([values]);
 
   if (!validatedFields.success) {
     const errorFields = validatedFields.error.flatten();
     console.log('Invalid fields:', errorFields);
     return { error: 'Invalid fields!', errorFields };
   }
+  for (const item of validatedFields.data) {
+    console.log('Item:', item);
 
-  const {
-    bundleId,
-    sizeId,
-    bundleSize,
-    sheetId,
-    assignedToId,
-    assignedDate,
-    receivedDate,
-    payments = [],
-  } = validatedFields.data;
-
-  const assignedDateFormatted = DateConverter(assignedDate);
-  const receivedDateFormatted = DateConverter(receivedDate);
-  try {
-    const bundle = await db.bundle.create({
-      data: {
-        bundleId,
-        size: { connect: { id: sizeId } },
-        bundleSize,
-        sheet: { connect: { id: sheetId } },
-        assignedTo: { connect: { id: assignedToId } },
-        assignedDate: assignedDateFormatted,
-        receivedDate: receivedDateFormatted,
-        payments: {
-          connect: payments.map((paymentId) => ({ id: paymentId })),
+    const {
+      bundleId,
+      sizeId,
+      bundleSize,
+      sheetId,
+      assignedToId,
+      assignedDate,
+      receivedDate,
+      payments = [],
+    } = item;
+    const assignedDateFormatted = DateConverter(assignedDate);
+    const receivedDateFormatted = DateConverter(receivedDate);
+    try {
+      const bundle = await db.bundle.create({
+        data: {
+          bundleId,
+          size: { connect: { id: sizeId } },
+          bundleSize,
+          sheet: { connect: { id: sheetId } },
+          assignedTo: { connect: { id: assignedToId } },
+          assignedDate: assignedDateFormatted,
+          receivedDate: receivedDateFormatted,
+          payments: {
+            connect: payments.map((paymentId) => ({ id: paymentId })),
+          },
         },
-      },
-    });
+      });
 
-    if (bundle) {
-      return { success: 'Bundle created successfully!' };
+      if (bundle) {
+        return { success: 'Bundle created successfully!' };
+      }
+
+      return bundle;
+    } catch (error) {
+      console.log('Error creating bundle object:', error);
+      return { error: 'Error creating bundle object', detailedError: error };
     }
-
-    return bundle;
-  } catch (error) {
-    console.log('Error creating bundle object:', error);
-    return { error: 'Error creating bundle object', detailedError: error };
   }
 };
 

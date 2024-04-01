@@ -71,7 +71,7 @@ model Size {
 model Bundle {
   id           String @id @default(cuid())
   bundleId     String
-  size         Size   @relation(fields: [sizeId], references: [id])
+  size         Size   @relation(fields: [sizeId], references: [id], onDelete: Cascade)
   sizeId       String
   bundleSize   Int
   sheet        Sheet     @relation(fields: [sheetId], references: [id])

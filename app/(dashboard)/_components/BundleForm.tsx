@@ -2,7 +2,6 @@
 
 import * as z from 'zod';
 import { useForm } from 'react-hook-form';
-import { startTransition } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { BundleSchema } from '@/validation/cloth.schema';
@@ -16,17 +15,13 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 
-import { createBundle } from '@/actions/sheet/create';
-import { editBundle } from '@/actions/sheet/edit';
-import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
-
 type BundleProps = {
   data: any;
   isEditBundle?: boolean;
+  setBundleData: (data: any) => void;
 };
 
-function BundleForm({ data, isEditBundle, size, setSize }: BundleProps) {
+function BundleForm({ setBundleData, data, isEditBundle }: BundleProps) {
   const form = useForm<z.infer<typeof BundleSchema>>({
     resolver: zodResolver(BundleSchema),
     defaultValues: {
@@ -34,21 +29,26 @@ function BundleForm({ data, isEditBundle, size, setSize }: BundleProps) {
       sizeId: data?.sizeId,
       bundleSize: data?.bundleSize,
       sheetId: data?.sheetId,
-      assignedToId: data?.assignedToId,
-      assignedDate: data?.assignedDate,
-      receivedDate: data?.receivedDate,
-      payments: data?.payments,
     },
   });
-  console.log(size);
 
-  const onSubmit = async (values: z.infer<typeof BundleSchema>) => {
-    // when submitting this form this fields should set the value in another componentonsole.log
+  console.log(data);
+
+  const handleChange = (e: any) => {
+    setBundleData({
+      ...data,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    console.log(data);
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-4">
           <FormField
             control={form.control}
@@ -58,11 +58,10 @@ function BundleForm({ data, isEditBundle, size, setSize }: BundleProps) {
                 <FormLabel>BundleId</FormLabel>
                 <FormControl>
                   <Input
-                    value={size}
-                    onChange={(e) => setSize(e.target.value)}
+                    {...field}
                     placeholder="bundleId"
                     type="text"
-                    defaultValue={data?.bundleId}
+                    onChange={handleChange}
                   />
                 </FormControl>
                 <FormMessage />
@@ -73,7 +72,7 @@ function BundleForm({ data, isEditBundle, size, setSize }: BundleProps) {
             control={form.control}
             name="sizeId"
             render={({ field }) => (
-              <FormItem>
+              <FormItem style={{ display: 'none' }}>
                 <FormLabel>SizeId</FormLabel>
                 <FormControl>
                   <Input
@@ -81,12 +80,14 @@ function BundleForm({ data, isEditBundle, size, setSize }: BundleProps) {
                     placeholder="sizeId"
                     type="text"
                     defaultValue={data?.sizeId}
+                    hidden
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="bundleSize"
@@ -98,18 +99,19 @@ function BundleForm({ data, isEditBundle, size, setSize }: BundleProps) {
                     {...field}
                     placeholder="bundleSize"
                     type="text"
-                    defaultValue={data?.bundleSize}
+                    onChange={handleChange}
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="sheetId"
             render={({ field }) => (
-              <FormItem>
+              <FormItem style={{ display: 'none' }}>
                 <FormLabel>SheetId</FormLabel>
                 <FormControl>
                   <Input
@@ -117,93 +119,13 @@ function BundleForm({ data, isEditBundle, size, setSize }: BundleProps) {
                     placeholder="sheetId"
                     type="text"
                     defaultValue={data?.sheetId}
+                    hidden
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="assignedToId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>AssignedToId</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    placeholder="assignedToId"
-                    type="text"
-                    defaultValue={data?.assignedToId}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="assignedDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>AssignedDate</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="date"
-                    value={
-                      field.value
-                        ? new Date(field.value).toISOString().split('T')[0]
-                        : ''
-                    }
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="receivedDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>ReceivedDate</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="date"
-                    value={
-                      field.value
-                        ? new Date(field.value).toISOString().split('T')[0]
-                        : ''
-                    }
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="payments"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Payments</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    placeholder="payments"
-                    type="number"
-                    defaultValue={data?.payments}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit" className="w-fit">
-            {isEditBundle ? 'Edit' : 'Add'} Bundle
-          </Button>
         </div>
       </form>
     </Form>

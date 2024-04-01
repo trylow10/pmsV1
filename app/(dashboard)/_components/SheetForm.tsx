@@ -29,6 +29,7 @@ import { createSheet } from '@/actions/sheet/create';
 import { editSheet } from '@/actions/sheet/edit';
 import { toast } from 'sonner';
 import { BundleAction } from './BundleAction';
+import { TBundle } from '@/types/cloth.types';
 
 type SheetFormProps = {
   isEditMode?: boolean;
@@ -40,9 +41,7 @@ type SheetFormProps = {
 };
 
 function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
-  const [size, setSize] = useState('');
-  console.log(size);
-
+  const [bundleData, setBundleData] = useState([]);
   const form = useForm<z.infer<typeof SheetSchema>>({
     resolver: zodResolver(SheetSchema),
     defaultValues: {
@@ -53,15 +52,24 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
       weightPerLenght: data?.weightPerLenght,
       palla: data?.palla,
       Size: data?.Size,
+      Bundle: data?.Bundle,
     },
   });
 
-  // when submitting this form this fields should set the value in another component
+  console.log('bundle ko data', bundleData);
+  //  { type: 'm', quantity: 0, Bundle: [ { bundleId: '100'} ] }
 
   const onSubmit = async (values: z.infer<typeof SheetSchema>) => {
+    const valuesWithBundleData = [
+      {
+        ...values,
+        Bundle: bundleData.map((bundle) => ({ bundle } as unknown as TBundle)),
+      },
+    ];
+
     startTransition(() => {
       if (isEditMode) {
-        editSheet(data?.id, values)
+        editSheet(data?.id, valuesWithBundleData)
           .then((response: any) => {
             if (response?.error) {
               toast.error(response?.error);
@@ -71,7 +79,18 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
           })
           .catch(() => toast.error('Something went wrong'));
       } else {
-        createSheet(values)
+        const valuesWithBundleData = {
+          cuttingDate: form.getValues('cuttingDate'),
+          color: form.getValues('color'),
+          thanNo: form.getValues('thanNo'),
+          weightPerLenght: form.getValues('weightPerLenght'),
+          palla: form.getValues('palla'),
+          clothId: form.getValues('clothId'),
+          Size: form.getValues('Size'),
+          Bundle: bundleData,
+        };
+
+        createSheet(valuesWithBundleData)
           .then((response: any) => {
             if (response?.error) {
               toast.error(response?.error);
@@ -257,14 +276,21 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                           field.value.some(({ type }) => type === option.value)
                       )}
                       onChange={(selectedOptions) => {
-                        field.onChange(
-                          selectedOptions.map(({ value }) => ({
+                        const newData = selectedOptions.map(({ value }) => {
+                          const existingItem = field.value?.find(
+                            (size) => size.type === value
+                          );
+                          return {
                             type: value,
-                            quantity:
-                              field.value?.find((size) => size.type === value)
-                                ?.quantity ?? 0,
-                          }))
-                        );
+                            quantity: existingItem?.quantity ?? 0,
+                            Bundle: Array.isArray(existingItem?.Bundle)
+                              ? existingItem?.Bundle
+                              : [bundleData],
+                          };
+                        });
+
+                        console.log(newData); // Log the new data
+                        field.onChange(newData);
                       }}
                       options={options[0].options}
                       isMulti
@@ -284,8 +310,11 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                           className="flex items-center justify-between border-b border-x px-3  last:rounded-b-md"
                         >
                           <span>{item.type}</span>
-
-                          <BundleAction size={size} setSize={setSize} />
+                          <BundleAction
+                            data={item}
+                            isEditBundle
+                            setBundleData={setBundleData}
+                          />
                           {item && (
                             <input
                               type="number"
@@ -296,12 +325,10 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                                     type: string;
                                     sheetId?: string | undefined;
                                     quantity?: number | undefined;
-                                    Bundle?: string[] | undefined;
+                                    Bundle?: TBundle | undefined;
                                   }[]),
                                 ];
-                                newSizeData[index].quantity = parseInt(
-                                  e.target.value
-                                );
+                                console.log(newSizeData);
                                 field.onChange(newSizeData);
                               }}
                             />

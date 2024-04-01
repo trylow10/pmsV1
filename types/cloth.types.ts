@@ -10,6 +10,17 @@ export type TSize = {
   quantity: number;
 }[];
 
+export type TBundle = {
+  bundleId: string;
+  bundleSize: string;
+  sizeId: string;
+  sheetId: string;
+  assignedToId: string;
+  assignedDate: Date;
+  receivedDate: Date;
+  payments: string[];
+}[];
+
 export type TSheet = {
   id: string;
   cuttingDate: Date;
@@ -21,6 +32,7 @@ export type TSheet = {
   clothId: string;
   average: number;
   Size: TSize;
+  Bundle: TBundle;
 };
 
 export type TClothResponse = {

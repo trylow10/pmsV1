@@ -4,7 +4,7 @@ import { PAGE_SIZE } from '@/constant';
 
 export const getCloths = async () => {
   try {
-    const cloths = await db.cloth.findMany({});
+    const cloths = await db.cloth.findMany({ orderBy: { id: 'asc' } });
     return cloths;
   } catch {
     return null;
