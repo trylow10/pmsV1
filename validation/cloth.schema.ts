@@ -7,6 +7,7 @@ export const WorkerSchema = z.object({
 });
 
 export const BundleSchema = z.object({
+  quantity: z.number(),
   bundleId: z.string(),
   sizeId: z.string(),
   bundleSize: z.number(),

@@ -24,6 +24,14 @@ export function BundleAction({
 }: BundleProps) {
   const [isOpen, setIsOpen] = useState(false);
 
+  const [formData, setFormData] = useState({
+    quantity: data?.quantity,
+    bundleId: data?.bundleId,
+    sizeId: data?.sizeId,
+    bundleSize: data?.bundleSize,
+    sheetId: data?.sheetId,
+  });
+
   return (
     <>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -45,6 +53,8 @@ export function BundleAction({
             setBundleData={setBundleData}
             data={data}
             isEditBundle={isEditBundle}
+            formData={formData}
+            setFormData={setFormData}
           />
           <Button type="submit"> Add Bundle</Button>
         </DialogContent>

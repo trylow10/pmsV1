@@ -19,37 +19,60 @@ type BundleProps = {
   data: any;
   isEditBundle?: boolean;
   setBundleData: (data: any) => void;
+  formData: any;
+  setFormData: (data: any) => void;
 };
 
-function BundleForm({ setBundleData, data, isEditBundle }: BundleProps) {
+function BundleForm({
+  formData,
+  setBundleData,
+  setFormData,
+  data,
+  isEditBundle,
+}: BundleProps) {
   const form = useForm<z.infer<typeof BundleSchema>>({
     resolver: zodResolver(BundleSchema),
-    defaultValues: {
-      bundleId: data?.bundleId,
-      sizeId: data?.sizeId,
-      bundleSize: data?.bundleSize,
-      sheetId: data?.sheetId,
-    },
+    defaultValues: formData,
   });
 
   console.log(data);
-
   const handleChange = (e: any) => {
-    setBundleData({
+    const updatedData = {
       ...data,
       [e.target.name]: e.target.value,
-    });
+    };
+    setBundleData(updatedData);
+    setFormData(updatedData); // update formData
   };
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log(data);
+    setBundleData(data);
+    setFormData(data); // update formData
   };
 
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="quantity"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Quantity</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="quantity"
+                    type="number"
+                    onChange={handleChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="bundleId"
