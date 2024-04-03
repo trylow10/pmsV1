@@ -199,7 +199,7 @@ function BundleForm({
 
                     type="number"
                     required
-                  />{' '}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -1,12 +1,17 @@
-import React from 'react';
 import BundleForm from '../_components/BundleForm';
 import { getAllWorker, getSizesAndClothBySheetId } from '@/data/sheet/data';
+
 // import { TWorker } from '@/types/cloth.types';
 
-async function page() {
-  const sheet: any = await getSizesAndClothBySheetId(
-    'clugkdrvc000bajuay1dozuh9'
-  );
+type TParams = {
+  searchParams: {
+    sheetId: string;
+  };
+};
+
+async function page(params: TParams) {
+  const sheetId = params?.searchParams?.sheetId;
+  const sheet: any = await getSizesAndClothBySheetId(sheetId);
   const workers: any = await getAllWorker();
 
   return (

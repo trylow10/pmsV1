@@ -30,6 +30,8 @@ import { createSheet } from '@/actions/sheet/create';
 import { editSheet } from '@/actions/sheet/edit';
 import { toast } from 'sonner';
 
+import { useRouter } from 'next/navigation';
+
 type SheetFormProps = {
   isEditMode?: boolean;
   cloths?: {
@@ -40,6 +42,7 @@ type SheetFormProps = {
 };
 
 function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
+  const router = useRouter();
   const form = useForm<z.infer<typeof SheetSchema>>({
     resolver: zodResolver(SheetSchema),
     defaultValues: {
@@ -71,6 +74,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
               toast.error(response?.error);
             } else if (response?.success) {
               toast.success(response?.success);
+              router.push(`create-bundle?sheetId=${response?.data?.id}`);
             }
           })
           .catch(() => toast.error('Something went wrong'));
