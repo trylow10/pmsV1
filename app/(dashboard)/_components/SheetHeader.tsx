@@ -12,20 +12,17 @@ type Props = {
 
 function SheetHeader({ totalRecord, data }: Props) {
   return (
-    <>
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="font-semibold text-xl">Cutting sheets</h2>
-
-          <span className="text-gray-500 text-sm">{totalRecord} records</span>
-        </div>
-
-        <div className="flex gap-3 items-center">
-          <Input className="w-fit lg:w-72" placeholder="search" />
-          <ClothAction data={data} isEditCloth={false} />
-        </div>
+    <div className="flex gap-3 flex-col md:justify-between md:items-center md:flex-row">
+      <div>
+        <h2 className="font-semibold text-xl">Cutting sheets</h2>
+        <span className="text-gray-500 text-sm">{totalRecord} records</span>
       </div>
-    </>
+
+      <div className="flex gap-3 md:items-center flex-col md:flex-row">
+        <Input className="w-full lg:w-72" placeholder="search" />
+        <ClothAction data={data} isEditCloth={false} />
+      </div>
+    </div>
   );
 }
 
