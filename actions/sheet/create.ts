@@ -180,7 +180,6 @@ export const createBundle = async (values: z.infer<typeof BundleSchema>) => {
       const bundle = await db.bundle.create({
         data: {
           bundleId,
-          size: { connect: { id: sizeId } },
           bundleSize,
           sheet: { connect: { id: sheetId } },
           assignedTo: { connect: { id: assignedToId } },

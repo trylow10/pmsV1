@@ -2,7 +2,7 @@
 
 import * as z from 'zod';
 import { Controller, useForm } from 'react-hook-form';
-import { startTransition, useState } from 'react';
+import { startTransition } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Select from 'react-select';
 
@@ -28,7 +28,6 @@ import { createSheet } from '@/actions/sheet/create';
 
 import { editSheet } from '@/actions/sheet/edit';
 import { toast } from 'sonner';
-import { BundleAction } from './BundleAction';
 
 type SheetFormProps = {
   isEditMode?: boolean;
@@ -40,8 +39,6 @@ type SheetFormProps = {
 };
 
 function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
-  const [bundleData, setBundleData] = useState([]);
-
   const form = useForm<z.infer<typeof SheetSchema>>({
     resolver: zodResolver(SheetSchema),
     defaultValues: {
@@ -51,23 +48,13 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
       thanNo: data?.thanNo,
       weightPerLenght: data?.weightPerLenght,
       palla: data?.palla,
-      Bundle: data?.Bundle,
     },
   });
 
-  // console.log('bundle ko data', bundleData);
-
   const onSubmit = async (values: z.infer<typeof SheetSchema>) => {
-    const valuesWithBundleData = [
-      {
-        ...values,
-        Bundle: bundleData.map((bundle) => ({ bundle } as any)),
-      },
-    ];
-
     startTransition(() => {
       if (isEditMode) {
-        editSheet(data?.id, valuesWithBundleData)
+        editSheet(data?.id, values)
           .then((response: any) => {
             if (response?.error) {
               toast.error(response?.error);
@@ -77,18 +64,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
           })
           .catch(() => toast.error('Something went wrong'));
       } else {
-        const valuesWithBundleData = {
-          cuttingDate: form.getValues('cuttingDate'),
-          color: form.getValues('color'),
-          thanNo: form.getValues('thanNo'),
-          weightPerLenght: form.getValues('weightPerLenght'),
-          palla: form.getValues('palla'),
-          clothId: form.getValues('clothId'),
-          Size: form.getValues('Size'),
-          Bundle: bundleData,
-        };
-
-        createSheet(valuesWithBundleData)
+        createSheet(values)
           .then((response: any) => {
             if (response?.error) {
               toast.error(response?.error);
@@ -274,19 +250,14 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                           field.value.some(({ type }) => type === option.value)
                       )}
                       onChange={(selectedOptions) => {
-                        const newData = selectedOptions.map(({ value }) => {
-                          const existingItem = field.value?.find(
-                            (size) => size.type === value
-                          );
-                          return {
+                        field.onChange(
+                          selectedOptions.map(({ value }) => ({
                             type: value,
-                            Bundle: Array.isArray(existingItem?.Bundle)
-                              ? existingItem?.Bundle
-                              : [bundleData],
-                          };
-                        });
-                        field.onChange(newData);
-                        console.log('newData', newData);
+                            quantity: field.value?.find(
+                              (size) => size.type === value
+                            )?.quantity,
+                          }))
+                        );
                       }}
                       options={options[0].options}
                       isMulti
@@ -297,7 +268,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                     <div>
                       <header className="flex justify-between items-center border p-2 rounded-t-md">
                         <h3>size</h3>
-                        <h3>action</h3>
+                        <h3>quantity</h3>
                       </header>
                       {field.value.map((item, index) => (
                         <div
@@ -305,11 +276,28 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                           className="flex items-center justify-between border-b border-x px-3  last:rounded-b-md"
                         >
                           <span>{item.type}</span>
-                          <BundleAction
-                            data={item}
-                            isEditBundle
-                            setBundleData={setBundleData}
-                          />
+                          {item && (
+                            <Input
+                              placeholder="Quantity"
+                              type="number"
+                              className="w-fit my-2"
+                              min={1}
+                              value={item.quantity}
+                              onChange={(e) => {
+                                const newSizeData = [
+                                  ...(field?.value as {
+                                    type: string;
+                                    sheetId?: string | undefined;
+                                    quantity?: number | undefined;
+                                  }[]),
+                                ];
+                                newSizeData[index].quantity = parseInt(
+                                  e.target.value
+                                );
+                                field.onChange(newSizeData);
+                              }}
+                            />
+                          )}
                         </div>
                       ))}
                     </div>

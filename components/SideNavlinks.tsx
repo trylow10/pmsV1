@@ -25,6 +25,11 @@ const links = [
     label: 'Create Sheet',
     icon: <SheetIcon />,
   },
+  {
+    href: '/view-bundles',
+    label: 'View Bundles',
+    icon: <SheetIcon />,
+  },
 ];
 
 function SideNavlinks() {
