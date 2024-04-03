@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { startTransition, useState } from 'react';
 import { toast } from 'sonner';
 import Select from 'react-select';
-
+import SelectCreatable from 'react-select/creatable';
 import {
   Form,
   FormControl,
@@ -46,6 +46,22 @@ function BundleForm({
   Sizes,
   cloth,
 }: BundleProps) {
+  const [selectedSize, setSelectedSize] = useState<{
+    type: string;
+    quantity: number;
+  } | null>(null);
+
+  const optionSize = Sizes?.map((size: any) => ({
+    label: size.type,
+    value: size.id,
+    quantity: size.quantity,
+  })) as any;
+
+  const optionWorker = workers?.map((woker: any) => ({
+    label: woker.name,
+    value: woker.id,
+  })) as any;
+
   const form = useForm<z.infer<typeof BundleSchema>>({
     resolver: zodResolver(BundleSchema),
     defaultValues: {
@@ -83,50 +99,16 @@ function BundleForm({
     });
   };
 
-  // const [selectedSize, setSelectedSize] = useState<{
-  //   type: string;
-  //   quantity: number;
-  // } | null>(null);
-
-  const optionSize = Sizes?.map((size: any) => ({
-    label: size.type,
-    value: size.id,
-    quantity: size.quantity,
-  })) as any;
-
-  // const [bundleSize, setBundleSize] = useState<number>(0);
-  // const [bundles, setBundles] = useState<number[]>([]);
-
-  // const calculateBundles = (quantity: number, bundleSize: number) => {
-  //   let remainingQuantity = quantity;
-  //   let possibleBundles: number[] = [];
-
-  //   while (remainingQuantity >= bundleSize) {
-  //     possibleBundles.push(bundleSize);
-  //     remainingQuantity -= bundleSize;
-  //   }
-
-  //   setBundles(possibleBundles);
-  // };
-
-  // const optionWorker = workers?.map((woker: any) => ({
-  //   label: woker.name,
-  //   value: woker.id,
-  // })) as any;
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        {/* <div>
-  <h2 className="text-xl font-semibold mb-2">Total Size </h2>
-  <p className="text-sm text-gray-500 mb-3">
-    {cloth.toUpperCase()} | {data.color.toUpperCase()} |{' '}
-    {selectedSize?.type.toUpperCase()} | {selectedSize?.quantity}
-  </p>
-  {bundles.map((bundle, index) => (
-    <div key={index}>Bundle: {bundle}</div>
-  ))}
-</div>; */}
+        <div>
+          <h2 className="text-xl font-semibold mb-2">Total Size </h2>
+          <p className="text-sm text-gray-500 mb-3">
+            {cloth.toUpperCase()} | {data.color.toUpperCase()} |{' '}
+            {selectedSize?.type.toUpperCase()} | {selectedSize?.quantity}
+          </p>
+        </div>
 
         <div className="space-y-4">
           <Controller
@@ -141,36 +123,15 @@ function BundleForm({
                     theme={generateTheme}
                     onChange={(option) => {
                       field.onChange(option?.value);
-                      // setSelectedSize({
-                      //   type: option?.label,
-                      //   quantity: option?.quantity,
-                      // });
-                      // calculateBundles(option?.quantity, bundleSize);
+                      setSelectedSize({
+                        type: option?.label,
+                        quantity: option?.quantity,
+                      });
                     }}
                     value={optionSize?.find(
                       (option: any) => option.value === field.value
                     )}
                     required
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="sizeId"
-            render={({ field }) => (
-              <FormItem style={{ display: 'none' }}>
-                <FormLabel>SizeId</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    placeholder="sizeId"
-                    type="text"
-                    defaultValue={data?.sizeId}
-                    hidden
                   />
                 </FormControl>
                 <FormMessage />
@@ -187,16 +148,7 @@ function BundleForm({
                 <FormControl>
                   <Input
                     {...field}
-                    // onChange={(e) => {
-                    //   field.onChange(e);
-                    //   setBundleSize(Number(e.target.value));
-                    //   // calculateBundles(
-                    //   //   selectedSize?.quantity || 0,
-                    //   //   Number(e.target.value)
-                    //   // );
-
-                    // }}
-
+                    placeholder="BundleSize"
                     type="number"
                     required
                   />
@@ -210,15 +162,14 @@ function BundleForm({
             control={form.control}
             name="sheetId"
             render={({ field }) => (
-              <FormItem style={{ display: 'none' }}>
+              <FormItem>
                 <FormLabel>SheetId</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     placeholder="sheetId"
-                    type="text"
+                    type="hidden"
                     defaultValue={data?.sheetId}
-                    hidden
                   />
                 </FormControl>
                 <FormMessage />
@@ -226,7 +177,7 @@ function BundleForm({
             )}
           />
 
-          {/* <FormField
+          <FormField
             control={form.control}
             name="assignedDate"
             render={({ field }) => (
@@ -247,45 +198,32 @@ function BundleForm({
                 <FormMessage />
               </FormItem>
             )}
-          /> */}
-          {/* 
-          <Controller
-            control={form.control}
-            name="assignedToId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Assign To</FormLabel>
-                <FormControl>
-                  <SelectCreatable
-                    options={optionWorker}
-                    theme={(theme) => ({
-                      ...theme,
-                      borderRadius: 6,
-                      colors: {
-                        ...theme.colors,
-                        primary: '#3333334e',
-                        primary25: SELECT_GRAY_THEME_COLOR,
-                        dangerLight: '#f1c0c0',
-                        danger: '#5d3535',
-                        primary50: SELECT_GRAY_THEME_COLOR_PRESSED,
-                      },
-                    })}
-                    onChange={(option) => field.onChange(option?.value)}
-                    value={optionWorker?.find(
-                      (option: any) => option.value === field.value
-                    )}
-                    required
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
-          <div className="w-full mt-8 h-fit">
-            <Button type="submit" className="h-fit">
-              {!isEditBundle ? 'Add' : 'Edit'} Bundle
-            </Button>
-          </div>
+          />
+          {
+            <Controller
+              control={form.control}
+              name="assignedToId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Assign To</FormLabel>
+                  <FormControl>
+                    <SelectCreatable
+                      options={optionWorker}
+                      theme={generateTheme}
+                      onChange={(option) => field.onChange(option?.value)}
+                      value={optionWorker?.find(
+                        (option: any) => option.value === field.value
+                      )}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          }
+          <Button type="submit" className="h-fit">
+            {!isEditBundle ? 'Add' : 'Edit'} Bundle
+          </Button>
         </div>
       </form>
     </Form>
