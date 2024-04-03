@@ -9,6 +9,7 @@ import Select from 'react-select';
 import {
   SELECT_GRAY_THEME_COLOR,
   SELECT_GRAY_THEME_COLOR_PRESSED,
+  generateTheme,
   options,
 } from '@/constant';
 
@@ -97,18 +98,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                     <FormControl>
                       <Select
                         options={optionCloth}
-                        theme={(theme) => ({
-                          ...theme,
-                          borderRadius: 6,
-                          colors: {
-                            ...theme.colors,
-                            primary: '#3333334e',
-                            primary25: SELECT_GRAY_THEME_COLOR,
-                            dangerLight: '#f1c0c0',
-                            danger: '#5d3535',
-                            primary50: SELECT_GRAY_THEME_COLOR_PRESSED,
-                          },
-                        })}
+                        theme={generateTheme}
                         onChange={(option) => field.onChange(option?.value)}
                         value={optionCloth?.find(
                           (option: any) => option.value === field.value

@@ -44,3 +44,8 @@ export type TRequestParams = {
   page?: number;
   pageSize?: number;
 };
+
+export type TWorker = {
+  id: string;
+  name: string;
+}[];

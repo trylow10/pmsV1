@@ -67,7 +67,18 @@ export const getSheetById = async (id: string) => {
     return null;
   }
 };
+export const getSizesAndClothBySheetId = async (sheetId: string) => {
+  try {
+    const sheet = await db.sheet.findUnique({
+      where: { id: sheetId },
+      include: { Size: true, cloth: true },
+    });
 
+    return sheet;
+  } catch {
+    return null;
+  }
+};
 export const getSheetByColor = async (id: string, color: string) => {
   try {
     const sheets = await db.cloth.findFirst({
@@ -121,6 +132,17 @@ export const getAllPayment = async ({ page }: { page: number }) => {
       orderBy: { id: 'asc' },
     });
     return payments;
+  } catch {
+    return null;
+  }
+};
+
+export const getAllWorker = async () => {
+  try {
+    const workers = await db.worker.findMany({
+      orderBy: { id: 'asc' },
+    });
+    return workers;
   } catch {
     return null;
   }

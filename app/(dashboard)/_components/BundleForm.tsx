@@ -3,13 +3,9 @@
 import * as z from 'zod';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-
-import { BundleSchema } from '@/validation/cloth.schema';
-import { Input } from '@/components/ui/input';
-
+import { startTransition, useState } from 'react';
+import { toast } from 'sonner';
 import Select from 'react-select';
-
-// import SelectCreatable from 'react-select/creatable';
 
 import {
   Form,
@@ -19,37 +15,49 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { startTransition } from 'react';
-import { editBundle } from '@/actions/sheet/edit';
-import { toast } from 'sonner';
-import { createBundle } from '@/actions/sheet/create';
+
 import { Button } from '@/components/ui/button';
-import {
-  SELECT_GRAY_THEME_COLOR,
-  SELECT_GRAY_THEME_COLOR_PRESSED,
-} from '@/constant';
+import { Input } from '@/components/ui/input';
+import { editBundle } from '@/actions/sheet/edit';
+import { createBundle } from '@/actions/sheet/create';
+import { BundleSchema } from '@/validation/cloth.schema';
+
+import { generateTheme } from '@/constant';
 
 type BundleProps = {
   data: any;
   isEditBundle?: boolean;
-  sizes: {
+  Sizes: {
     id: string;
     type: string;
     quantity: number;
   }[];
-  workers: {
+  workers?: {
     id: string;
     name: string;
   }[];
+  cloth: string;
 };
 
-function BundleForm({ data, isEditBundle, sizes, workers }: BundleProps) {
+function BundleForm({
+  data,
+  isEditBundle,
+  workers,
+  Sizes,
+  cloth,
+}: BundleProps) {
   const form = useForm<z.infer<typeof BundleSchema>>({
     resolver: zodResolver(BundleSchema),
-    defaultValues: {},
+    defaultValues: {
+      sizeId: data?.sizeId,
+      bundleSize: data?.bundleSize,
+      sheetId: data?.sheetId,
+      assignedDate: data?.assignedDate,
+      assignedToId: data?.assignedToId,
+    },
   });
 
-  const handleSubmit = async (values: z.infer<typeof BundleSchema>) => {
+  const onSubmit = async (values: z.infer<typeof BundleSchema>) => {
     startTransition(() => {
       if (isEditBundle) {
         editBundle(data?.id, values)
@@ -75,24 +83,51 @@ function BundleForm({ data, isEditBundle, sizes, workers }: BundleProps) {
     });
   };
 
-  const optionSize = sizes?.map((size: any) => ({
+  // const [selectedSize, setSelectedSize] = useState<{
+  //   type: string;
+  //   quantity: number;
+  // } | null>(null);
+
+  const optionSize = Sizes?.map((size: any) => ({
     label: size.type,
     value: size.id,
+    quantity: size.quantity,
   })) as any;
 
-  const optionWorker = workers?.map((woker: any) => ({
-    label: woker.name,
-    value: woker.id,
-  })) as any;
+  // const [bundleSize, setBundleSize] = useState<number>(0);
+  // const [bundles, setBundles] = useState<number[]>([]);
+
+  // const calculateBundles = (quantity: number, bundleSize: number) => {
+  //   let remainingQuantity = quantity;
+  //   let possibleBundles: number[] = [];
+
+  //   while (remainingQuantity >= bundleSize) {
+  //     possibleBundles.push(bundleSize);
+  //     remainingQuantity -= bundleSize;
+  //   }
+
+  //   setBundles(possibleBundles);
+  // };
+
+  // const optionWorker = workers?.map((woker: any) => ({
+  //   label: woker.name,
+  //   value: woker.id,
+  // })) as any;
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <h2 className="text-xl font-semibold mb-2">Total Size </h2>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {/* <div>
+  <h2 className="text-xl font-semibold mb-2">Total Size </h2>
+  <p className="text-sm text-gray-500 mb-3">
+    {cloth.toUpperCase()} | {data.color.toUpperCase()} |{' '}
+    {selectedSize?.type.toUpperCase()} | {selectedSize?.quantity}
+  </p>
+  {bundles.map((bundle, index) => (
+    <div key={index}>Bundle: {bundle}</div>
+  ))}
+</div>; */}
 
-          <p className="text-sm text-gray-500 mb-3">RARE | BLACK | M | 100</p>
-        </div>
         <div className="space-y-4">
           <Controller
             control={form.control}
@@ -103,19 +138,15 @@ function BundleForm({ data, isEditBundle, sizes, workers }: BundleProps) {
                 <FormControl>
                   <Select
                     options={optionSize}
-                    theme={(theme) => ({
-                      ...theme,
-                      borderRadius: 6,
-                      colors: {
-                        ...theme.colors,
-                        primary: '#3333334e',
-                        primary25: SELECT_GRAY_THEME_COLOR,
-                        dangerLight: '#f1c0c0',
-                        danger: '#5d3535',
-                        primary50: SELECT_GRAY_THEME_COLOR_PRESSED,
-                      },
-                    })}
-                    onChange={(option) => field.onChange(option?.value)}
+                    theme={generateTheme}
+                    onChange={(option) => {
+                      field.onChange(option?.value);
+                      // setSelectedSize({
+                      //   type: option?.label,
+                      //   quantity: option?.quantity,
+                      // });
+                      // calculateBundles(option?.quantity, bundleSize);
+                    }}
                     value={optionSize?.find(
                       (option: any) => option.value === field.value
                     )}
@@ -154,7 +185,21 @@ function BundleForm({ data, isEditBundle, sizes, workers }: BundleProps) {
               <FormItem>
                 <FormLabel>BundleSize</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="bundleSize" type="text" />
+                  <Input
+                    {...field}
+                    // onChange={(e) => {
+                    //   field.onChange(e);
+                    //   setBundleSize(Number(e.target.value));
+                    //   // calculateBundles(
+                    //   //   selectedSize?.quantity || 0,
+                    //   //   Number(e.target.value)
+                    //   // );
+
+                    // }}
+
+                    type="number"
+                    required
+                  />{' '}
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -236,8 +281,11 @@ function BundleForm({ data, isEditBundle, sizes, workers }: BundleProps) {
               </FormItem>
             )}
           /> */}
-
-          <Button type="submit">Add Bundle</Button>
+          <div className="w-full mt-8 h-fit">
+            <Button type="submit" className="h-fit">
+              {!isEditBundle ? 'Add' : 'Edit'} Bundle
+            </Button>
+          </div>
         </div>
       </form>
     </Form>

@@ -11,11 +11,7 @@ import {
   SizeSchema,
 } from '@/validation/cloth.schema';
 import { getClothByName, getSheetByColor } from '@/data/sheet/data';
-import {
-  DateConverter,
-  calculation,
-  generateSerialNumber,
-} from '@/lib/calculation';
+import { calculation, generateSerialNumber } from '@/lib/calculation';
 //TODO: create custom error handlers
 
 export const createClothDesign = async (
@@ -65,8 +61,6 @@ export const createSize = async (values: z.infer<typeof SizeSchema>[]) => {
   }
 
   for (const item of validatedFields.data) {
-    console.log('Item:', item);
-
     const { type, quantity, sheetId, Bundle = [] } = item;
 
     try {
@@ -84,8 +78,6 @@ export const createSize = async (values: z.infer<typeof SizeSchema>[]) => {
 };
 
 export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
-  console.log('--', values);
-
   const validatedFields = SheetSchema.safeParse(values);
 
   if (!validatedFields.success) {
@@ -102,7 +94,6 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
     palla,
     clothId,
     Size = [],
-    Bundle = [],
   } = validatedFields.data;
 
   try {
@@ -111,11 +102,9 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
     if (existingCloth?.sheet.length) {
       return { error: 'Color already exixts in this sheet!' };
     }
-    const formattedDate = DateConverter(cuttingDate);
-
     const data = await db.sheet.create({
       data: {
-        cuttingDate: formattedDate,
+        cuttingDate,
         color,
         thanNo,
         weightPerLenght,
@@ -128,15 +117,6 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
 
     const { id: sheetId } = data;
     const newSizeArray = Size.map((size) => ({ ...size, sheetId }));
-    console.log('newSizeArray', newSizeArray);
-
-    const newBundleArry = Bundle.map((bundle) => ({
-      ...bundle,
-      sheetId,
-      sizeId: bundle.sizeId,
-    }));
-
-    console.log('newBundleArry', newBundleArry);
 
     const createSizePromises = newSizeArray.map((size) =>
       createSize(size as any)
@@ -145,7 +125,7 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
     await calculation(sheetId);
 
     if (data) {
-      return { success: 'Sheet created successfully!' };
+      return { success: 'Sheet created successfully!', data: data };
     }
   } catch (error) {
     console.log('Error creating sheet object:', error);
@@ -154,55 +134,51 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
 };
 
 export const createBundle = async (values: z.infer<typeof BundleSchema>) => {
-  const validatedFields = BundleSchema.safeParse([values]);
+  console.log('----', values);
+  const validatedFields = BundleSchema.safeParse(values);
 
   if (!validatedFields.success) {
     const errorFields = validatedFields.error.flatten();
     console.log('Invalid fields:', errorFields);
     return { error: 'Invalid fields!', errorFields };
   }
-  for (const item of validatedFields.data) {
-    console.log('Item:', item);
-
-    const {
-      bundleId,
-      sizeId,
-      bundleSize,
-      sheetId,
-      assignedToId,
-      assignedDate,
-      receivedDate,
-      payments = [],
-    } = item;
-    const assignedDateFormatted = DateConverter(assignedDate);
-    const receivedDateFormatted = DateConverter(receivedDate);
-    try {
-      const bundle = await db.bundle.create({
-        data: {
-          bundleId,
-          bundleSize,
-          sheet: { connect: { id: sheetId } },
-          assignedTo: { connect: { id: assignedToId } },
-          assignedDate: assignedDateFormatted,
-          receivedDate: receivedDateFormatted,
-          payments: {
-            connect: payments.map((paymentId) => ({ id: paymentId })),
-          },
+  const {
+    sizeId,
+    bundleSize = 0,
+    sheetId,
+    assignedToId,
+    assignedDate,
+    receivedDate,
+    payments = [],
+  } = validatedFields.data;
+  const bundleID: any =
+    (await generateSerialNumber('clufim7vc0003ixbpfvhxfqg7')) ?? '000000';
+  try {
+    const bundle = await db.bundle.create({
+      data: {
+        bundleId: bundleID,
+        bundleSize,
+        size: { connect: { id: sizeId } },
+        sheet: { connect: { id: sheetId } },
+        assignedTo: { connect: { id: assignedToId } },
+        assignedDate,
+        receivedDate,
+        payments: {
+          connect: payments.map((paymentId) => ({ id: paymentId })),
         },
-      });
+      },
+    });
 
-      if (bundle) {
-        return { success: 'Bundle created successfully!' };
-      }
-
-      return bundle;
-    } catch (error) {
-      console.log('Error creating bundle object:', error);
-      return { error: 'Error creating bundle object', detailedError: error };
+    if (bundle) {
+      return { success: 'Bundle created successfully!' };
     }
+
+    return bundle;
+  } catch (error) {
+    console.log('Error creating bundle object:', error);
+    return { error: 'Error creating bundle object', detailedError: error };
   }
 };
-
 export const createPayment = async (values: z.infer<typeof PaymentSchema>) => {
   const validatedFields = PaymentSchema.safeParse(values);
 

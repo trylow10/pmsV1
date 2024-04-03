@@ -18,3 +18,18 @@ export const options: GroupBase<any>[] = [
 
 export const SELECT_GRAY_THEME_COLOR = '#8f8f8f20';
 export const SELECT_GRAY_THEME_COLOR_PRESSED = '#8f8f8f40';
+
+export const generateTheme = (theme: any) => {
+  return {
+    ...theme,
+    borderRadius: 6,
+    colors: {
+      ...theme.colors,
+      primary: '#3333334e',
+      primary25: SELECT_GRAY_THEME_COLOR,
+      dangerLight: '#f1c0c0',
+      danger: '#5d3535',
+      primary50: SELECT_GRAY_THEME_COLOR_PRESSED,
+    },
+  };
+};
