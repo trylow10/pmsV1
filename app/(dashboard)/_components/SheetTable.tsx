@@ -13,6 +13,8 @@ import {
 import { TSheet } from '@/types/cloth.types';
 import EditSheet from './EditSheet';
 import Actions from './Actions';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 type Props = {
   list: TSheet[];
@@ -92,6 +94,11 @@ function SheetTable({
                           resourceName="sheet"
                           deletehandler={() => deleteSheet(item.id)}
                         />
+                        <Button variant="ghost">
+                          <Link href={`/create-bundle?sheetId=${item.id}`}>
+                            Add Bundle
+                          </Link>
+                        </Button>
                       </Actions>
                     </TableCell>
                   )}

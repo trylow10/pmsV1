@@ -67,9 +67,9 @@ function BundleForm({
     defaultValues: {
       sizeId: data?.sizeId,
       bundleSize: data?.bundleSize,
-      sheetId: data?.sheetId,
+      sheetId: data?.id,
       assignedDate: data?.assignedDate,
-      assignedToId: data?.assignedToId,
+      assignedToId: data?.assignedToId ?? 'l',
     },
   });
 
@@ -131,7 +131,6 @@ function BundleForm({
                     value={optionSize?.find(
                       (option: any) => option.value === field.value
                     )}
-                    required
                   />
                 </FormControl>
                 <FormMessage />
@@ -146,12 +145,7 @@ function BundleForm({
               <FormItem>
                 <FormLabel>BundleSize</FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    placeholder="BundleSize"
-                    type="number"
-                    required
-                  />
+                  <Input {...field} placeholder="BundleSize" type="number" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -163,13 +157,12 @@ function BundleForm({
             name="sheetId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>SheetId</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     placeholder="sheetId"
                     type="hidden"
-                    defaultValue={data?.sheetId}
+                    defaultValue={data?.id}
                   />
                 </FormControl>
                 <FormMessage />
@@ -199,7 +192,7 @@ function BundleForm({
               </FormItem>
             )}
           />
-          {
+          {/* {
             <Controller
               control={form.control}
               name="assignedToId"
@@ -220,7 +213,7 @@ function BundleForm({
                 </FormItem>
               )}
             />
-          }
+          } */}
           <Button type="submit" className="h-fit">
             {!isEditBundle ? 'Add' : 'Edit'} Bundle
           </Button>

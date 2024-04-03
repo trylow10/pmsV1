@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation';
 import BundleForm from '../_components/BundleForm';
 import { getAllWorker, getSizesAndClothBySheetId } from '@/data/sheet/data';
 
@@ -11,6 +12,7 @@ type TParams = {
 
 async function page(params: TParams) {
   const sheetId = params?.searchParams?.sheetId;
+  // if (!sheetId) return redirect('/');
   const sheet: any = await getSizesAndClothBySheetId(sheetId);
   const workers: any = await getAllWorker();
 
