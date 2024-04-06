@@ -1,6 +1,3 @@
-import React from 'react';
-
-import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 import ClothAction from './ClothAction';
 import { TCloth } from '@/types/cloth.types';

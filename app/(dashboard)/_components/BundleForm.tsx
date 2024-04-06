@@ -23,6 +23,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import BackButton from './BackButton';
+import { Minus, Plus } from 'lucide-react';
 
 type BundleProps = {
   data: any;
@@ -196,22 +197,24 @@ function BundleForm({
                 name={`bundleSizes.${index}`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="flex gap-6">
+                    <FormLabel className="flex gap-6 items-center">
                       <span>BundleSize {index + 1}</span>
-                      <div>
-                        <button
-                          type="button"
+                      <div className="flex items-center gap-2">
+                        <Button
+                          className="rounded-full"
+                          size="sm"
                           onClick={handleAddBundleSizeInput}
                         >
-                          +
-                        </button>
+                          <Plus size="12" />
+                        </Button>
 
-                        <button
-                          type="button"
+                        <Button
+                          className="rounded-full"
+                          size="sm"
                           onClick={() => handleRemoveBundleSize(index)}
                         >
-                          -
-                        </button>
+                          <Minus size="12" />
+                        </Button>
                       </div>
                     </FormLabel>
                     <FormControl>
