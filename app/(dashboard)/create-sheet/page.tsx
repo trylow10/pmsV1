@@ -20,6 +20,7 @@ async function page() {
 
   return (
     <div>
+      <h3 className="text-xl font-semibold mb-3">Create Sheet</h3>
       <SheetForm cloths={cloths} />
     </div>
   );

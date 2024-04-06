@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { startTransition } from 'react';
 import { toast } from 'sonner';
 import Select from 'react-select';
-// import SelectCreatable from 'react-select/creatable';
+
 import { BundleSchema } from '@/validation/cloth.schema';
 import { generateTheme } from '@/constant';
 import { Button } from '@/components/ui/button';
@@ -22,6 +22,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import BackButton from './BackButton';
 
 type BundleProps = {
   data: any;
@@ -94,6 +95,10 @@ function BundleForm({
     },
   });
 
+  function handleChange() {
+    console.log(form.getValues());
+  }
+
   const { control } = form;
   const { fields, append, remove } = useFieldArray({
     control,
@@ -141,13 +146,20 @@ function BundleForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div>
-          <h2 className="text-xl font-semibold mb-2">Total Size </h2>
-          <p className="text-sm text-gray-500 mb-3">
-            {cloth.toUpperCase()} | {data.color.toUpperCase()} |{' '}
-            {selectedSize?.type.toUpperCase()} | {selectedSize?.quantity}
-          </p>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        onChange={handleChange}
+        className="space-y-6"
+      >
+        <div className="flex justify-between">
+          <div>
+            <h2 className="text-xl font-semibold mb-2">Total Size </h2>
+            <p className="text-sm text-gray-500 mb-3">
+              {cloth.toUpperCase()} | {data.color.toUpperCase()} |{' '}
+              {selectedSize?.type.toUpperCase()} | {selectedSize?.quantity}
+            </p>
+          </div>
+          <BackButton />
         </div>
 
         <div className="space-y-4">
@@ -184,7 +196,24 @@ function BundleForm({
                 name={`bundleSizes.${index}`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>BundleSize {index + 1}</FormLabel>
+                    <FormLabel className="flex gap-6">
+                      <span>BundleSize {index + 1}</span>
+                      <div>
+                        <button
+                          type="button"
+                          onClick={handleAddBundleSizeInput}
+                        >
+                          +
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveBundleSize(index)}
+                        >
+                          -
+                        </button>
+                      </div>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         {...field}
@@ -201,18 +230,6 @@ function BundleForm({
                   </FormItem>
                 )}
               />
-              <div>
-                <button type="button" onClick={handleAddBundleSizeInput}>
-                  Add Bundle
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => handleRemoveBundleSize(index)}
-                >
-                  Remove Bundle
-                </button>
-              </div>
             </div>
           ))}
 

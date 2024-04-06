@@ -15,6 +15,8 @@ import EditSheet from './EditSheet';
 import Actions from './Actions';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import BackButton from './BackButton';
+import { Plus } from 'lucide-react';
 
 type Props = {
   list: TSheet[];
@@ -32,13 +34,18 @@ function SheetTable({
   deleteRow,
 }: Props) {
   return (
-    <div>
-      {companyCloth && (
-        <h2 className="text-xl font-semibold mb-2">{companyCloth}</h2>
-      )}
-      {count && (
-        <p className="text-sm text-gray-500 mb-3">{count} Sheet Found</p>
-      )}
+    <>
+      <div className="flex justify-between">
+        <div>
+          {companyCloth && (
+            <h2 className="text-xl font-semibold mb-2">{companyCloth}</h2>
+          )}
+          {count && (
+            <p className="text-sm text-gray-500 mb-3">{count} Sheet Found</p>
+          )}
+        </div>
+        <BackButton />
+      </div>
       <Table>
         <TableHeader>
           <TableRow>
@@ -95,9 +102,14 @@ function SheetTable({
                           resourceName="sheet"
                           deletehandler={() => deleteSheet(item.id)}
                         />
+
                         <Button variant="ghost">
-                          <Link href={`/create-bundle?sheetId=${item.id}`}>
-                            Add Bundle
+                          <Link
+                            href={`/create-bundle?sheetId=${item.id}`}
+                            className="flex items-center gap-1"
+                          >
+                            <Plus height={18} />
+                            <span>Add Bundle</span>
                           </Link>
                         </Button>
                       </Actions>
@@ -109,7 +121,7 @@ function SheetTable({
           )}
         </TableBody>
       </Table>
-    </div>
+    </>
   );
 }
 

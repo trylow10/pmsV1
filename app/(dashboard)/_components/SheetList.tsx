@@ -33,32 +33,39 @@ function SheetList({ items }: SheetListProps) {
       ) : (
         items.map((item) => {
           return (
-            <Accordion type="single" collapsible key={item.id}>
-              <AccordionItem value={item.id} className="">
-                <AccordionTrigger className="text-base">
-                  <span>{item.companyCloth}</span>
-                  <Actions>
-                    <ClothAction isEditCloth={true} data={item} />
-                    <Link
-                      href={`/sheet/edit/${item.id}`}
-                      className="flex w-full items-center justify-center gap-3 hover:bg-accent p-1 text-gray-700 hover:text-accent-foreground"
-                    >
-                      <EyeIcon />
-                      <span>View</span>
-                    </Link>
+            <div className="flex items-center justify-between">
+              <Accordion
+                type="single"
+                collapsible
+                key={item.id}
+                className="w-full"
+              >
+                <AccordionItem value={item.id} className="">
+                  <AccordionTrigger className="text-base">
+                    <span>{item.companyCloth}</span>
+                  </AccordionTrigger>
 
-                    <ConfirmDelete
-                      resourceName="Cloth"
-                      deletehandler={() => deleteClothDesign(item.id)}
-                    />
-                  </Actions>
-                </AccordionTrigger>
+                  <AccordionContent>
+                    <SheetTable list={item.sheet} />
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+              <Actions>
+                <ClothAction isEditCloth={true} data={item} />
+                <Link
+                  href={`/sheet/edit/${item.id}`}
+                  className="flex w-full items-center justify-center gap-3 hover:bg-accent p-1 text-gray-700 hover:text-accent-foreground"
+                >
+                  <EyeIcon />
+                  <span>View</span>
+                </Link>
 
-                <AccordionContent>
-                  <SheetTable list={item.sheet} />
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+                <ConfirmDelete
+                  resourceName="Cloth"
+                  deletehandler={() => deleteClothDesign(item.id)}
+                />
+              </Actions>
+            </div>
           );
         })
       )}
