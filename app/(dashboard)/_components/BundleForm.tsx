@@ -1,12 +1,19 @@
 'use client';
 
 import * as z from 'zod';
-import { Controller, useForm } from 'react-hook-form';
+import React, { useState } from 'react';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { startTransition, useState } from 'react';
+import { startTransition } from 'react';
 import { toast } from 'sonner';
 import Select from 'react-select';
-import SelectCreatable from 'react-select/creatable';
+// import SelectCreatable from 'react-select/creatable';
+import { BundleSchema } from '@/validation/cloth.schema';
+import { generateTheme } from '@/constant';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { editBundle } from '@/actions/sheet/edit';
+import { createBundle } from '@/actions/sheet/create';
 import {
   Form,
   FormControl,
@@ -15,14 +22,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { editBundle } from '@/actions/sheet/edit';
-import { createBundle } from '@/actions/sheet/create';
-import { BundleSchema } from '@/validation/cloth.schema';
-
-import { generateTheme } from '@/constant';
 
 type BundleProps = {
   data: any;
@@ -50,12 +49,39 @@ function BundleForm({
     type: string;
     quantity: number;
   } | null>(null);
+  const [totalBundleSize, setTotalBundleSize] = useState(0);
 
   const optionSize = Sizes?.map((size: any) => ({
     label: size.type,
     value: size.id,
     quantity: size.quantity,
   })) as any;
+
+  const handleAddBundleSizeInput = () => {
+    const total = fields.reduce((sum, field) => sum + field.size, 0);
+    if (selectedSize && total < selectedSize.quantity) {
+      append({ size: 0 });
+    }
+  };
+
+  const handleAddBundleSize = (size: number, index: number) => {
+    const total = fields.reduce(
+      (sum, field, i) => (i !== index ? sum + field.size : sum),
+      0
+    );
+    if (selectedSize && total + size > selectedSize.quantity) {
+      // Show an error message
+      toast.error(`Total bundle size cannot exceed ${selectedSize.quantity}`);
+    } else {
+      setTotalBundleSize(total + size);
+      form.setValue(`bundleSizes.${index}.size`, size);
+    }
+  };
+
+  const handleRemoveBundleSize = (index: number) => {
+    setTotalBundleSize(totalBundleSize - fields[index].size);
+    remove(index);
+  };
 
   const optionWorker = workers?.map((woker: any) => ({
     label: woker.name,
@@ -66,11 +92,17 @@ function BundleForm({
     resolver: zodResolver(BundleSchema),
     defaultValues: {
       sizeId: data?.sizeId,
-      bundleSize: data?.bundleSize,
+      bundleSizes: data?.bundleSizes ?? [{ size: 0 }],
       sheetId: data?.id,
       assignedDate: data?.assignedDate,
-      assignedToId: data?.assignedToId ?? 'l',
+      assignedToId: data?.assignedToId ?? '',
     },
+  });
+
+  const { control } = form;
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'bundleSizes',
   });
 
   const onSubmit = async (values: z.infer<typeof BundleSchema>) => {
@@ -137,20 +169,44 @@ function BundleForm({
               </FormItem>
             )}
           />
+          {fields.map((field, index) => (
+            <div key={field.id}>
+              <Controller
+                control={form?.control}
+                name={`bundleSizes.${index}`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>BundleSize {index + 1}</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="BundleSize"
+                        type="number"
+                        min="1"
+                        max={selectedSize?.quantity}
+                        value={field.value.size.toString()}
+                        onChange={(e) =>
+                          handleAddBundleSize(Number(e.target.value), index)
+                        }
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <div>
+                <button type="button" onClick={handleAddBundleSizeInput}>
+                  Add Bundle
+                </button>
 
-          <FormField
-            control={form.control}
-            name="bundleSize"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>BundleSize</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder="BundleSize" type="number" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveBundleSize(index)}
+                >
+                  Remove Bundle
+                </button>
+              </div>
+            </div>
+          ))}
 
           <FormField
             control={form.control}
@@ -158,19 +214,14 @@ function BundleForm({
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input
-                    {...field}
-                    placeholder="sheetId"
-                    type="hidden"
-                    defaultValue={data?.id}
-                  />
+                  <Input {...field} placeholder="sheetId" type="hidden" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <FormField
+          {/* <FormField
             control={form.control}
             name="assignedDate"
             render={({ field }) => (
@@ -191,7 +242,7 @@ function BundleForm({
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
           {/* {
             <Controller
               control={form.control}
