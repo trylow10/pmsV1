@@ -86,6 +86,7 @@ function SheetTable({
                   <TableCell>{sizeQuantities['f'] || '-'}</TableCell>
                   <TableCell>{item.totalSize}</TableCell>
                   <TableCell>{item.average}</TableCell>
+
                   {editableRow && deleteRow && (
                     <TableCell>
                       <Actions>

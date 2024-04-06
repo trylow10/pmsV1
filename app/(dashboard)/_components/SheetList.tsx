@@ -36,11 +36,7 @@ function SheetList({ items }: SheetListProps) {
             <Accordion type="single" collapsible key={item.id}>
               <AccordionItem value={item.id} className="">
                 <AccordionTrigger className="text-base">
-                  {item.companyCloth}
-                </AccordionTrigger>
-
-                <AccordionContent>
-                  <SheetTable list={item.sheet} />
+                  <span>{item.companyCloth}</span>
                   <Actions>
                     <ClothAction isEditCloth={true} data={item} />
                     <Link
@@ -56,6 +52,10 @@ function SheetList({ items }: SheetListProps) {
                       deletehandler={() => deleteClothDesign(item.id)}
                     />
                   </Actions>
+                </AccordionTrigger>
+
+                <AccordionContent>
+                  <SheetTable list={item.sheet} />
                 </AccordionContent>
               </AccordionItem>
             </Accordion>

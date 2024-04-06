@@ -20,13 +20,17 @@ import { createClothDesign } from '@/actions/sheet/create';
 import { editCloth } from '@/actions/sheet/edit';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 type ClothFormProps = {
   data: any;
   isEditCloth?: boolean;
+  setModalOpen: (isOpen: boolean) => void;
 };
 
-function ClothForm({ data, isEditCloth }: ClothFormProps) {
+function ClothForm({ data, isEditCloth, setModalOpen }: ClothFormProps) {
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof ClothSchema>>({
     resolver: zodResolver(ClothSchema),
     defaultValues: {
@@ -43,6 +47,8 @@ function ClothForm({ data, isEditCloth }: ClothFormProps) {
               toast.error(response?.error);
             } else if (response?.success) {
               toast.success(response?.success);
+              router.refresh();
+              setModalOpen(false);
             }
           })
           .catch(() => toast.error('Something went wrong'));
@@ -53,6 +59,8 @@ function ClothForm({ data, isEditCloth }: ClothFormProps) {
               toast.error(response?.error);
             } else if (response?.success) {
               toast.success(response?.success);
+              router.refresh();
+              setModalOpen(false);
             }
           })
           .catch(() => toast.error('Something went wrong'));

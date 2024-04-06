@@ -11,6 +11,7 @@ import ClothForm from './ClothForm';
 
 import { PenIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
+import { useState } from 'react';
 
 type ClothActionProps = {
   isEditCloth: boolean;
@@ -18,6 +19,8 @@ type ClothActionProps = {
 };
 
 function ClothAction({ data, isEditCloth }: ClothActionProps) {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -25,17 +28,25 @@ function ClothAction({ data, isEditCloth }: ClothActionProps) {
           className="flex items-center gap-3"
           variant={isEditCloth ? 'ghost' : 'default'}
           size="sm"
+          onClick={() => setIsOpen(true)}
         >
           <PenIcon />
           {isEditCloth ? 'Edit' : 'Add Cloth'}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>{isEditCloth ? 'Edit' : 'Add'} Cloth</DialogTitle>
-        </DialogHeader>
-        <ClothForm data={data} isEditCloth={isEditCloth} />
-      </DialogContent>
+      {isOpen && (
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>{isEditCloth ? 'Edit' : 'Add'} Cloth</DialogTitle>
+          </DialogHeader>
+
+          <ClothForm
+            data={data}
+            isEditCloth={isEditCloth}
+            setModalOpen={setIsOpen}
+          />
+        </DialogContent>
+      )}
     </Dialog>
   );
 }
