@@ -83,11 +83,6 @@ function BundleForm({
     remove(index);
   };
 
-  const optionWorker = workers?.map((woker: any) => ({
-    label: woker.name,
-    value: woker.id,
-  })) as any;
-
   const form = useForm<z.infer<typeof BundleSchema>>({
     resolver: zodResolver(BundleSchema),
     defaultValues: {
@@ -106,10 +101,19 @@ function BundleForm({
   });
 
   const onSubmit = async (values: z.infer<typeof BundleSchema>) => {
+    console.log('onSubmit function called');
+
+    console.log('Submitting form with values:', values);
+    values;
+
     startTransition(() => {
       if (isEditBundle) {
+        console.log('Editing bundle with ID:', data?.id);
+
         editBundle(data?.id, values)
           .then((response: any) => {
+            console.log('Response from editBundle:', response);
+
             if (response?.error) {
               toast.error(response?.error);
             } else if (response?.success) {
@@ -118,8 +122,12 @@ function BundleForm({
           })
           .catch(() => toast.error('Something went wrong'));
       } else {
+        console.log('Creating new bundle');
+
         createBundle(values)
           .then((response: any) => {
+            console.log('Response from createBundle:', response);
+
             if (response?.error) {
               toast.error(response?.error);
             } else if (response?.success) {
@@ -221,50 +229,6 @@ function BundleForm({
             )}
           />
 
-          {/* <FormField
-            control={form.control}
-            name="assignedDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Assigned Date</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="date"
-                    value={
-                      field.value
-                        ? new Date(field.value).toISOString().split('T')[0]
-                        : ''
-                    }
-                  />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
-          {/* {
-            <Controller
-              control={form.control}
-              name="assignedToId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Assign To</FormLabel>
-                  <FormControl>
-                    <SelectCreatable
-                      options={optionWorker}
-                      theme={generateTheme}
-                      onChange={(option) => field.onChange(option?.value)}
-                      value={optionWorker?.find(
-                        (option: any) => option.value === field.value
-                      )}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          } */}
           <Button type="submit" className="h-fit">
             {!isEditBundle ? 'Add' : 'Edit'} Bundle
           </Button>
