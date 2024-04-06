@@ -144,41 +144,48 @@ export const createBundle = async (values: z.infer<typeof BundleSchema>) => {
   }
   const {
     sizeId,
-    bundleSize = 0,
     sheetId,
     assignedToId,
     assignedDate,
     receivedDate,
     payments = [],
+    bundleSizes = [],
   } = validatedFields.data;
-  const bundleID: any =
-    (await generateSerialNumber('clufim7vc0003ixbpfvhxfqg7')) ?? '000000';
-  try {
-    const bundle = await db.bundle.create({
-      data: {
-        bundleId: bundleID,
-        bundleSize,
-        size: { connect: { id: sizeId } },
-        sheet: { connect: { id: sheetId } },
-        assignedTo: { connect: { id: assignedToId } },
-        assignedDate,
-        receivedDate,
-        payments: {
-          connect: payments.map((paymentId) => ({ id: paymentId })),
-        },
-      },
-    });
 
-    if (bundle) {
-      return { success: 'Bundle created successfully!' };
+  try {
+    const bundles = await Promise.all(
+      bundleSizes.map(async (bundleSize) => {
+        const bundleID: any =
+          (await generateSerialNumber('clufim7vc0003ixbpfvhxfqg7')) ?? '000000';
+
+        return await db.bundle.create({
+          data: {
+            bundleId: bundleID,
+            bundleSize: bundleSize.size,
+            size: { connect: { id: sizeId } },
+            sheet: { connect: { id: sheetId } },
+            assignedTo: { connect: { id: assignedToId } },
+            assignedDate,
+            receivedDate,
+            payments: {
+              connect: payments.map((paymentId) => ({ id: paymentId })),
+            },
+          },
+        });
+      })
+    );
+
+    if (bundles.every((bundle) => bundle)) {
+      return { success: 'Bundles created successfully!' };
     }
 
-    return bundle;
+    return bundles;
   } catch (error) {
-    console.log('Error creating bundle object:', error);
-    return { error: 'Error creating bundle object', detailedError: error };
+    console.log('Error creating bundle objects:', error);
+    return { error: 'Error creating bundle objects', detailedError: error };
   }
 };
+
 export const createPayment = async (values: z.infer<typeof PaymentSchema>) => {
   const validatedFields = PaymentSchema.safeParse(values);
 

@@ -9,7 +9,7 @@ export const WorkerSchema = z.object({
 export const BundleSchema = z.object({
   bundleId: z.string(),
   sizeId: z.string(),
-  bundleSize: z.coerce.number(),
+  bundleSizes: z.array(z.object({ size: z.number() })),
   sheetId: z.string().optional(),
   assignedToId: z.string().optional(),
   assignedDate: z.coerce.date(),
