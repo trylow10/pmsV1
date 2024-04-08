@@ -1,4 +1,4 @@
-import { getSheetById } from '@/data/sheet/data';
+import { getSheetById, getSizeById } from '@/data/sheet/data';
 import { db } from './db';
 
 export const calculation = async (sheetId: string) => {
@@ -21,17 +21,11 @@ export const calculation = async (sheetId: string) => {
   }
 };
 
-export const generateSerialNumber = async (sheetId: string) => {
-  let sizeCounters: { [key: string]: number } = {};
-  const sheet = await getSheetById(sheetId);
-  const sizeList = sheet?.Size?.map((size: any) => size.type);
+let counter = 0;
 
-  console.log(sizeList);
-  // if (!sizeCounters[size]) {
-  //   sizeCounters[size] = 0;
-  // }
-  // sizeCounters[size]++;
-  // const serialNumber = `${size}-${String(sizeCounters[size]).padStart(3, '0')}`;
-
-  return sizeList;
+export const generateSerialNumber = async (sizeId: string) => {
+  const size = await getSizeById(sizeId);
+  const sizeType = size?.type;
+  counter++;
+  return `${sizeType}-${String(counter).padStart(5, '0')}`;
 };
