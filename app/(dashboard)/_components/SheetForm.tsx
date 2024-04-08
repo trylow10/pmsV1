@@ -51,8 +51,10 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
       thanNo: data?.thanNo,
       weightPerLenght: data?.weightPerLenght,
       palla: data?.palla,
+      Size: data?.Size,
     },
   });
+  //while editing quantity field size fix
 
   const onSubmit = async (values: z.infer<typeof SheetSchema>) => {
     startTransition(() => {

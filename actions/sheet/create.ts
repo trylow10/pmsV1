@@ -134,7 +134,6 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
 };
 
 export const createBundle = async (values: z.infer<typeof BundleSchema>) => {
-  console.log('----', values);
   const validatedFields = BundleSchema.safeParse(values);
 
   if (!validatedFields.success) {
@@ -142,34 +141,21 @@ export const createBundle = async (values: z.infer<typeof BundleSchema>) => {
     console.log('Invalid fields:', errorFields);
     return { error: 'Invalid fields!', errorFields };
   }
-  const {
-    sizeId,
-    sheetId,
-    assignedToId,
-    assignedDate,
-    receivedDate,
-    payments = [],
-    bundleSizes = [],
-  } = validatedFields.data;
+  const { sizeId, sheetId, bundleSizes = [] } = validatedFields.data;
+  console.log(validatedFields.data);
 
   try {
     const bundles = await Promise.all(
       bundleSizes.map(async (bundleSize) => {
-        const bundleID: any =
-          (await generateSerialNumber('clufim7vc0003ixbpfvhxfqg7')) ?? '000000';
-
+        const bundleID: any = await generateSerialNumber(sizeId ?? '');
         return await db.bundle.create({
           data: {
             bundleId: bundleID,
             bundleSize: bundleSize.size,
             size: { connect: { id: sizeId } },
             sheet: { connect: { id: sheetId } },
-            assignedTo: { connect: { id: assignedToId } },
-            assignedDate,
-            receivedDate,
-            payments: {
-              connect: payments.map((paymentId) => ({ id: paymentId })),
-            },
+            assignedDate: new Date(),
+            receivedDate: new Date(),
           },
         });
       })

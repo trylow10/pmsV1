@@ -7,14 +7,14 @@ export const WorkerSchema = z.object({
 });
 
 export const BundleSchema = z.object({
-  bundleId: z.string(),
+  bundleId: z.string().optional(),
   sizeId: z.string(),
-  bundleSizes: z.array(z.object({ size: z.number() })),
+  bundleSizes: z.array(z.object({ size: z.coerce.number() })),
   sheetId: z.string().optional(),
-  assignedToId: z.string().optional(),
-  assignedDate: z.coerce.date().optional(),
-  receivedDate: z.coerce.date().optional(),
-  payments: z.array(z.string()).optional(),
+  // assignedToId: z.string(),
+  // assignedDate: z.coerce.date(),
+  // receivedDate: z.coerce.date(),
+  // payments: z.array(z.string()).optional(),
 });
 
 export const SizeSchema = z.array(

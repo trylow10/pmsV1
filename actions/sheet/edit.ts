@@ -5,9 +5,13 @@ import { calculation } from '@/lib/calculation';
 import { db } from '@/lib/db';
 
 import { TSize } from '@/types/cloth.types';
+import { BundleSchema } from '@/validation/cloth.schema';
+import * as z from 'zod';
 
-
-export const editBundle = async (id: string, data: any) => {
+export const editBundle = async (
+  id: string,
+  data: z.infer<typeof BundleSchema>
+) => {
   try {
     const isBundleExist = await db.bundle.findFirst({
       where: {
@@ -22,13 +26,32 @@ export const editBundle = async (id: string, data: any) => {
       },
     });
 
-    if (existingBundle) {
+    if (existingBundle && existingBundle.id !== id) {
       return { error: 'Bundle already exist!' };
     }
+
+    const {
+      sizeId,
+      sheetId,
+      assignedToId,
+      assignedDate,
+      receivedDate,
+      payments = [],
+      bundleSizes = [],
+    } = data;
 
     const bundle = await db.bundle.update({
       data: {
         bundleId: data.bundleId,
+        bundleSize: bundleSizes[0]?.size, // Assuming we're updating the first bundleSize
+        size: { connect: { id: sizeId } },
+        sheet: { connect: { id: sheetId } },
+        assignedTo: { connect: { id: assignedToId } },
+        assignedDate,
+        receivedDate,
+        payments: {
+          connect: payments.map((paymentId: any) => ({ id: paymentId })),
+        },
       },
       where: {
         id,
@@ -41,9 +64,7 @@ export const editBundle = async (id: string, data: any) => {
   } catch (e) {
     console.error(e);
   }
-
-}
-
+};
 
 export const editSize = async (
   existingSizesIds: string[],

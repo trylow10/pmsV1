@@ -67,6 +67,16 @@ export const getSheetById = async (id: string) => {
     return null;
   }
 };
+export const getSizeById = async (id: string) => {
+  try {
+    const size = await db.size.findUnique({
+      where: { id },
+    });
+    return size;
+  } catch {
+    return null;
+  }
+};
 export const getSizesAndClothBySheetId = async (sheetId: string) => {
   try {
     const sheet = await db.sheet.findUnique({

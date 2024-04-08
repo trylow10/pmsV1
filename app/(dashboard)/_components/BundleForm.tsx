@@ -40,13 +40,7 @@ type BundleProps = {
   cloth: string;
 };
 
-function BundleForm({
-  data,
-  isEditBundle,
-  workers,
-  Sizes,
-  cloth,
-}: BundleProps) {
+function BundleForm({ data, isEditBundle, Sizes, cloth }: BundleProps) {
   const [selectedSize, setSelectedSize] = useState<{
     type: string;
     quantity: number;
@@ -61,8 +55,15 @@ function BundleForm({
 
   const handleAddBundleSizeInput = () => {
     const total = fields.reduce((sum, field) => sum + field.size, 0);
-    if (selectedSize && total < selectedSize.quantity) {
+    if (
+      selectedSize &&
+      total < selectedSize.quantity &&
+      fields.length < selectedSize.quantity &&
+      totalBundleSize < selectedSize.quantity
+    ) {
       append({ size: 0 });
+    } else {
+      toast.error(`Cannot add more bundles.`);
     }
   };
 
@@ -72,33 +73,32 @@ function BundleForm({
       0
     );
     if (selectedSize && total + size > selectedSize.quantity) {
-      // Show an error message
       toast.error(`Total bundle size cannot exceed ${selectedSize.quantity}`);
     } else {
-      setTotalBundleSize(total + size);
+      setTotalBundleSize((prevTotal) => prevTotal + size);
       form.setValue(`bundleSizes.${index}.size`, size);
     }
   };
 
   const handleRemoveBundleSize = (index: number) => {
-    setTotalBundleSize(totalBundleSize - fields[index].size);
-    remove(index);
+    if (fields.length > 1) {
+      setTotalBundleSize((prevTotal) => prevTotal - fields[index].size);
+      remove(index);
+    } else {
+      toast.error(
+        `Cannot remove the field. There should be at least one bundle size.`
+      );
+    }
   };
 
   const form = useForm<z.infer<typeof BundleSchema>>({
     resolver: zodResolver(BundleSchema),
     defaultValues: {
       sizeId: data?.sizeId,
-      bundleSizes: data?.bundleSizes ?? [{ size: 0 }],
+      bundleSizes: data?.bundleSizes ?? [{ size: '' }],
       sheetId: data?.id,
-      assignedDate: data?.assignedDate,
-      assignedToId: data?.assignedToId ?? '',
     },
   });
-
-  function handleChange() {
-    console.log(form.getValues());
-  }
 
   const { control } = form;
   const { fields, append, remove } = useFieldArray({
@@ -107,19 +107,15 @@ function BundleForm({
   });
 
   const onSubmit = async (values: z.infer<typeof BundleSchema>) => {
-    console.log('onSubmit function called');
-
-    console.log('Submitting form with values:', values);
-    values;
-
+    //fix this
+    if (fields.length === 0 || fields.some((field) => field.size === 0)) {
+      toast.error('All bundle sizes must be filled with a valid number.');
+      return;
+    }
     startTransition(() => {
       if (isEditBundle) {
-        console.log('Editing bundle with ID:', data?.id);
-
         editBundle(data?.id, values)
           .then((response: any) => {
-            console.log('Response from editBundle:', response);
-
             if (response?.error) {
               toast.error(response?.error);
             } else if (response?.success) {
@@ -128,12 +124,8 @@ function BundleForm({
           })
           .catch(() => toast.error('Something went wrong'));
       } else {
-        console.log('Creating new bundle');
-
         createBundle(values)
           .then((response: any) => {
-            console.log('Response from createBundle:', response);
-
             if (response?.error) {
               toast.error(response?.error);
             } else if (response?.success) {
@@ -147,11 +139,7 @@ function BundleForm({
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        onChange={handleChange}
-        className="space-y-6"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="flex justify-between">
           <div>
             <h2 className="text-xl font-semibold mb-2">Total Size </h2>
@@ -180,6 +168,10 @@ function BundleForm({
                         type: option?.label,
                         quantity: option?.quantity,
                       });
+                      form.reset({
+                        ...form.getValues(),
+                        bundleSizes: [{ size: 0 }],
+                      });
                     }}
                     value={optionSize?.find(
                       (option: any) => option.value === field.value
@@ -201,17 +193,24 @@ function BundleForm({
                       <span>BundleSize {index + 1}</span>
                       <div className="flex items-center gap-2">
                         <Button
+                          type="button"
                           className="rounded-full"
                           size="sm"
                           onClick={handleAddBundleSizeInput}
+                          disabled={
+                            !selectedSize ||
+                            totalBundleSize >= selectedSize?.quantity
+                          }
                         >
                           <Plus size="12" />
                         </Button>
 
                         <Button
+                          type="button"
                           className="rounded-full"
                           size="sm"
                           onClick={() => handleRemoveBundleSize(index)}
+                          disabled={!selectedSize || fields.length <= 1}
                         >
                           <Minus size="12" />
                         </Button>
@@ -222,7 +221,6 @@ function BundleForm({
                         {...field}
                         placeholder="BundleSize"
                         type="number"
-                        min="1"
                         max={selectedSize?.quantity}
                         value={field.value.size.toString()}
                         onChange={(e) =>
