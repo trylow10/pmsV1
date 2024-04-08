@@ -274,7 +274,7 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
                         {field.value.map((item, index) => (
                           <div
                             key={index}
-                            className="flex items-center justify-between border-b border-x px-3  last:rounded-b-md"
+                            className="flex items-center gap-4 justify-between border-b border-x px-3 last:rounded-b-md"
                           >
                             <span>{item.type}</span>
                             {item && (

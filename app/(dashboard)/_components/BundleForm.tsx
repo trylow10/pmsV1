@@ -1,7 +1,7 @@
 'use client';
 
 import * as z from 'zod';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { startTransition } from 'react';
@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/form';
 import BackButton from './BackButton';
 import { Minus, Plus } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 type BundleProps = {
   data: any;
@@ -41,6 +42,23 @@ type BundleProps = {
 };
 
 function BundleForm({ data, isEditBundle, Sizes, cloth }: BundleProps) {
+  const form = useForm<z.infer<typeof BundleSchema>>({
+    resolver: zodResolver(BundleSchema),
+    defaultValues: {
+      sizeId: data?.sizeId,
+      bundleSizes: data?.bundleSizes ?? [{ size: '' }],
+      sheetId: data?.id,
+    },
+  });
+
+  const { control } = form;
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'bundleSizes',
+  });
+
+  const total = fields.reduce((sum, field) => sum + field.size, 0);
+
   const [selectedSize, setSelectedSize] = useState<{
     type: string;
     quantity: number;
@@ -81,37 +99,20 @@ function BundleForm({ data, isEditBundle, Sizes, cloth }: BundleProps) {
   };
 
   const handleRemoveBundleSize = (index: number) => {
-    if (fields.length > 1) {
-      setTotalBundleSize((prevTotal) => prevTotal - fields[index].size);
-      remove(index);
-    } else {
-      toast.error(
-        `Cannot remove the field. There should be at least one bundle size.`
-      );
-    }
+    if (fields.length <= 1) return;
+    setTotalBundleSize((prevTotal) => prevTotal - fields[index].size);
+    remove(index);
   };
 
-  const form = useForm<z.infer<typeof BundleSchema>>({
-    resolver: zodResolver(BundleSchema),
-    defaultValues: {
-      sizeId: data?.sizeId,
-      bundleSizes: data?.bundleSizes ?? [{ size: '' }],
-      sheetId: data?.id,
-    },
-  });
-
-  const { control } = form;
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'bundleSizes',
-  });
-
   const onSubmit = async (values: z.infer<typeof BundleSchema>) => {
+    console.log(values);
+
     //fix this
     if (fields.length === 0 || fields.some((field) => field.size === 0)) {
       toast.error('All bundle sizes must be filled with a valid number.');
       return;
     }
+
     startTransition(() => {
       if (isEditBundle) {
         editBundle(data?.id, values)
@@ -143,9 +144,10 @@ function BundleForm({ data, isEditBundle, Sizes, cloth }: BundleProps) {
         <div className="flex justify-between">
           <div>
             <h2 className="text-xl font-semibold mb-2">Total Size </h2>
-            <p className="text-sm text-gray-500 mb-3">
-              {cloth.toUpperCase()} | {data.color.toUpperCase()} |{' '}
-              {selectedSize?.type.toUpperCase()} | {selectedSize?.quantity}
+            <p className="text-sm text-gray-500 mb-3 uppercase">
+              {cloth} | {data.color}{' '}
+              {selectedSize && ' | ' + selectedSize?.type}
+              {selectedSize && ' | ' + selectedSize?.quantity}
             </p>
           </div>
           <BackButton />
@@ -182,57 +184,56 @@ function BundleForm({ data, isEditBundle, Sizes, cloth }: BundleProps) {
               </FormItem>
             )}
           />
-          {fields.map((field, index) => (
-            <div key={field.id}>
-              <Controller
-                control={form?.control}
-                name={`bundleSizes.${index}`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex gap-6 items-center">
-                      <span>BundleSize {index + 1}</span>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          type="button"
-                          className="rounded-full"
-                          size="sm"
-                          onClick={handleAddBundleSizeInput}
-                          disabled={
-                            !selectedSize ||
-                            totalBundleSize >= selectedSize?.quantity
-                          }
-                        >
-                          <Plus size="12" />
-                        </Button>
+          {selectedSize &&
+            fields.map((field, index) => (
+              <div key={field.id}>
+                <Controller
+                  control={form?.control}
+                  name={`bundleSizes.${index}`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex gap-6 items-center">
+                        <span>BundleSize {index + 1}</span>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            type="button"
+                            className={cn('rounded-full')}
+                            size="sm"
+                            onClick={handleAddBundleSizeInput}
+                          >
+                            <Plus size="12" />
+                          </Button>
 
-                        <Button
-                          type="button"
-                          className="rounded-full"
-                          size="sm"
-                          onClick={() => handleRemoveBundleSize(index)}
-                          disabled={!selectedSize || fields.length <= 1}
-                        >
-                          <Minus size="12" />
-                        </Button>
-                      </div>
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="BundleSize"
-                        type="number"
-                        max={selectedSize?.quantity}
-                        value={field.value.size.toString()}
-                        onChange={(e) =>
-                          handleAddBundleSize(Number(e.target.value), index)
-                        }
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
-          ))}
+                          <Button
+                            type="button"
+                            className={cn(
+                              'rounded-full',
+                              fields.length <= 1 && 'hidden'
+                            )}
+                            size="sm"
+                            onClick={() => handleRemoveBundleSize(index)}
+                          >
+                            <Minus size="12" />
+                          </Button>
+                        </div>
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="BundleSize"
+                          type="number"
+                          max={selectedSize?.quantity}
+                          value={field.value.size.toString()}
+                          onChange={(e) =>
+                            handleAddBundleSize(Number(e.target.value), index)
+                          }
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+            ))}
 
           <FormField
             control={form.control}

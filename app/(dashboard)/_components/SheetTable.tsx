@@ -44,7 +44,7 @@ function SheetTable({
             <p className="text-sm text-gray-500 mb-3">{count} Sheet Found</p>
           )}
         </div>
-        <BackButton />
+        {editableRow && <BackButton />}
       </div>
       <Table>
         <TableHeader>
