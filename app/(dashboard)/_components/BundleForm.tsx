@@ -34,22 +34,21 @@ type BundleProps = {
     type: string;
     quantity: number;
   }[];
-  workers?: {
-    id: string;
-    name: string;
-  }[];
   cloth: string;
 };
 
 function BundleForm({ data, isEditBundle, Sizes, cloth }: BundleProps) {
+  const [isLastFieldFilled, setIsLastFieldFilled] = useState(true);
   const form = useForm<z.infer<typeof BundleSchema>>({
     resolver: zodResolver(BundleSchema),
     defaultValues: {
       sizeId: data?.sizeId,
-      bundleSizes: data?.bundleSizes ?? [{ size: '' }],
+      bundleSizes: data?.bundleSizes ?? [{ size: 0 }],
       sheetId: data?.id,
     },
   });
+
+  console.log(isLastFieldFilled, 'isLastFieldFilled');
 
   const { control } = form;
   const { fields, append, remove } = useFieldArray({
@@ -57,29 +56,42 @@ function BundleForm({ data, isEditBundle, Sizes, cloth }: BundleProps) {
     name: 'bundleSizes',
   });
 
-  const total = fields.reduce((sum, field) => sum + field.size, 0);
-
   const [selectedSize, setSelectedSize] = useState<{
     type: string;
     quantity: number;
   } | null>(null);
-  const [totalBundleSize, setTotalBundleSize] = useState(0);
+  const [totalBundleSize, setTotalBundleSize] = useState<number>(0);
 
-  const optionSize = Sizes?.map((size: any) => ({
+  type Size = {
+    id: string;
+    type: string;
+    quantity: number;
+  };
+
+  const optionSize = Sizes?.map((size: Size) => ({
     label: size.type,
     value: size.id,
     quantity: size.quantity,
   })) as any;
 
   const handleAddBundleSizeInput = () => {
+    const lastField = fields[fields.length - 1];
+
+    if (lastField.size === 0 || lastField.size === undefined) {
+      toast.error('Please fill the last bundle size before adding a new one.');
+      return;
+    }
     const total = fields.reduce((sum, field) => sum + field.size, 0);
-    if (
+    if (selectedSize && total >= selectedSize.quantity) {
+      toast.warning('No remaining size for other bundles.');
+    } else if (
       selectedSize &&
       total < selectedSize.quantity &&
       fields.length < selectedSize.quantity &&
-      totalBundleSize < selectedSize.quantity
+      Number(totalBundleSize) < selectedSize.quantity
     ) {
       append({ size: 0 });
+      setIsLastFieldFilled(false);
     } else {
       toast.error(`Cannot add more bundles.`);
     }
@@ -93,8 +105,12 @@ function BundleForm({ data, isEditBundle, Sizes, cloth }: BundleProps) {
     if (selectedSize && total + size > selectedSize.quantity) {
       toast.error(`Total bundle size cannot exceed ${selectedSize.quantity}`);
     } else {
-      setTotalBundleSize((prevTotal) => prevTotal + size);
+      setTotalBundleSize(total + size);
       form.setValue(`bundleSizes.${index}.size`, size);
+      if (index === fields.length - 1) {
+        setIsLastFieldFilled(true);
+      }
+      fields[index].size = size;
     }
   };
 
@@ -105,37 +121,35 @@ function BundleForm({ data, isEditBundle, Sizes, cloth }: BundleProps) {
   };
 
   const onSubmit = async (values: z.infer<typeof BundleSchema>) => {
-    console.log(values);
-
-    //fix this
-    if (fields.length === 0 || fields.some((field) => field.size === 0)) {
-      toast.error('All bundle sizes must be filled with a valid number.');
-      return;
-    }
-
-    startTransition(() => {
-      if (isEditBundle) {
-        editBundle(data?.id, values)
-          .then((response: any) => {
-            if (response?.error) {
-              toast.error(response?.error);
-            } else if (response?.success) {
-              toast.success(response?.success);
-            }
-          })
-          .catch(() => toast.error('Something went wrong'));
-      } else {
-        createBundle(values)
-          .then((response: any) => {
-            if (response?.error) {
-              toast.error(response?.error);
-            } else if (response?.success) {
-              toast.success(response?.success);
-            }
-          })
-          .catch(() => toast.error('Something went wrong'));
+    try {
+      if (fields.length === 0 || fields.some((field) => field.size === 0)) {
+        toast.error('All bundle sizes must be filled with a valid number.');
+        return;
       }
-    });
+
+      startTransition(() => {
+        if (isEditBundle) {
+          editBundle(data?.id, values).then((response: any) => {
+            if (response?.error) {
+              toast.error(response?.error);
+            } else if (response?.success) {
+              toast.success(response?.success);
+            }
+          });
+        } else {
+          createBundle(values).then((response: any) => {
+            if (response?.error) {
+              toast.error(response?.error);
+            } else if (response?.success) {
+              toast.success(response?.success);
+            }
+          });
+        }
+      });
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast.error('Something went wrong');
+    }
   };
 
   return (
@@ -147,7 +161,8 @@ function BundleForm({ data, isEditBundle, Sizes, cloth }: BundleProps) {
             <p className="text-sm text-gray-500 mb-3 uppercase">
               {cloth} | {data.color}{' '}
               {selectedSize && ' | ' + selectedSize?.type}
-              {selectedSize && ' | ' + selectedSize?.quantity}
+              {selectedSize &&
+                ' | ' + (selectedSize?.quantity - totalBundleSize)}{' '}
             </p>
           </div>
           <BackButton />
@@ -189,7 +204,7 @@ function BundleForm({ data, isEditBundle, Sizes, cloth }: BundleProps) {
               <div key={field.id}>
                 <Controller
                   control={form?.control}
-                  name={`bundleSizes.${index}`}
+                  name={`bundleSizes.${index}.size`}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="flex gap-6 items-center">
@@ -222,11 +237,12 @@ function BundleForm({ data, isEditBundle, Sizes, cloth }: BundleProps) {
                           {...field}
                           placeholder="BundleSize"
                           type="number"
+                          min={'1'}
                           max={selectedSize?.quantity}
-                          value={field.value.size.toString()}
-                          onChange={(e) =>
-                            handleAddBundleSize(Number(e.target.value), index)
-                          }
+                          value={field.value === 0 ? '' : field.value}
+                          onChange={(e) => {
+                            handleAddBundleSize(Number(e.target.value), index);
+                          }}
                         />
                       </FormControl>
                     </FormItem>
