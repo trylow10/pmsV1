@@ -11,7 +11,7 @@ function layout({ children }: { children: React.ReactNode }) {
       <aside className="row-span-full overflow-hidden">
         <SideNav />
       </aside>
-      <main className="px-6">{children}</main>
+      <main className="px-6 py-3">{children}</main>
     </Layout>
   );
 }
