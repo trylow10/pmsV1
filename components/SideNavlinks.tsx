@@ -20,13 +20,13 @@ const links = [
     icon: <HomeIcon />,
   },
   {
-    href: '/create-sheet',
-    label: 'Create Sheet',
+    href: '/view-bundles',
+    label: 'View Bundles',
     icon: <SheetIcon />,
   },
   {
-    href: '/view-bundles',
-    label: 'View Bundles',
+    href: '/cutting-assign',
+    label: 'Cutting Assign',
     icon: <SettingsIcon />,
   },
 ];

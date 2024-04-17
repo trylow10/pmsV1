@@ -25,13 +25,12 @@ function SheetDialog({ mode, resourceName, data, clothId }: SheetDialogProps) {
     <Dialog>
       <DialogTrigger asChild>
         <Button
-          className="flex items-center gap-3 w-full"
-          variant="ghost"
+          className="flex items-center gap-3 w-fit"
           size="sm"
+          variant={isEditMode ? 'ghost' : 'default'}
         >
-          {isEditMode ? <PenIcon /> : <PenIcon />}{' '}
+          {isEditMode && <PenIcon />}
           <span>
-            {' '}
             {mode} {resourceName}
           </span>
         </Button>

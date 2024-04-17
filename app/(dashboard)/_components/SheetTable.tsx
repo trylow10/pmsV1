@@ -19,6 +19,7 @@ import { Plus } from 'lucide-react';
 import SheetDialog from './SheetDialog';
 
 type Props = {
+  clothId?: string;
   list: TSheet[];
   editableRow?: boolean;
   deleteRow?: boolean;
@@ -36,8 +37,9 @@ function SheetTable({
 }: Props) {
   return (
     <>
-      <div className="flex justify-between">
-        <div>
+      {editableRow && <BackButton />}
+      <div className="flex justify-between items-center">
+        <div className="w-full">
           {companyCloth && (
             <h2 className="text-xl font-semibold mb-2">{companyCloth}</h2>
           )}
@@ -45,14 +47,16 @@ function SheetTable({
             <p className="text-sm text-gray-500 mb-3">{count} Sheet Found</p>
           )}
         </div>
-        {editableRow && <BackButton />}
+        {editableRow && deleteRow && (
+          <SheetDialog
+            mode={'Add'}
+            resourceName="sheet"
+            data={list}
+            clothId={clothId ?? ''}
+          />
+        )}
       </div>
-      <SheetDialog
-        mode={'Add'}
-        resourceName="sheet"
-        data={list}
-        clothId={clothId}
-      />
+
       <Table>
         <TableHeader>
           <TableRow>
@@ -108,6 +112,7 @@ function SheetTable({
                           mode={'Edit'}
                           data={item}
                           resourceName="sheet"
+                          clothId={clothId ?? ''}
                         />
                         <ConfirmDelete
                           resourceName="sheet"

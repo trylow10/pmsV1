@@ -14,7 +14,6 @@ import {
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import ConfirmRedirect from '_compo/ConfirmRedirectBundle';
 
 import { SheetSchema } from '@/validation/cloth.schema';
 import {
@@ -38,8 +37,7 @@ type SheetFormProps = {
   data?: any;
 };
 
-function SheetForm({ clothId, cloths, isEditMode, data }: SheetFormProps) {
-  const [confirmRedirectVisible, setConfirmRedirectVisible] = useState(true);
+function SheetForm({ clothId, isEditMode, data }: SheetFormProps) {
   const [sheetId, setSheetId] = useState('');
 
   const form = useForm<z.infer<typeof SheetSchema>>({
@@ -55,8 +53,6 @@ function SheetForm({ clothId, cloths, isEditMode, data }: SheetFormProps) {
     },
   });
   //while editing quantity field size fix
-
-  console.log(clothId, 'data.clothId');
 
   const onSubmit = async (values: z.infer<typeof SheetSchema>) => {
     startTransition(() => {
@@ -87,27 +83,23 @@ function SheetForm({ clothId, cloths, isEditMode, data }: SheetFormProps) {
 
   return (
     <>
-      {confirmRedirectVisible && (
-        <ConfirmRedirect sheetId={sheetId} isVisible={confirmRedirectVisible} />
-      )}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">
             <div className="grid xl:grid-cols-2 xl:gap-3">
-              {!isEditMode && (
-                <FormField
-                  control={form.control}
-                  name="clothId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input {...field} placeholder="clothId" type="hidden" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
+              <FormField
+                control={form.control}
+                name="clothId"
+                render={({ field }) => (
+                  <FormItem className="hidden">
+                    <FormControl>
+                      <Input {...field} placeholder="clothId" type="hidden" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <FormField
                 control={form.control}
                 name="cuttingDate"
