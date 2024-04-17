@@ -48,8 +48,6 @@ function BundleForm({ data, isEditBundle, Sizes, cloth }: BundleProps) {
     },
   });
 
-  console.log(isLastFieldFilled, 'isLastFieldFilled');
-
   const { control } = form;
   const { fields, append, remove } = useFieldArray({
     control,
