@@ -33,13 +33,8 @@ function SheetList({ items }: SheetListProps) {
       ) : (
         items.map((item) => {
           return (
-            <div className="flex items-center justify-between">
-              <Accordion
-                type="single"
-                collapsible
-                key={item.id}
-                className="w-full"
-              >
+            <div className="flex items-center justify-between" key={item.id}>
+              <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value={item.id} className="">
                   <AccordionTrigger className="text-base">
                     <span>{item.companyCloth}</span>

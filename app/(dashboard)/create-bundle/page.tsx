@@ -12,14 +12,13 @@ type TParams = {
 
 async function page(params: TParams) {
   const sheetId = params?.searchParams?.sheetId;
-  // if (!sheetId) return redirect('/');
   const sheet: any = await getSizesAndClothBySheetId(sheetId);
-  const workers: any = await getAllWorker();
+  // const workers: any = await getAllWorker();
 
   return (
     <BundleForm
       data={sheet}
-      workers={workers}
+      // workers={workers}
       Sizes={sheet?.Size}
       cloth={sheet?.cloth?.companyCloth}
     />

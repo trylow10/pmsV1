@@ -15,16 +15,28 @@ async function getSheet(id: string) {
   return { list, count, companyCloth };
 }
 async function page({ params }: TParams) {
+  type Props = {
+    clothId: string;
+    list: TSheet[];
+    count: any;
+    companyCloth: any;
+    editableRow: true;
+    deleteRow: true;
+  };
+
   const { id } = params;
   const { list, count, companyCloth } = await getSheet(id);
   return (
     <div>
       <SheetTable
-        list={list}
-        count={count}
-        companyCloth={companyCloth}
-        editableRow
-        deleteRow
+        {...{
+          clothId: id,
+          list,
+          count,
+          companyCloth,
+          editableRow: true,
+          deleteRow: true,
+        }}
       />
     </div>
   );

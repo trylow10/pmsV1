@@ -11,12 +11,12 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { TSheet } from '@/types/cloth.types';
-import EditSheet from './EditSheet';
 import Actions from './Actions';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import BackButton from './BackButton';
 import { Plus } from 'lucide-react';
+import SheetDialog from './SheetDialog';
 
 type Props = {
   list: TSheet[];
@@ -27,6 +27,7 @@ type Props = {
 };
 
 function SheetTable({
+  clothId,
   list,
   count,
   companyCloth,
@@ -46,6 +47,12 @@ function SheetTable({
         </div>
         {editableRow && <BackButton />}
       </div>
+      <SheetDialog
+        mode={'Add'}
+        resourceName="sheet"
+        data={list}
+        clothId={clothId}
+      />
       <Table>
         <TableHeader>
           <TableRow>
@@ -97,7 +104,11 @@ function SheetTable({
                   {editableRow && deleteRow && (
                     <TableCell>
                       <Actions>
-                        <EditSheet resourceName="sheet" data={item} />
+                        <SheetDialog
+                          mode={'Edit'}
+                          data={item}
+                          resourceName="sheet"
+                        />
                         <ConfirmDelete
                           resourceName="sheet"
                           deletehandler={() => deleteSheet(item.id)}

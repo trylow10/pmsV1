@@ -9,7 +9,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
   SELECT_GRAY_THEME_COLOR,
   SELECT_GRAY_THEME_COLOR_PRESSED,
-  generateTheme,
   options,
 } from '@/constant';
 
@@ -31,6 +30,7 @@ import { editSheet } from '@/actions/sheet/edit';
 
 type SheetFormProps = {
   isEditMode?: boolean;
+  clothId: string;
   cloths?: {
     id: string;
     companyCloth: string;
@@ -38,14 +38,14 @@ type SheetFormProps = {
   data?: any;
 };
 
-function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
+function SheetForm({ clothId, cloths, isEditMode, data }: SheetFormProps) {
   const [confirmRedirectVisible, setConfirmRedirectVisible] = useState(true);
   const [sheetId, setSheetId] = useState('');
 
   const form = useForm<z.infer<typeof SheetSchema>>({
     resolver: zodResolver(SheetSchema),
     defaultValues: {
-      clothId: data?.clothId,
+      clothId: clothId,
       cuttingDate: data?.cuttingDate,
       color: data?.color,
       thanNo: data?.thanNo,
@@ -55,6 +55,8 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
     },
   });
   //while editing quantity field size fix
+
+  console.log(clothId, 'data.clothId');
 
   const onSubmit = async (values: z.infer<typeof SheetSchema>) => {
     startTransition(() => {
@@ -83,11 +85,6 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
     });
   };
 
-  const optionCloth = cloths?.map((cloth) => ({
-    label: cloth.companyCloth,
-    value: cloth.id,
-  })) as any;
-
   return (
     <>
       {confirmRedirectVisible && (
@@ -98,22 +95,13 @@ function SheetForm({ cloths, isEditMode, data }: SheetFormProps) {
           <div className="space-y-4">
             <div className="grid xl:grid-cols-2 xl:gap-3">
               {!isEditMode && (
-                <Controller
+                <FormField
                   control={form.control}
                   name="clothId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Cloth</FormLabel>
                       <FormControl>
-                        <Select
-                          options={optionCloth}
-                          theme={generateTheme}
-                          onChange={(option) => field.onChange(option?.value)}
-                          value={optionCloth?.find(
-                            (option: any) => option.value === field.value
-                          )}
-                          required
-                        />
+                        <Input {...field} placeholder="clothId" type="hidden" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
