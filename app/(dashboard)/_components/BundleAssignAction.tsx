@@ -10,10 +10,13 @@ import {
 import { PenIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import AssignForm from './AssignForm';
 
-type BundleActionProps = {};
+type BundleActionProps = {
+  data: any;
+};
 
-function BundleAssignAction({}: BundleActionProps) {
+function BundleAssignAction({ data }: BundleActionProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -21,12 +24,12 @@ function BundleAssignAction({}: BundleActionProps) {
       <DialogTrigger asChild>
         <Button
           className="flex items-center gap-3"
-          variant={isEditCloth ? 'ghost' : 'default'}
+          // variant={isEditCloth ? 'ghost' : 'default'}
           size="sm"
           onClick={() => setIsOpen(true)}
         >
           <PenIcon />
-          {isEditCloth ? 'Edit' : 'Add Cloth'}
+          {/* {isEditCloth ? 'Edit' : 'Add Cloth'} */}
         </Button>
       </DialogTrigger>
       {isOpen && (
@@ -34,7 +37,7 @@ function BundleAssignAction({}: BundleActionProps) {
           <DialogHeader>
             <DialogTitle>Assign Cloth</DialogTitle>
           </DialogHeader>
-          test
+          <AssignForm data={data} />
         </DialogContent>
       )}
     </Dialog>
