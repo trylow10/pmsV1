@@ -147,7 +147,7 @@ export const getAllBundle = async () => {
     });
     return bundles;
   } catch (error) {
-    console.error('Error in getAllBundle:', error);
+    console.error('Error in getAllCloths:', error);
     return null;
   }
 };
