@@ -31,7 +31,11 @@ export const getAllCloths = async ({
           include: {
             Size: {
               include: {
-                Bundle: true,
+                Bundle: {
+                  include: {
+                    assignedTo: true,
+                  },
+                },
               },
             },
           },
