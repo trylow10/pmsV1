@@ -29,7 +29,7 @@ import { editSheet } from '@/actions/sheet/edit';
 
 type SheetFormProps = {
   isEditMode?: boolean;
-  clothId: string;
+  clothId?: string;
   cloths?: {
     id: string;
     companyCloth: string;
