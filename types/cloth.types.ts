@@ -8,6 +8,7 @@ export type TSize = {
   id: string;
   type: string;
   quantity: number;
+  Bundle: TBundle;
 }[];
 
 export type TBundle = {

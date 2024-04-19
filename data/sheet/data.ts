@@ -6,7 +6,8 @@ export const getCloths = async () => {
   try {
     const cloths = await db.cloth.findMany({ orderBy: { id: 'asc' } });
     return cloths;
-  } catch {
+  } catch (error) {
+    console.error('Error in getCloths:', error);
     return null;
   }
 };
@@ -24,12 +25,23 @@ export const getAllCloths = async ({
     const cloths = await db.cloth.findMany({
       skip,
       take: Number(PAGE_SIZE),
-      orderBy: { id: 'asc' },
-      include: { sheet: { include: { Size: true } } },
+      orderBy: { id: 'desc' },
+      include: {
+        sheet: {
+          include: {
+            Size: {
+              include: {
+                Bundle: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     return { items: cloths, count };
-  } catch {
+  } catch (error) {
+    console.error('Error in getAllCloths:', error);
     return null;
   }
 };
@@ -38,7 +50,8 @@ export const getClothByName = async (companyCloth: string) => {
   try {
     const cloth = await db.cloth.findUnique({ where: { companyCloth } });
     return cloth;
-  } catch {
+  } catch (error) {
+    console.error('Error in getAllCloths:', error);
     return null;
   }
 };
@@ -51,7 +64,8 @@ export const getSheetByClothId = async (id: string): Promise<any> => {
     });
     const count = await db.sheet.count({ where: { clothId: id } });
     return { cloth, count };
-  } catch {
+  } catch (error) {
+    console.error('Error in getSheetByClothId:', error);
     return null;
   }
 };
@@ -63,7 +77,8 @@ export const getSheetById = async (id: string) => {
       include: { Size: true },
     });
     return sheet;
-  } catch {
+  } catch (error) {
+    console.error('Error in getSheetById:', error);
     return null;
   }
 };
@@ -73,7 +88,8 @@ export const getSizeById = async (id: string) => {
       where: { id },
     });
     return size;
-  } catch {
+  } catch (error) {
+    console.error('Error in getSizeById:', error);
     return null;
   }
 };
@@ -85,7 +101,8 @@ export const getSizesAndClothBySheetId = async (sheetId: string) => {
     });
 
     return sheet;
-  } catch {
+  } catch (error) {
+    console.error('Error in getAllCloths:', error);
     return null;
   }
 };
@@ -117,7 +134,8 @@ export const getAllSheet = async ({ page }: { page: number }) => {
       include: { Size: true },
     });
     return { items: sheets };
-  } catch {
+  } catch (error) {
+    console.error('Error in getAllCloths:', error);
     return null;
   }
 };
@@ -128,7 +146,8 @@ export const getAllBundle = async () => {
       orderBy: { id: 'asc' },
     });
     return bundles;
-  } catch {
+  } catch (error) {
+    console.error('Error in getAllBundle:', error);
     return null;
   }
 };
@@ -142,7 +161,8 @@ export const getAllPayment = async ({ page }: { page: number }) => {
       orderBy: { id: 'asc' },
     });
     return payments;
-  } catch {
+  } catch (error) {
+    console.error('Error in getAllPayment:', error);
     return null;
   }
 };
@@ -153,7 +173,8 @@ export const getAllWorker = async () => {
       orderBy: { id: 'asc' },
     });
     return workers;
-  } catch {
+  } catch (error) {
+    console.error('Error in getAllWorker:', error);
     return null;
   }
 };
