@@ -19,9 +19,10 @@ import BundleAssignAction from './BundleAssignAction';
 
 type CuttingAssignListProps = {
   items: TCloth[];
+  workers: any;
 };
 
-function CuttingAssignList({ items }: CuttingAssignListProps) {
+function CuttingAssignList({ items, workers }: CuttingAssignListProps) {
   return (
     <div className="mt-6 px-3">
       {items.length <= 0 ? (
@@ -59,7 +60,14 @@ function CuttingAssignList({ items }: CuttingAssignListProps) {
                               <TableCell>{bundleItem.bundleId}</TableCell>
                               <TableCell>{bundleItem.bundleSize}</TableCell>
                               <TableCell>
-                                <BundleAssignAction data={items} />
+                                <BundleAssignAction
+                                  data={{
+                                    companyCloth: item.companyCloth,
+                                    size: sizeItem,
+                                    sheet: sheetItem.color,
+                                  }}
+                                  workers={workers}
+                                />
                               </TableCell>
                             </TableRow>
                           )

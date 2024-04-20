@@ -3,7 +3,7 @@ import * as z from 'zod';
 export const WorkerSchema = z.object({
   name: z.string(),
   bundle: z.array(z.string()).optional(),
-  sheetId: z.string(),
+  sheetId: z.string().optional(),
 });
 
 export const BundleSchema = z.object({

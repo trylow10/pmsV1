@@ -14,9 +14,11 @@ import AssignForm from './AssignForm';
 
 type BundleActionProps = {
   data: any;
+  workers: any;
 };
 
-function BundleAssignAction({ data }: BundleActionProps) {
+function BundleAssignAction({ data, workers }: BundleActionProps) {
+  const { companyCloth, size, sheet } = data;
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -37,7 +39,13 @@ function BundleAssignAction({ data }: BundleActionProps) {
           <DialogHeader>
             <DialogTitle>Assign Cloth</DialogTitle>
           </DialogHeader>
-          <AssignForm data={data} />
+          <AssignForm
+            isEditBundle={false}
+            size={size}
+            sheet={sheet}
+            companyCloth={companyCloth}
+            workers={workers}
+          />
         </DialogContent>
       )}
     </Dialog>
