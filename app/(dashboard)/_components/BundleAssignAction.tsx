@@ -18,7 +18,7 @@ type BundleActionProps = {
 };
 
 function BundleAssignAction({ data, workers }: BundleActionProps) {
-  const { companyCloth, size, sheet } = data;
+  const { companyCloth, size, color } = data;
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -42,7 +42,7 @@ function BundleAssignAction({ data, workers }: BundleActionProps) {
           <AssignForm
             isEditBundle={false}
             size={size}
-            sheet={sheet}
+            color={color}
             companyCloth={companyCloth}
             workers={workers}
           />

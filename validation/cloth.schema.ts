@@ -1,8 +1,8 @@
 import * as z from 'zod';
 
 export const WorkerSchema = z.object({
+  id: z.string(),
   name: z.string(),
-  bundle: z.array(z.string()).optional(),
   sheetId: z.string().optional(),
 });
 
@@ -11,11 +11,7 @@ export const BundleSchema = z.object({
   sizeId: z.string(),
   bundleSizes: z.array(z.object({ size: z.coerce.number() })),
   sheetId: z.string().optional(),
-  assignedTo: z.array(
-    z.object({
-      name: z.string(),
-    })
-  ),
+  assignedTo: WorkerSchema.optional(),
   assignedDate: z.coerce.date(),
   // receivedDate: z.coerce.date(),
   // payments: z.array(z.string()).optional(),
@@ -39,7 +35,7 @@ export const SheetSchema = z.object({
   totalSize: z.coerce.number().optional(),
   average: z.coerce.number().optional(),
   Bundle: BundleSchema.optional(),
-  Size: SizeSchema.optional(),
+  Size: SizeSchema,
   Worker: z.array(z.string()).optional(),
   clothId: z.string(),
 });

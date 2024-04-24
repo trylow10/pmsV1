@@ -64,7 +64,7 @@ function CuttingAssignList({ items, workers }: CuttingAssignListProps) {
                                   data={{
                                     companyCloth: item.companyCloth,
                                     size: sizeItem,
-                                    sheet: sheetItem.color,
+                                    color: sheetItem.color,
                                   }}
                                   workers={workers}
                                 />

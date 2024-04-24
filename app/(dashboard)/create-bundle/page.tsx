@@ -1,8 +1,5 @@
-import { redirect } from 'next/navigation';
 import BundleForm from '../_components/BundleForm';
-import { getAllWorker, getSizesAndClothBySheetId } from '@/data/sheet/data';
-
-// import { TWorker } from '@/types/cloth.types';
+import { getSizesAndClothBySheetId } from '@/data/sheet/data';
 
 type TParams = {
   searchParams: {
@@ -13,16 +10,7 @@ type TParams = {
 async function page(params: TParams) {
   const sheetId = params?.searchParams?.sheetId;
   const sheet: any = await getSizesAndClothBySheetId(sheetId);
-  // const workers: any = await getAllWorker();
-
-  return (
-    <BundleForm
-      data={sheet}
-      // workers={workers}
-      Sizes={sheet?.Size}
-      cloth={sheet?.cloth?.companyCloth}
-    />
-  );
+  return <BundleForm data={sheet} />;
 }
 
 export default page;

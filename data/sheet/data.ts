@@ -101,7 +101,14 @@ export const getSizesAndClothBySheetId = async (sheetId: string) => {
   try {
     const sheet = await db.sheet.findUnique({
       where: { id: sheetId },
-      include: { Size: true, cloth: true },
+      include: {
+        Size: {
+          include: {
+            Bundle: true,
+          },
+        },
+        cloth: true,
+      },
     });
 
     return sheet;

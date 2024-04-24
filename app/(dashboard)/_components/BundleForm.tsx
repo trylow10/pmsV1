@@ -29,21 +29,13 @@ import { cn } from '@/lib/utils';
 type BundleProps = {
   data: any;
   isEditBundle?: boolean;
-  Sizes: {
-    id: string;
-    type: string;
-    quantity: number;
-  }[];
-  cloth: string;
 };
 
-function BundleForm({ data, isEditBundle, Sizes, cloth }: BundleProps) {
+function BundleForm({ data, isEditBundle }: BundleProps) {
   const [isLastFieldFilled, setIsLastFieldFilled] = useState(true);
   const form = useForm<z.infer<typeof BundleSchema>>({
     resolver: zodResolver(BundleSchema),
     defaultValues: {
-      sizeId: data?.sizeId,
-      bundleSizes: data?.bundleSizes ?? [{ size: 0 }],
       sheetId: data?.id,
     },
   });
@@ -66,16 +58,14 @@ function BundleForm({ data, isEditBundle, Sizes, cloth }: BundleProps) {
     quantity: number;
   };
 
-  const optionSize = Sizes?.map((size: Size) => ({
+  const optionSize = data?.Size?.map((size: Size) => ({
     label: size.type,
     value: size.id,
     quantity: size.quantity,
   })) as any;
 
   const handleAddBundleSizeInput = () => {
-    const lastField = fields[fields.length - 1];
-
-    if (lastField.size === 0 || lastField.size === undefined) {
+    if (!isLastFieldFilled) {
       toast.error('Please fill the last bundle size before adding a new one.');
       return;
     }
@@ -157,7 +147,7 @@ function BundleForm({ data, isEditBundle, Sizes, cloth }: BundleProps) {
           <div>
             <h2 className="text-xl font-semibold mb-2">Total Size </h2>
             <p className="text-sm text-gray-500 mb-3 uppercase">
-              {cloth} | {data.color}{' '}
+              {data?.cloth?.companyCloth} | {data.color}{' '}
               {selectedSize && ' | ' + selectedSize?.type}
               {selectedSize &&
                 ' | ' + (selectedSize?.quantity - totalBundleSize)}{' '}
