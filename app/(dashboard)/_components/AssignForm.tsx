@@ -9,8 +9,10 @@ import { BundleSchema } from '@/validation/cloth.schema';
 import { generateTheme } from '@/constant';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { createBundle } from '@/actions/sheet/create';
+import { updateBundle } from '@/actions/sheet/create';
 import { editBundle } from '@/actions/sheet/edit';
+import { SubmitHandler } from 'react-hook-form';
+
 import {
   Form,
   FormControl,
@@ -23,7 +25,7 @@ import {
 type AssignFormProps = {
   isEditBundle?: boolean;
   size: any;
-  sheet: any;
+  color: any;
   companyCloth: any;
   workers: any;
 };
@@ -31,23 +33,33 @@ type AssignFormProps = {
 function AssignForm({
   isEditBundle,
   size,
-  sheet,
+  color,
   companyCloth,
   workers,
 }: AssignFormProps) {
+  interface FieldValues {
+    sheetId: string;
+    sizeId: string;
+    assignedDate: Date;
+  }
+
   const defaultValues = {
     companyClothName: companyCloth,
-    color: sheet,
+    color: color,
     type: size.type,
     Bundle: size?.Bundle.flatMap((bundleItem: any) => ({
       id: bundleItem.id,
       bundleId: bundleItem.bundleId,
+      bundleSizes: bundleItem,
       assignedDate: bundleItem.assignedDate,
+      assignedTo: bundleItem.assignedTo.id,
+      sheetId: bundleItem.sheetId,
+      sizeId: bundleItem.sizeId,
     })),
   };
   const form = useForm({
     resolver: zodResolver(BundleSchema),
-    defaultValues: defaultValues,
+    // defaultValues: defaultValues,
   });
 
   const optionWorker = workers.map((worker: any) => ({
@@ -67,7 +79,7 @@ function AssignForm({
             }
           });
         } else {
-          createBundle(values).then((response: any) => {
+          updateBundle(values).then((response: any) => {
             if (response?.error) {
               toast.error(response?.error);
             } else if (response?.success) {
@@ -84,24 +96,24 @@ function AssignForm({
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
+      <div className="flex flex-wrap justify-between">
+        <div className="w-1/2 p-2">
+          Cloth Name | <span>{defaultValues.companyClothName}</span>
+        </div>
+
+        <div className="w-1/2 p-2">
           Color | <span>{defaultValues?.color}</span>
         </div>
 
-        <div>
+        <div className="w-1/2 p-2">
           Size | <span>{defaultValues.type}</span>
         </div>
 
-        <div>
+        <div className="w-1/2 p-2">
           Bundle ID |{' '}
           <span>
             {defaultValues.Bundle.map((bundle: any) => bundle.bundleId)}
           </span>
-        </div>
-
-        <div>
-          Cloth Name | <span>{defaultValues.companyClothName}</span>
         </div>
       </div>
 
@@ -141,25 +153,28 @@ function AssignForm({
                     <FormControl>
                       <Select
                         theme={generateTheme}
-                        value={optionWorker.filter(
+                        value={optionWorker.find(
                           (option: any) =>
-                            field.value &&
-                            field.value.some(
-                              ({ name }: { name: string }) =>
-                                name === option.value
-                            )
+                            field.value && field.value.name === option.value
                         )}
-                        onChange={(selectedOptions) => {
-                          field.onChange(
-                            selectedOptions.map(({ value }) => ({
-                              name: value,
-                            }))
-                          );
+                        onChange={(selectedOption) => {
+                          field.onChange({ name: selectedOption.value });
                         }}
                         options={optionWorker}
-                        isMulti
                       />
                     </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="sheetId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input {...field} placeholder="sheetId" type="hidden" />
+                    </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
