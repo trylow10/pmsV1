@@ -5,12 +5,15 @@ import { calculation } from '@/lib/calculation';
 import { db } from '@/lib/db';
 
 import { TSize } from '@/types/cloth.types';
-import { BundleSchema } from '@/validation/cloth.schema';
+import {
+  CreateBundleSchema,
+  AssignBundleSchema,
+} from '@/validation/cloth.schema';
 import * as z from 'zod';
 
 export const editBundle = async (
   id: string,
-  data: z.infer<typeof BundleSchema>
+  data: z.infer<typeof CreateBundleSchema>
 ) => {
   try {
     const isBundleExist = await db.bundle.findFirst({
@@ -30,15 +33,7 @@ export const editBundle = async (
       return { error: 'Bundle already exist!' };
     }
 
-    const {
-      sizeId,
-      sheetId,
-      assignedToId,
-      assignedDate,
-      receivedDate,
-      payments = [],
-      bundleSizes = [],
-    } = data;
+    const { sizeId, sheetId, bundleSizes = [] } = data;
 
     const bundle = await db.bundle.update({
       data: {
@@ -46,12 +41,6 @@ export const editBundle = async (
         bundleSize: bundleSizes[0]?.size, // Assuming we're updating the first bundleSize
         size: { connect: { id: sizeId } },
         sheet: { connect: { id: sheetId } },
-        assignedTo: { connect: { id: assignedToId } },
-        assignedDate,
-        receivedDate,
-        payments: {
-          connect: payments.map((paymentId: any) => ({ id: paymentId })),
-        },
       },
       where: {
         id,
@@ -63,6 +52,50 @@ export const editBundle = async (
     return bundle;
   } catch (e) {
     console.error(e);
+  }
+};
+
+export const editUpdatedBundle = async (
+  bId: string,
+  values: z.infer<typeof AssignBundleSchema>
+) => {
+  const validatedFields = AssignBundleSchema.safeParse(values);
+
+  if (!validatedFields.success) {
+    const errorFields = validatedFields.error.flatten();
+    console.log('Invalid fields:', errorFields);
+    return { error: 'Invalid fields!', errorFields };
+  }
+  const { assignedDate, assignedTo, sheetId } = validatedFields.data;
+
+  try {
+    const existingBundle = await db.bundle.findFirst({
+      where: {
+        id: bId,
+      },
+    });
+
+    if (!existingBundle) {
+      return {
+        error: `A bundle does not exist!`,
+      };
+    }
+
+    const updatedBundle = await db.bundle.update({
+      where: { id: existingBundle.id },
+      data: {
+        assignedDate: assignedDate,
+        assignedTo: { connect: { id: assignedTo.name } },
+        sheet: { connect: { id: sheetId } },
+      },
+    });
+
+    if (updatedBundle) {
+      return { success: 'Bundle Assigned successfully!' };
+    }
+  } catch (error) {
+    console.log('Error updating bundle:', error);
+    return { error: 'Error updating bundle', detailedError: error };
   }
 };
 
