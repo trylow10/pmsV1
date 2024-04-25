@@ -8,7 +8,7 @@ import { startTransition } from 'react';
 import { toast } from 'sonner';
 import Select from 'react-select';
 
-import { BundleSchema } from '@/validation/cloth.schema';
+import { CreateBundleSchema } from '@/validation/cloth.schema';
 import { generateTheme } from '@/constant';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -33,8 +33,8 @@ type BundleProps = {
 
 function BundleForm({ data, isEditBundle }: BundleProps) {
   const [isLastFieldFilled, setIsLastFieldFilled] = useState(true);
-  const form = useForm<z.infer<typeof BundleSchema>>({
-    resolver: zodResolver(BundleSchema),
+  const form = useForm<z.infer<typeof CreateBundleSchema>>({
+    resolver: zodResolver(CreateBundleSchema),
     defaultValues: {
       sheetId: data?.id,
     },
@@ -108,7 +108,7 @@ function BundleForm({ data, isEditBundle }: BundleProps) {
     remove(index);
   };
 
-  const onSubmit = async (values: z.infer<typeof BundleSchema>) => {
+  const onSubmit = async (values: z.infer<typeof CreateBundleSchema>) => {
     try {
       if (fields.length === 0 || fields.some((field) => field.size === 0)) {
         toast.error('All bundle sizes must be filled with a valid number.');

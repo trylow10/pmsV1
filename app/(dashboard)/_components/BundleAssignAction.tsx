@@ -15,10 +15,15 @@ import AssignForm from './AssignForm';
 type BundleActionProps = {
   data: any;
   workers: any;
+  isEditBundle?: boolean;
 };
 
-function BundleAssignAction({ data, workers }: BundleActionProps) {
-  const { companyCloth, size, color } = data;
+function BundleAssignAction({
+  data,
+  workers,
+  isEditBundle,
+}: BundleActionProps) {
+  const { companyCloth, size, color, bId } = data;
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -26,18 +31,18 @@ function BundleAssignAction({ data, workers }: BundleActionProps) {
       <DialogTrigger asChild>
         <Button
           className="flex items-center gap-3"
-          // variant={isEditCloth ? 'ghost' : 'default'}
+          variant={isEditBundle ? 'ghost' : 'default'}
           size="sm"
           onClick={() => setIsOpen(true)}
         >
           <PenIcon />
-          {/* {isEditCloth ? 'Edit' : 'Add Cloth'} */}
+          {isEditBundle ? 'Edit' : 'Assign'}
         </Button>
       </DialogTrigger>
       {isOpen && (
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Assign Cloth</DialogTitle>
+            <DialogTitle>Assign Bundle</DialogTitle>
           </DialogHeader>
           <AssignForm
             isEditBundle={false}
@@ -45,6 +50,7 @@ function BundleAssignAction({ data, workers }: BundleActionProps) {
             color={color}
             companyCloth={companyCloth}
             workers={workers}
+            bId={bId}
           />
         </DialogContent>
       )}

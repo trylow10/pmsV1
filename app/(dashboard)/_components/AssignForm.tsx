@@ -5,13 +5,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { startTransition } from 'react';
 import { toast } from 'sonner';
 import Select from 'react-select';
-import { BundleSchema } from '@/validation/cloth.schema';
+import { AssignBundleSchema } from '@/validation/cloth.schema';
 import { generateTheme } from '@/constant';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { updateBundle } from '@/actions/sheet/create';
-import { editBundle } from '@/actions/sheet/edit';
-import { SubmitHandler } from 'react-hook-form';
+import { editUpdatedBundle } from '@/actions/sheet/edit';
 
 import {
   Form,
@@ -24,6 +23,7 @@ import {
 
 type AssignFormProps = {
   isEditBundle?: boolean;
+  bId: string;
   size: any;
   color: any;
   companyCloth: any;
@@ -33,33 +33,27 @@ type AssignFormProps = {
 function AssignForm({
   isEditBundle,
   size,
+  bId,
   color,
   companyCloth,
   workers,
 }: AssignFormProps) {
-  interface FieldValues {
-    sheetId: string;
-    sizeId: string;
-    assignedDate: Date;
-  }
-
-  const defaultValues = {
+  const renderValues = {
     companyClothName: companyCloth,
     color: color,
     type: size.type,
     Bundle: size?.Bundle.flatMap((bundleItem: any) => ({
-      id: bundleItem.id,
       bundleId: bundleItem.bundleId,
-      bundleSizes: bundleItem,
-      assignedDate: bundleItem.assignedDate,
-      assignedTo: bundleItem.assignedTo.id,
       sheetId: bundleItem.sheetId,
-      sizeId: bundleItem.sizeId,
     })),
   };
-  const form = useForm({
-    resolver: zodResolver(BundleSchema),
-    // defaultValues: defaultValues,
+
+  console.log(isEditBundle);
+  const form = useForm<z.infer<typeof AssignBundleSchema>>({
+    resolver: zodResolver(AssignBundleSchema),
+    defaultValues: {
+      sheetId: renderValues?.Bundle[0]?.sheetId,
+    },
   });
 
   const optionWorker = workers.map((worker: any) => ({
@@ -67,11 +61,11 @@ function AssignForm({
     value: worker?.id,
   }));
 
-  const onSubmit = async (values: z.infer<typeof BundleSchema>) => {
+  const onSubmit = async (values: z.infer<typeof AssignBundleSchema>) => {
     try {
       startTransition(() => {
         if (isEditBundle) {
-          editBundle(defaultValues.Bundle.id, values).then((response: any) => {
+          editUpdatedBundle(bId, values).then((response: any) => {
             if (response?.error) {
               toast.error(response?.error);
             } else if (response?.success) {
@@ -79,7 +73,7 @@ function AssignForm({
             }
           });
         } else {
-          updateBundle(values).then((response: any) => {
+          updateBundle(bId, values).then((response: any) => {
             if (response?.error) {
               toast.error(response?.error);
             } else if (response?.success) {
@@ -96,24 +90,16 @@ function AssignForm({
 
   return (
     <>
-      <div className="flex flex-wrap justify-between">
-        <div className="w-1/2 p-2">
-          Cloth Name | <span>{defaultValues.companyClothName}</span>
-        </div>
-
-        <div className="w-1/2 p-2">
-          Color | <span>{defaultValues?.color}</span>
-        </div>
-
-        <div className="w-1/2 p-2">
-          Size | <span>{defaultValues.type}</span>
-        </div>
-
-        <div className="w-1/2 p-2">
-          Bundle ID |{' '}
-          <span>
-            {defaultValues.Bundle.map((bundle: any) => bundle.bundleId)}
-          </span>
+      <div className="flex justify-between">
+        <div>
+          <p className="text-sm text-gray-500 mb-3 uppercase">
+            {renderValues?.companyClothName.toUpperCase()}
+            {' | '}
+            {renderValues?.color}
+            {' | '}
+            {renderValues.type.toUpperCase()} {' | '}
+            {renderValues.Bundle.map((bundle: any) => bundle.bundleId)}
+          </p>
         </div>
       </div>
 
@@ -136,6 +122,9 @@ function AssignForm({
                             ? new Date(field.value).toISOString().split('T')[0]
                             : ''
                         }
+                        onChange={(event) => {
+                          field.onChange(event);
+                        }}
                       />
                     </FormControl>
 
@@ -170,7 +159,7 @@ function AssignForm({
                 control={form.control}
                 name="sheetId"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="hidden">
                     <FormControl>
                       <Input {...field} placeholder="sheetId" type="hidden" />
                     </FormControl>
@@ -180,7 +169,11 @@ function AssignForm({
               />
             </div>
           </div>
-          <Button type="submit">Submit</Button>
+          <div className="w-full mt-8 h-fit">
+            <Button type="submit" className="h-fit">
+              {!isEditBundle ? 'Add' : 'Edit'} Bundle
+            </Button>
+          </div>
         </form>
       </Form>
     </>

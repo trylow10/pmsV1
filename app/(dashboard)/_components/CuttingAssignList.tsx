@@ -7,15 +7,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { TCloth } from '@/types/cloth.types';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import BundleAssignAction from './BundleAssignAction';
+import BundleTable from './BundleTable';
 
 type CuttingAssignListProps = {
   items: TCloth[];
@@ -35,47 +27,7 @@ function CuttingAssignList({ items, workers }: CuttingAssignListProps) {
                 <span>{item.companyCloth}</span>
               </AccordionTrigger>
               <AccordionContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Color</TableHead>
-                      <TableHead>Size</TableHead>
-                      <TableHead>Bundle ID</TableHead>
-                      <TableHead>Bundle Size</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {item.sheet.map((sheetItem, index) =>
-                      sheetItem?.Size.map((sizeItem, sizeIndex) =>
-                        sizeItem?.Bundle.map(
-                          (bundleItem: any, bundleIndex: any) => (
-                            <TableRow
-                              key={`${index}-${sizeIndex}-${bundleIndex}`}
-                            >
-                              <TableCell>{sheetItem.color}</TableCell>
-                              <TableCell>
-                                {sizeItem.type.toUpperCase()}
-                              </TableCell>
-                              <TableCell>{bundleItem.bundleId}</TableCell>
-                              <TableCell>{bundleItem.bundleSize}</TableCell>
-                              <TableCell>
-                                <BundleAssignAction
-                                  data={{
-                                    companyCloth: item.companyCloth,
-                                    size: sizeItem,
-                                    color: sheetItem.color,
-                                  }}
-                                  workers={workers}
-                                />
-                              </TableCell>
-                            </TableRow>
-                          )
-                        )
-                      )
-                    )}
-                  </TableBody>
-                </Table>
+                <BundleTable items={items} workers={workers} />
               </AccordionContent>
             </AccordionItem>
           ))}
