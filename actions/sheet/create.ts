@@ -4,7 +4,8 @@ import * as z from 'zod';
 import { db } from '@/lib/db';
 import {
   ClothSchema,
-  BundleSchema,
+  CreateBundleSchema,
+  AssignBundleSchema,
   SheetSchema,
   PaymentSchema,
   WorkerSchema,
@@ -128,15 +129,16 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
   }
 };
 
-export const createBundle = async (values: z.infer<typeof BundleSchema>) => {
-  const validatedFields = BundleSchema.safeParse(values);
+export const createBundle = async (
+  values: z.infer<typeof CreateBundleSchema>
+) => {
+  const validatedFields = CreateBundleSchema.safeParse(values);
 
   if (!validatedFields.success) {
     const errorFields = validatedFields.error.flatten();
     console.log('Invalid fields:', errorFields);
     return { error: 'Invalid fields!', errorFields };
   }
-  console.log(validatedFields.data);
 
   const { sizeId, sheetId, bundleSizes = [] } = validatedFields.data;
 
@@ -182,8 +184,11 @@ export const createBundle = async (values: z.infer<typeof BundleSchema>) => {
   }
 };
 
-export const updateBundle = async (values: z.infer<typeof BundleSchema>) => {
-  const validatedFields = BundleSchema.safeParse(values);
+export const updateBundle = async (
+  bId: string,
+  values: z.infer<typeof AssignBundleSchema>
+) => {
+  const validatedFields = AssignBundleSchema.safeParse(values);
 
   if (!validatedFields.success) {
     const errorFields = validatedFields.error.flatten();
@@ -192,47 +197,36 @@ export const updateBundle = async (values: z.infer<typeof BundleSchema>) => {
   }
   console.log(validatedFields.data);
 
-  const {
-    assignedDate,
-    sheetId,
-    bundleSizes = [],
-    assignedTo,
-  } = validatedFields.data;
+  const { assignedDate, assignedTo, sheetId } = validatedFields.data;
 
   try {
-    const bundles = await Promise.all(
-      bundleSizes.map(async (bundleSize) => {
-        const existingBundle = await db.bundle.findFirst({
-          where: {
-            bundleSize: bundleSize.size,
-            sheetId: sheetId,
-          },
-        });
+    const existingBundle = await db.bundle.findFirst({
+      where: {
+        id: bId,
+      },
+    });
 
-        if (!existingBundle) {
-          return {
-            error: `A bundle with size ${bundleSize.size} and sheetId ${sheetId} does not exist!`,
-          };
-        }
-
-        return await db.bundle.update({
-          where: { id: existingBundle.id },
-          data: {
-            assignedDate: assignedDate,
-            assignedTo: { connect: { id: assignedTo?.id } },
-          },
-        });
-      })
-    );
-
-    if (bundles.every((bundle) => bundle)) {
-      return { success: 'Bundles Assigned successfully!' };
+    if (!existingBundle) {
+      return {
+        error: `A bundle does not exist!`,
+      };
     }
 
-    return bundles;
+    const updatedBundle = await db.bundle.update({
+      where: { id: existingBundle.id },
+      data: {
+        assignedDate: assignedDate,
+        assignedTo: { connect: { id: assignedTo.name } },
+        sheet: { connect: { id: sheetId } },
+      },
+    });
+
+    if (updatedBundle) {
+      return { success: 'Bundle Assigned successfully!' };
+    }
   } catch (error) {
-    console.log('Error updating bundle objects:', error);
-    return { error: 'Error updating bundle objects', detailedError: error };
+    console.log('Error updating bundle:', error);
+    return { error: 'Error updating bundle', detailedError: error };
   }
 };
 
@@ -275,15 +269,12 @@ export const createWorker = async (values: z.infer<typeof WorkerSchema>) => {
     return { error: 'Invalid fields!', errorFields };
   }
 
-  const { name, bundle = [], sheetId } = validatedFields.data;
+  const { name, sheetId } = validatedFields.data;
 
   try {
     const worker = await db.worker.create({
       data: {
         name,
-        bundle: {
-          connect: bundle.map((jobId) => ({ id: jobId })),
-        },
         sheet: { connect: { id: sheetId } },
       },
     });
