@@ -48,7 +48,7 @@ function SheetPagination({ count }: { count: number }) {
 
   return (
     <div className="flex gap-3 items-center justify-between mt-6">
-      <p className="w-full text-gray-900">
+      <p className="w-full text-gray-900 text-sm md:text-base">
         Showing
         {
           <span className="font-semibold mx-1">

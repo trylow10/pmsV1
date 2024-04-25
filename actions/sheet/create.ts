@@ -4,14 +4,15 @@ import * as z from 'zod';
 import { db } from '@/lib/db';
 import {
   ClothSchema,
-  BundleSchema,
+  CreateBundleSchema,
+  AssignBundleSchema,
   SheetSchema,
   PaymentSchema,
   WorkerSchema,
   SizeSchema,
 } from '@/validation/cloth.schema';
 import { getClothByName, getSheetByColor } from '@/data/sheet/data';
-import { calculation } from '@/lib/calculation';
+import { calculation, generateSerialNumber } from '@/lib/calculation';
 //TODO: create custom error handlers
 
 export const createClothDesign = async (
@@ -69,9 +70,6 @@ export const createSize = async (values: z.infer<typeof SizeSchema>[]) => {
           type,
           quantity: quantity || 0,
           sheet: { connect: { id: sheetId } },
-          Bundle: {
-            connect: Bundle.map((bundleId) => ({ id: bundleId })),
-          },
         },
       });
     } catch (error) {
@@ -89,28 +87,19 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
     return { error: 'Invalid fields!', errorFields };
   }
 
-  const {
-    cuttingDate,
-    color,
-    thanNo,
-    weightPerLenght,
-    palla,
-    clothId,
-    Size = [],
-  } = validatedFields.data;
-
-  const date = new Date(cuttingDate).toISOString();
+  const { cuttingDate, color, thanNo, weightPerLenght, palla, clothId, Size } =
+    validatedFields.data;
+  //TODO: size validation
 
   try {
-    const existingCloth = await getSheetByColor(color);
+    const existingCloth = await getSheetByColor(clothId, color);
 
-    if (existingCloth) {
+    if (existingCloth?.sheet.length) {
       return { error: 'Color already exixts in this sheet!' };
     }
-
     const data = await db.sheet.create({
       data: {
-        cuttingDate: date,
+        cuttingDate,
         color,
         thanNo,
         weightPerLenght,
@@ -121,6 +110,8 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
       },
     });
 
+    console.log(data);
+
     const { id: sheetId } = data;
     const newSizeArray = Size.map((size) => ({ ...size, sheetId }));
     const createSizePromises = newSizeArray.map((size) =>
@@ -129,15 +120,19 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
     await Promise.all(createSizePromises);
     await calculation(sheetId);
 
-    return { message: 'Sheet created successfully!' };
+    if (data) {
+      return { success: 'Sheet created successfully!', data: data };
+    }
   } catch (error) {
     console.log('Error creating sheet object:', error);
     return { error: 'Error creating sheet object', detailedError: error };
   }
 };
 
-export const createBundle = async (values: z.infer<typeof BundleSchema>) => {
-  const validatedFields = BundleSchema.safeParse(values);
+export const createBundle = async (
+  values: z.infer<typeof CreateBundleSchema>
+) => {
+  const validatedFields = CreateBundleSchema.safeParse(values);
 
   if (!validatedFields.success) {
     const errorFields = validatedFields.error.flatten();
@@ -145,37 +140,93 @@ export const createBundle = async (values: z.infer<typeof BundleSchema>) => {
     return { error: 'Invalid fields!', errorFields };
   }
 
-  const {
-    bundleId,
-    sizeId,
-    bundleSize,
-    sheetId,
-    assignedToId,
-    assignedDate,
-    receivedDate,
-    payments = [],
-  } = validatedFields.data;
+  const { sizeId, sheetId, bundleSizes = [] } = validatedFields.data;
 
   try {
-    const bundle = await db.bundle.create({
-      data: {
-        bundleId,
-        size: { connect: { id: sizeId } },
-        bundleSize,
-        sheet: { connect: { id: sheetId } },
-        assignedTo: { connect: { id: assignedToId } },
-        assignedDate,
-        receivedDate,
-        payments: {
-          connect: payments.map((paymentId) => ({ id: paymentId })),
-        },
+    const bundles = await Promise.all(
+      bundleSizes.map(async (bundleSize) => {
+        const bundleID: any = await generateSerialNumber(sizeId ?? '');
+
+        const existingBundle = await db.bundle.findFirst({
+          where: {
+            bundleSize: bundleSize.size,
+            sheetId: sheetId,
+          },
+        });
+
+        if (existingBundle) {
+          return {
+            error: `A bundle with size ${bundleSize.size} and sheetId ${sheetId} has already been created!`,
+          };
+        }
+
+        return await db.bundle.create({
+          data: {
+            bundleId: bundleID,
+            bundleSize: bundleSize.size,
+            size: { connect: { id: sizeId } },
+            sheet: { connect: { id: sheetId } },
+            assignedDate: new Date(),
+            receivedDate: new Date(),
+          },
+        });
+      })
+    );
+
+    if (bundles.every((bundle) => bundle)) {
+      return { success: 'Bundles created successfully!' };
+    }
+
+    return bundles;
+  } catch (error) {
+    console.log('Error creating bundle objects:', error);
+    return { error: 'Error creating bundle objects', detailedError: error };
+  }
+};
+
+export const updateBundle = async (
+  bId: string,
+  values: z.infer<typeof AssignBundleSchema>
+) => {
+  const validatedFields = AssignBundleSchema.safeParse(values);
+
+  if (!validatedFields.success) {
+    const errorFields = validatedFields.error.flatten();
+    console.log('Invalid fields:', errorFields);
+    return { error: 'Invalid fields!', errorFields };
+  }
+  console.log(validatedFields.data);
+
+  const { assignedDate, assignedTo, sheetId } = validatedFields.data;
+
+  try {
+    const existingBundle = await db.bundle.findFirst({
+      where: {
+        id: bId,
       },
     });
 
-    return bundle;
+    if (!existingBundle) {
+      return {
+        error: `A bundle does not exist!`,
+      };
+    }
+
+    const updatedBundle = await db.bundle.update({
+      where: { id: existingBundle.id },
+      data: {
+        assignedDate: assignedDate,
+        assignedTo: { connect: { id: assignedTo.name } },
+        sheet: { connect: { id: sheetId } },
+      },
+    });
+
+    if (updatedBundle) {
+      return { success: 'Bundle Assigned successfully!' };
+    }
   } catch (error) {
-    console.log('Error creating bundle object:', error);
-    return { error: 'Error creating bundle object', detailedError: error };
+    console.log('Error updating bundle:', error);
+    return { error: 'Error updating bundle', detailedError: error };
   }
 };
 
@@ -218,15 +269,12 @@ export const createWorker = async (values: z.infer<typeof WorkerSchema>) => {
     return { error: 'Invalid fields!', errorFields };
   }
 
-  const { name, bundle = [], sheetId } = validatedFields.data;
+  const { name, sheetId } = validatedFields.data;
 
   try {
     const worker = await db.worker.create({
       data: {
         name,
-        bundle: {
-          connect: bundle.map((jobId) => ({ id: jobId })),
-        },
         sheet: { connect: { id: sheetId } },
       },
     });

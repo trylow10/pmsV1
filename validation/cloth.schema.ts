@@ -2,19 +2,20 @@ import * as z from 'zod';
 
 export const WorkerSchema = z.object({
   name: z.string(),
-  bundle: z.array(z.string()).optional(),
-  sheetId: z.string(),
+  sheetId: z.string().optional(),
 });
 
-export const BundleSchema = z.object({
-  bundleId: z.string(),
+export const CreateBundleSchema = z.object({
+  bundleId: z.string().optional(),
   sizeId: z.string(),
-  bundleSize: z.number(),
+  bundleSizes: z.array(z.object({ size: z.coerce.number() })),
   sheetId: z.string().optional(),
-  assignedToId: z.string().optional(),
-  assignedDate: z.string().transform((value) => new Date(value)),
-  receivedDate: z.string().transform((value) => new Date(value)),
-  payments: z.array(z.string()),
+});
+
+export const AssignBundleSchema = z.object({
+  sheetId: z.string(),
+  assignedTo: WorkerSchema,
+  assignedDate: z.coerce.date(),
 });
 
 export const SizeSchema = z.array(
@@ -22,20 +23,20 @@ export const SizeSchema = z.array(
     type: z.string(),
     sheetId: z.string().optional(),
     quantity: z.number().optional(),
-    Bundle: z.array(z.string()).optional(),
+    Bundle: CreateBundleSchema.optional(),
   })
 );
 
 export const SheetSchema = z.object({
-  cuttingDate: z.string(),
+  cuttingDate: z.coerce.date(),
   color: z.string(),
   thanNo: z.coerce.number(),
   weightPerLenght: z.coerce.number(),
   palla: z.coerce.number(),
   totalSize: z.coerce.number().optional(),
   average: z.coerce.number().optional(),
-  Bundle: z.array(z.string()).optional(),
-  Size: SizeSchema.optional(),
+  Bundle: CreateBundleSchema.optional(),
+  Size: SizeSchema,
   Worker: z.array(z.string()).optional(),
   clothId: z.string(),
 });

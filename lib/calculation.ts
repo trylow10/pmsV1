@@ -1,30 +1,31 @@
-import { getSheetById } from '@/data/sheet/data';
+import { getSheetById, getSizeById } from '@/data/sheet/data';
 import { db } from './db';
 
 export const calculation = async (sheetId: string) => {
-  const sheet: any = await getSheetById(sheetId);
-  const totalSize: number = sheet.Size.reduce(
-    (acc: number, curr: any) => acc + curr.quantity,
-    0
-  );
-  const average =
-    totalSize !== 0
-      ? Number((sheet.weightPerLenght / totalSize).toFixed(5))
-      : 0;
-  await db.sheet.update({
-    where: { id: sheetId },
-    data: { totalSize, average },
-  });
+  try {
+    const sheet: any = await getSheetById(sheetId);
+    const totalSize: number = sheet.Size.reduce(
+      (acc: number, curr: any) => acc + curr.quantity,
+      0
+    );
+    const average =
+      totalSize !== 0
+        ? Number((sheet.weightPerLenght / totalSize).toFixed(2))
+        : 0;
+    await db.sheet.update({
+      where: { id: sheetId },
+      data: { totalSize, average },
+    });
+  } catch (error) {
+    return { error: 'Error calculating sheet', detailedError: error };
+  }
 };
 
-// let sizeCounters: { [key: string]: number } = {};
+let counter = 0;
 
-// export const generateSerialNumber = async (sizeId: string) => {
-// const size = await getSiz
-
-//   if (!sizeCounters[size]) {
-//     sizeCounters[size] = 0;
-//   }
-//   sizeCounters[size]++;
-//   return `${size}-${String(sizeCounters[size]).padStart(3, '0')}`;
-// };
+export const generateSerialNumber = async (sizeId: string) => {
+  const size = await getSizeById(sizeId);
+  const sizeType = size?.type;
+  counter++;
+  return `${sizeType}-${String(counter).padStart(5, '0')}`;
+};

@@ -1,15 +1,157 @@
 'use server';
 
-import { getClothByName } from '@/data/sheet/data';
+import { getClothByName, getSheetById } from '@/data/sheet/data';
+import { calculation } from '@/lib/calculation';
 import { db } from '@/lib/db';
+
+import { TSize } from '@/types/cloth.types';
+import {
+  CreateBundleSchema,
+  AssignBundleSchema,
+} from '@/validation/cloth.schema';
+import * as z from 'zod';
+
+export const editBundle = async (
+  id: string,
+  data: z.infer<typeof CreateBundleSchema>
+) => {
+  try {
+    const isBundleExist = await db.bundle.findFirst({
+      where: {
+        id,
+      },
+    });
+    if (!isBundleExist) return { error: 'Bundle not found' };
+
+    const existingBundle = await db.bundle.findFirst({
+      where: {
+        bundleId: data.bundleId,
+      },
+    });
+
+    if (existingBundle && existingBundle.id !== id) {
+      return { error: 'Bundle already exist!' };
+    }
+
+    const { sizeId, sheetId, bundleSizes = [] } = data;
+
+    const bundle = await db.bundle.update({
+      data: {
+        bundleId: data.bundleId,
+        bundleSize: bundleSizes[0]?.size, // Assuming we're updating the first bundleSize
+        size: { connect: { id: sizeId } },
+        sheet: { connect: { id: sheetId } },
+      },
+      where: {
+        id,
+      },
+    });
+
+    if (bundle) return { success: 'Successfully updated bundle!' };
+
+    return bundle;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const editUpdatedBundle = async (
+  bId: string,
+  values: z.infer<typeof AssignBundleSchema>
+) => {
+  const validatedFields = AssignBundleSchema.safeParse(values);
+
+  if (!validatedFields.success) {
+    const errorFields = validatedFields.error.flatten();
+    console.log('Invalid fields:', errorFields);
+    return { error: 'Invalid fields!', errorFields };
+  }
+  const { assignedDate, assignedTo, sheetId } = validatedFields.data;
+
+  try {
+    const existingBundle = await db.bundle.findFirst({
+      where: {
+        id: bId,
+      },
+    });
+
+    if (!existingBundle) {
+      return {
+        error: `A bundle does not exist!`,
+      };
+    }
+
+    const updatedBundle = await db.bundle.update({
+      where: { id: existingBundle.id },
+      data: {
+        assignedDate: assignedDate,
+        assignedTo: { connect: { id: assignedTo.name } },
+        sheet: { connect: { id: sheetId } },
+      },
+    });
+
+    if (updatedBundle) {
+      return { success: 'Bundle Assigned successfully!' };
+    }
+  } catch (error) {
+    console.log('Error updating bundle:', error);
+    return { error: 'Error updating bundle', detailedError: error };
+  }
+};
+
+export const editSize = async (
+  existingSizesIds: string[],
+  sizes: TSize,
+  sheetId: string
+) => {
+  try {
+    const newSizeTypes = new Set(sizes.map((size) => size.type));
+
+    // Delete sizes that exist in existingSizesIds but not in sizes
+    await Promise.all(
+      existingSizesIds.map(async (id) => {
+        const existingSize = await db.size.findUnique({ where: { id } });
+        if (existingSize && !newSizeTypes.has(existingSize.type)) {
+          return db.size.delete({ where: { id } });
+        }
+      })
+    );
+    await Promise.all(
+      sizes.map(async (size) => {
+        const existingSize = await db.size.findFirst({
+          where: { type: size.type, sheetId },
+        });
+        if (existingSize) {
+          return db.size.update({
+            data: {
+              quantity: size.quantity,
+              type: size.type,
+              sheet: { connect: { id: sheetId } },
+            },
+            where: { id: existingSize.id },
+          });
+        }
+        return db.size.create({
+          data: {
+            quantity: size.quantity,
+            type: size.type,
+            sheet: { connect: { id: sheetId } },
+          },
+        });
+      })
+    );
+
+    return { success: 'Successfully updated sizes!' };
+  } catch (e) {
+    console.error(e);
+    return { error: 'Failed to update sizes' };
+  }
+};
 
 export const editSheet = async (id: string, data: any) => {
   try {
-    const sheetExists = await db.sheet.findUnique({
-      where: {
-        id: id,
-      },
-    });
+    const sheetExists = await getSheetById(id);
+    const existingSizesIds = sheetExists?.Size.map((size) => size.id);
 
     if (!sheetExists) {
       return { error: 'Sheet with the given id isnt available' };
@@ -21,12 +163,14 @@ export const editSheet = async (id: string, data: any) => {
         thanNo: data.thanNo,
         weightPerLenght: data.weightPerLenght,
         palla: data.palla,
-        totalSize: data.totalSize,
       },
       where: {
         id: id,
       },
     });
+    await editSize(existingSizesIds ?? [], data.Size, id);
+    await calculation(id);
+    if (sheet) return { success: 'Successfully updated sheet!' };
     return sheet;
   } catch (e) {
     console.error(e);

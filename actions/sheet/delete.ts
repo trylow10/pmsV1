@@ -8,7 +8,7 @@ export const deleteClothDesign = async (id: string) => {
       where: { id },
     });
     if (cloth) {
-      return { message: 'Cloth deleted successfully' };
+      return { success: 'Cloth deleted successfully' };
     } else {
       return { error: 'No cloth Found' };
     }
@@ -24,7 +24,7 @@ export const deleteSheet = async (id: string) => {
       where: { id },
     });
     if (sheet) {
-      return { message: 'Cloth deleted successfully' };
+      return { success: 'Sheet deleted successfully' };
     } else {
       return { error: 'No sheet Found' };
     }
@@ -40,7 +40,11 @@ export const deleteBundle = async (id: string) => {
       where: { id },
     });
 
-    return bundle;
+    if (bundle) {
+      return { success: 'Bundle deleted successfully' };
+    } else {
+      return { error: 'No bundle Found' };
+    }
   } catch (error) {
     console.log('Error deleting bundle object:', error);
     return { error: 'Error deleting bundle object', detailedError: error };
@@ -52,8 +56,11 @@ export const deletePayment = async (id: string) => {
     const payment = await db.payment.delete({
       where: { id },
     });
-
-    return payment;
+    if (payment) {
+      return { success: 'Payment deleted successfully' };
+    } else {
+      return { error: 'No payment Found' };
+    }
   } catch (error) {
     console.log('Error deleting payment object:', error);
     return { error: 'Error deleting payment object', detailedError: error };

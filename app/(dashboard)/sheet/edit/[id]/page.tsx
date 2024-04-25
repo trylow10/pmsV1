@@ -1,18 +1,43 @@
-import React from 'react';
 import SheetTable from '_compo/SheetTable';
-import { getAllSheet } from '@/data/sheet/data';
+import { getSheetByClothId } from '@/data/sheet/data';
 import { TSheet } from '@/types/cloth.types';
 
-async function getSheet() {
-  const data = await getAllSheet({ page: 1 });
-  return data?.items as unknown as TSheet[];
-}
+type TParams = {
+  params: {
+    id: string;
+  };
+};
 
-async function page() {
-  const list = await getSheet();
+async function getSheet(id: string) {
+  const { cloth, count } = await getSheetByClothId(id);
+  const list = cloth?.sheet as TSheet[];
+  const companyCloth = cloth?.companyCloth;
+  return { list, count, companyCloth };
+}
+async function page({ params }: TParams) {
+  type Props = {
+    clothId: string;
+    list: TSheet[];
+    count: any;
+    companyCloth: any;
+    editableRow: true;
+    deleteRow: true;
+  };
+
+  const { id } = params;
+  const { list, count, companyCloth } = await getSheet(id);
   return (
     <div>
-      <SheetTable list={list} editableRow deleteRow />
+      <SheetTable
+        {...{
+          clothId: id,
+          list,
+          count,
+          companyCloth,
+          editableRow: true,
+          deleteRow: true,
+        }}
+      />
     </div>
   );
 }

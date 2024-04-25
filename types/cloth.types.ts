@@ -5,8 +5,21 @@ export type TCloth = {
 };
 
 export type TSize = {
+  id: string;
   type: string;
-  size: number;
+  quantity: number;
+  Bundle: TBundle;
+}[];
+
+export type TBundle = {
+  bundleId: string;
+  bundleSize: string;
+  sizeId: string;
+  sheetId: string;
+  assignedToId: string;
+  assignedDate: Date;
+  receivedDate: Date;
+  payments: string[];
 }[];
 
 export type TSheet = {
@@ -20,6 +33,7 @@ export type TSheet = {
   clothId: string;
   average: number;
   Size: TSize;
+  Bundle: TBundle;
 };
 
 export type TClothResponse = {
@@ -31,3 +45,8 @@ export type TRequestParams = {
   page?: number;
   pageSize?: number;
 };
+
+export type TWorker = {
+  id: string;
+  name: string;
+}[];

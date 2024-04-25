@@ -48,7 +48,7 @@ model Cloth {
 model Sheet {
   id              String   @id @default(cuid())
   cuttingDate     DateTime
-  color           String    @unique
+  color           String    
   thanNo          Int
   weightPerLenght Float
   palla           Int
@@ -71,7 +71,7 @@ model Size {
 model Bundle {
   id           String @id @default(cuid())
   bundleId     String
-  size         Size   @relation(fields: [sizeId], references: [id])
+  size         Size   @relation(fields: [sizeId], references: [id], onDelete: Cascade)
   sizeId       String
   bundleSize   Int
   sheet        Sheet     @relation(fields: [sheetId], references: [id])
@@ -86,8 +86,8 @@ model Worker {
   id      String   @id @default(cuid())
   name    String
   bundle  Bundle[]
-  sheet   Sheet    @relation(fields: [sheetId], references: [id])
-  sheetId String
+  sheet   Sheet?    @relation(fields: [sheetId], references: [id],onDelete: Cascade) 
+  sheetId String?
 }
 model Payment {
   id        String   @id @default(cuid())

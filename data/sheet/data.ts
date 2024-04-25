@@ -2,6 +2,16 @@ import { db } from '@/lib/db';
 
 import { PAGE_SIZE } from '@/constant';
 
+export const getCloths = async () => {
+  try {
+    const cloths = await db.cloth.findMany({ orderBy: { id: 'asc' } });
+    return cloths;
+  } catch (error) {
+    console.error('Error in getCloths:', error);
+    return null;
+  }
+};
+
 export const getAllCloths = async ({
   page,
 }: {
@@ -15,12 +25,27 @@ export const getAllCloths = async ({
     const cloths = await db.cloth.findMany({
       skip,
       take: Number(PAGE_SIZE),
-      orderBy: { id: 'asc' },
-      include: { sheet: { include: { Size: true } } },
+      orderBy: { id: 'desc' },
+      include: {
+        sheet: {
+          include: {
+            Size: {
+              include: {
+                Bundle: {
+                  include: {
+                    assignedTo: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     });
 
     return { items: cloths, count };
-  } catch {
+  } catch (error) {
+    console.error('Error in getAllCloths:', error);
     return null;
   }
 };
@@ -29,7 +54,22 @@ export const getClothByName = async (companyCloth: string) => {
   try {
     const cloth = await db.cloth.findUnique({ where: { companyCloth } });
     return cloth;
-  } catch {
+  } catch (error) {
+    console.error('Error in getAllCloths:', error);
+    return null;
+  }
+};
+
+export const getSheetByClothId = async (id: string): Promise<any> => {
+  try {
+    const cloth = await db.cloth.findUnique({
+      where: { id },
+      include: { sheet: { include: { Size: true } } },
+    });
+    const count = await db.sheet.count({ where: { clothId: id } });
+    return { cloth, count };
+  } catch (error) {
+    console.error('Error in getSheetByClothId:', error);
     return null;
   }
 };
@@ -41,15 +81,55 @@ export const getSheetById = async (id: string) => {
       include: { Size: true },
     });
     return sheet;
-  } catch {
+  } catch (error) {
+    console.error('Error in getSheetById:', error);
     return null;
   }
 };
-export const getSheetByColor = async (color: string) => {
+export const getSizeById = async (id: string) => {
   try {
-    const sheet = await db.sheet.findUnique({ where: { color } });
+    const size = await db.size.findUnique({
+      where: { id },
+    });
+    return size;
+  } catch (error) {
+    console.error('Error in getSizeById:', error);
+    return null;
+  }
+};
+export const getSizesAndClothBySheetId = async (sheetId: string) => {
+  try {
+    const sheet = await db.sheet.findUnique({
+      where: { id: sheetId },
+      include: {
+        Size: {
+          include: {
+            Bundle: true,
+          },
+        },
+        cloth: true,
+      },
+    });
 
     return sheet;
+  } catch (error) {
+    console.error('Error in getAllCloths:', error);
+    return null;
+  }
+};
+export const getSheetByColor = async (id: string, color: string) => {
+  try {
+    const sheets = await db.cloth.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        sheet: {
+          where: { color: color },
+        },
+      },
+    });
+    return sheets;
   } catch (error) {
     return null;
   }
@@ -65,30 +145,20 @@ export const getAllSheet = async ({ page }: { page: number }) => {
       include: { Size: true },
     });
     return { items: sheets };
-  } catch {
+  } catch (error) {
+    console.error('Error in getAllCloths:', error);
     return null;
   }
 };
 
-// export const getSizeById = async (id: string) => {
-//   try {
-//     const size = await db.size.findUnique({ where: { id } });
-//     return size;
-//   } catch {
-//     return null;
-//   }
-// };
-
-export const getAllBundle = async ({ page }: { page: number }) => {
-  const skip = (Number(page) - 1) * Number(PAGE_SIZE);
+export const getAllBundle = async () => {
   try {
     const bundles = await db.bundle.findMany({
-      skip,
-      take: Number(PAGE_SIZE),
       orderBy: { id: 'asc' },
     });
     return bundles;
-  } catch {
+  } catch (error) {
+    console.error('Error in getAllCloths:', error);
     return null;
   }
 };
@@ -102,16 +172,20 @@ export const getAllPayment = async ({ page }: { page: number }) => {
       orderBy: { id: 'asc' },
     });
     return payments;
-  } catch {
+  } catch (error) {
+    console.error('Error in getAllPayment:', error);
     return null;
   }
 };
 
-export const getCloths = async () => {
+export const getAllWorker = async () => {
   try {
-    const cloths = await db.cloth.findMany({});
-    return cloths;
-  } catch {
+    const workers = await db.worker.findMany({
+      orderBy: { id: 'asc' },
+    });
+    return workers;
+  } catch (error) {
+    console.error('Error in getAllWorker:', error);
     return null;
   }
 };

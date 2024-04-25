@@ -4,9 +4,9 @@ import SheetForm from '_compo/SheetForm';
 
 import { getCloths } from '@/data/sheet/data';
 
-type PageProps = {
-  searchParams?: { [key: string]: string | string[] };
-};
+// type PageProps = {
+//   searchParams?: { [key: string]: string | string[] };
+// };
 
 // async function page(props: PageProps) {
 //   const query = props.searchParams;
@@ -16,10 +16,11 @@ type PageProps = {
 //   );
 
 async function page() {
-  const cloths = await getCloths();
+  const cloths: any = await getCloths();
 
   return (
     <div>
+      <h3 className="text-xl font-semibold mb-3">Create Sheet</h3>
       <SheetForm cloths={cloths} />
     </div>
   );
