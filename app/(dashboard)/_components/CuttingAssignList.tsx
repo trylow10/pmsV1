@@ -21,13 +21,13 @@ function CuttingAssignList({ items, workers }: CuttingAssignListProps) {
         <Empty />
       ) : (
         <Accordion type="single" collapsible className="w-full">
-          {items.map((item, index) => (
-            <AccordionItem value={item.companyCloth}>
+          {items.map((item) => (
+            <AccordionItem value={item.companyCloth} key={item.id}>
               <AccordionTrigger className="text-base">
                 <span>{item.companyCloth}</span>
               </AccordionTrigger>
               <AccordionContent>
-                <BundleTable items={items} workers={workers} />
+                <BundleTable item={item} workers={workers} />
               </AccordionContent>
             </AccordionItem>
           ))}

@@ -20,6 +20,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { useRouter } from 'next/navigation';
 
 type AssignFormProps = {
   isEditBundle?: boolean;
@@ -38,6 +39,8 @@ function AssignForm({
   companyCloth,
   workers,
 }: AssignFormProps) {
+  const router = useRouter();
+
   const renderValues = {
     companyClothName: companyCloth,
     color: color,
@@ -48,7 +51,6 @@ function AssignForm({
     })),
   };
 
-  console.log(isEditBundle);
   const form = useForm<z.infer<typeof AssignBundleSchema>>({
     resolver: zodResolver(AssignBundleSchema),
     defaultValues: {
@@ -78,6 +80,7 @@ function AssignForm({
               toast.error(response?.error);
             } else if (response?.success) {
               toast.success(response?.success);
+              router.refresh();
             }
           });
         }
