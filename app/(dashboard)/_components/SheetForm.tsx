@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/form';
 import { createSheet } from '@/actions/sheet/create';
 import { editSheet } from '@/actions/sheet/edit';
+import DatePicker from './DatePicker';
 
 type SheetFormProps = {
   isEditMode?: boolean;
@@ -107,14 +108,15 @@ function SheetForm({ clothId, isEditMode, data }: SheetFormProps) {
                   <FormItem>
                     <FormLabel>Cutting Date</FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        type="date"
+                      <DatePicker
                         value={
                           field.value
                             ? new Date(field.value).toISOString().split('T')[0]
                             : ''
                         }
+                        onChange={(date) => {
+                          field.onChange(date);
+                        }}
                       />
                     </FormControl>
 

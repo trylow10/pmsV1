@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { updateBundle } from '@/actions/sheet/create';
 import { editUpdatedBundle } from '@/actions/sheet/edit';
+import DatePicker from './DatePicker';
 
 import {
   Form,
@@ -117,16 +118,14 @@ function AssignForm({
                   <FormItem>
                     <FormLabel>Assigned Date</FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        type="date"
+                      <DatePicker
                         value={
                           field.value
                             ? new Date(field.value).toISOString().split('T')[0]
                             : ''
                         }
-                        onChange={(event) => {
-                          field.onChange(event);
+                        onChange={(date) => {
+                          field.onChange(date);
                         }}
                       />
                     </FormControl>
