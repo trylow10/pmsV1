@@ -31,25 +31,11 @@ CREATE TABLE "PasswordResetToken" (
 );
 
 -- CreateTable
-CREATE TABLE "Worker" (
+CREATE TABLE "Cloth" (
     "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "sheetId" TEXT NOT NULL,
+    "companyCloth" TEXT NOT NULL,
 
-    CONSTRAINT "Worker_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Bundle" (
-    "id" TEXT NOT NULL,
-    "bundleId" TEXT NOT NULL,
-    "sizeType" TEXT NOT NULL,
-    "sheetId" TEXT NOT NULL,
-    "assignedToId" TEXT,
-    "assignedDate" TIMESTAMP(3) NOT NULL,
-    "receivedDate" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "Bundle_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Cloth_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -61,10 +47,43 @@ CREATE TABLE "Sheet" (
     "weightPerLenght" DOUBLE PRECISION NOT NULL,
     "palla" INTEGER NOT NULL,
     "totalSize" INTEGER NOT NULL,
+    "average" DOUBLE PRECISION NOT NULL,
     "clothId" TEXT NOT NULL,
-    "size" JSONB NOT NULL,
 
     CONSTRAINT "Sheet_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Size" (
+    "id" TEXT NOT NULL,
+    "type" TEXT NOT NULL,
+    "quantity" INTEGER NOT NULL,
+    "sheetId" TEXT NOT NULL,
+
+    CONSTRAINT "Size_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Bundle" (
+    "id" TEXT NOT NULL,
+    "bundleId" TEXT NOT NULL,
+    "sizeId" TEXT NOT NULL,
+    "bundleSize" INTEGER NOT NULL,
+    "sheetId" TEXT NOT NULL,
+    "assignedToId" TEXT,
+    "assignedDate" TIMESTAMP(3) NOT NULL,
+    "receivedDate" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Bundle_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Worker" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "sheetId" TEXT,
+
+    CONSTRAINT "Worker_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -79,15 +98,6 @@ CREATE TABLE "Payment" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Payment_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Cloth" (
-    "id" TEXT NOT NULL,
-    "companyCloth" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-
-    CONSTRAINT "Cloth_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -105,8 +115,17 @@ CREATE UNIQUE INDEX "PasswordResetToken_token_key" ON "PasswordResetToken"("toke
 -- CreateIndex
 CREATE UNIQUE INDEX "PasswordResetToken_email_token_key" ON "PasswordResetToken"("email", "token");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Cloth_companyCloth_key" ON "Cloth"("companyCloth");
+
 -- AddForeignKey
-ALTER TABLE "Worker" ADD CONSTRAINT "Worker_sheetId_fkey" FOREIGN KEY ("sheetId") REFERENCES "Sheet"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Sheet" ADD CONSTRAINT "Sheet_clothId_fkey" FOREIGN KEY ("clothId") REFERENCES "Cloth"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Size" ADD CONSTRAINT "Size_sheetId_fkey" FOREIGN KEY ("sheetId") REFERENCES "Sheet"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Bundle" ADD CONSTRAINT "Bundle_sizeId_fkey" FOREIGN KEY ("sizeId") REFERENCES "Size"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Bundle" ADD CONSTRAINT "Bundle_sheetId_fkey" FOREIGN KEY ("sheetId") REFERENCES "Sheet"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -115,10 +134,7 @@ ALTER TABLE "Bundle" ADD CONSTRAINT "Bundle_sheetId_fkey" FOREIGN KEY ("sheetId"
 ALTER TABLE "Bundle" ADD CONSTRAINT "Bundle_assignedToId_fkey" FOREIGN KEY ("assignedToId") REFERENCES "Worker"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Sheet" ADD CONSTRAINT "Sheet_clothId_fkey" FOREIGN KEY ("clothId") REFERENCES "Cloth"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Worker" ADD CONSTRAINT "Worker_sheetId_fkey" FOREIGN KEY ("sheetId") REFERENCES "Sheet"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Payment" ADD CONSTRAINT "Payment_bundleId_fkey" FOREIGN KEY ("bundleId") REFERENCES "Bundle"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Cloth" ADD CONSTRAINT "Cloth_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
