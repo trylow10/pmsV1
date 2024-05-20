@@ -2,7 +2,6 @@ import { getAllCloths, getAllWorker } from '@/data/sheet/data';
 import CuttingAssignHeader from '../_components/CuttingAssignHeader';
 import CuttingAssignList from '../_components/CuttingAssignList';
 import Pagination from '../_components/Pagination';
-import { TWorker } from '@/types/cloth.types';
 
 type PageProps = {
   searchParams?: { [key: string]: string | string[] | undefined };

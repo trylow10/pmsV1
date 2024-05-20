@@ -20,8 +20,8 @@ const links = [
     icon: <HomeIcon />,
   },
   {
-    href: '/view-bundles',
-    label: 'View Bundles',
+    href: '/view-worker',
+    label: 'View Worker',
     icon: <SheetIcon />,
   },
   {

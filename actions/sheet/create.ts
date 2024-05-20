@@ -230,6 +230,30 @@ export const updateBundle = async (
   }
 };
 
+export const createWorker = async (values: z.infer<typeof WorkerSchema>) => {
+  const validatedFields = WorkerSchema.safeParse(values);
+
+  if (!validatedFields.success) {
+    const errorFields = validatedFields.error.flatten();
+    console.log('Invalid fields:', errorFields);
+    return { error: 'Invalid fields!', errorFields };
+  }
+
+  const { name, sheetId } = validatedFields.data;
+
+  try {
+    const worker = await db.worker.create({
+      data: {
+        name,
+        sheet: { connect: { id: sheetId } },
+      },
+    });
+    return worker;
+  } catch (error) {
+    console.log('Error creating worker object:', error);
+    return { error: 'Error creating worker object', detailedError: error };
+  }
+};
 export const createPayment = async (values: z.infer<typeof PaymentSchema>) => {
   const validatedFields = PaymentSchema.safeParse(values);
 
@@ -257,30 +281,5 @@ export const createPayment = async (values: z.infer<typeof PaymentSchema>) => {
   } catch (error) {
     console.log('Error creating payment object:', error);
     return { error: 'Error creating payment object', detailedError: error };
-  }
-};
-
-export const createWorker = async (values: z.infer<typeof WorkerSchema>) => {
-  const validatedFields = WorkerSchema.safeParse(values);
-
-  if (!validatedFields.success) {
-    const errorFields = validatedFields.error.flatten();
-    console.log('Invalid fields:', errorFields);
-    return { error: 'Invalid fields!', errorFields };
-  }
-
-  const { name, sheetId } = validatedFields.data;
-
-  try {
-    const worker = await db.worker.create({
-      data: {
-        name,
-        sheet: { connect: { id: sheetId } },
-      },
-    });
-    return worker;
-  } catch (error) {
-    console.log('Error creating worker object:', error);
-    return { error: 'Error creating worker object', detailedError: error };
   }
 };
