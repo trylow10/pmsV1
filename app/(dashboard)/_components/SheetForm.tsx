@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/form';
 import { createSheet } from '@/actions/sheet/create';
 import { editSheet } from '@/actions/sheet/edit';
+import { useRouter } from 'next/navigation';
 
 type SheetFormProps = {
   isEditMode?: boolean;
@@ -35,11 +36,17 @@ type SheetFormProps = {
     companyCloth: string;
   }[];
   data?: any;
+  setModalOpen: (val: boolean) => void;
 };
 
-function SheetForm({ clothId, isEditMode, data }: SheetFormProps) {
+function SheetForm({
+  clothId,
+  isEditMode,
+  data,
+  setModalOpen,
+}: SheetFormProps) {
   const [sheetId, setSheetId] = useState('');
-
+  const router = useRouter();
   const form = useForm<z.infer<typeof SheetSchema>>({
     resolver: zodResolver(SheetSchema),
     defaultValues: {
@@ -63,6 +70,8 @@ function SheetForm({ clothId, isEditMode, data }: SheetFormProps) {
               toast.error(response?.error);
             } else if (response?.success) {
               toast.success(response?.success);
+              router.refresh();
+              setModalOpen(false);
             }
           })
           .catch(() => toast.error('Something went wrong'));
@@ -74,6 +83,8 @@ function SheetForm({ clothId, isEditMode, data }: SheetFormProps) {
             } else if (response?.success) {
               toast.success(response?.success);
               setSheetId(response?.data?.id);
+              router.refresh();
+              setModalOpen(false);
             }
           })
           .catch(() => toast.error('Something went wrong'));

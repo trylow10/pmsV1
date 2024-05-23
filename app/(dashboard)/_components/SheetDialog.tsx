@@ -10,6 +10,7 @@ import {
 import SheetForm from './SheetForm';
 import { PenIcon } from '@/components/icons'; // Import AddIcon
 import { Button } from '@/components/ui/button';
+import { useState } from 'react';
 
 type SheetDialogProps = {
   mode: 'Add' | 'Edit';
@@ -20,6 +21,7 @@ type SheetDialogProps = {
 
 function SheetDialog({ mode, resourceName, data, clothId }: SheetDialogProps) {
   const isEditMode = mode === 'Edit';
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <Dialog>
@@ -28,6 +30,7 @@ function SheetDialog({ mode, resourceName, data, clothId }: SheetDialogProps) {
           className="flex items-center gap-3 w-fit"
           size="sm"
           variant={isEditMode ? 'ghost' : 'default'}
+          onClick={() => setIsOpen(true)}
         >
           {isEditMode && <PenIcon />}
           <span>
@@ -35,14 +38,21 @@ function SheetDialog({ mode, resourceName, data, clothId }: SheetDialogProps) {
           </span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[525px]">
-        <DialogHeader>
-          <DialogTitle>
-            {isEditMode ? `Edit ${resourceName}` : 'Add Sheet'}
-          </DialogTitle>
-        </DialogHeader>
-        <SheetForm isEditMode={isEditMode} data={data} clothId={clothId} />
-      </DialogContent>
+      {isOpen && (
+        <DialogContent className="sm:max-w-[525px]">
+          <DialogHeader>
+            <DialogTitle>
+              {isEditMode ? `Edit ${resourceName}` : 'Add Sheet'}
+            </DialogTitle>
+          </DialogHeader>
+          <SheetForm
+            isEditMode={isEditMode}
+            data={data}
+            clothId={clothId}
+            setModalOpen={setIsOpen}
+          />
+        </DialogContent>
+      )}
     </Dialog>
   );
 }

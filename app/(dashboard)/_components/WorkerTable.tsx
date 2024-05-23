@@ -11,7 +11,7 @@ import {
 
 function WorkerTable() {
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex justify-between items-center mt-6">
       <div className="w-full">
         <Table>
           <TableHeader>
