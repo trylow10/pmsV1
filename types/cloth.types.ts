@@ -49,4 +49,5 @@ export type TRequestParams = {
 export type TWorker = {
   id: string;
   name: string;
-}[];
+  bundle: [];
+};

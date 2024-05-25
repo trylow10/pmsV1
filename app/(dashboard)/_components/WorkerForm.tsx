@@ -26,10 +26,6 @@ type WorkerFormProps = {
 function WorkerForm({ data, isEditWorker }: WorkerFormProps) {
   const form = useForm<z.infer<typeof WorkerSchema>>({
     resolver: zodResolver(WorkerSchema),
-    defaultValues: {
-      sheetId: '',
-      bundleId: '',
-    },
   });
 
   const onSubmit = async (values: z.infer<typeof WorkerSchema>) => {
@@ -59,32 +55,6 @@ function WorkerForm({ data, isEditWorker }: WorkerFormProps) {
                 <FormLabel>Name</FormLabel>
                 <FormControl>
                   <Input {...field} placeholder="Name" className="w-full" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="bundleId"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input {...field} placeholder="bundleId" type="hidden" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="sheetId"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input {...field} placeholder="sheetId" type="hidden" />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -48,7 +48,6 @@ function AssignForm({
     })),
   };
 
-  console.log(isEditBundle);
   const form = useForm<z.infer<typeof AssignBundleSchema>>({
     resolver: zodResolver(AssignBundleSchema),
     defaultValues: {
@@ -56,7 +55,7 @@ function AssignForm({
     },
   });
 
-  const optionWorker = workers.map((worker: any) => ({
+  const optionWorker = workers?.map((worker: any) => ({
     label: worker?.name,
     value: worker?.id,
   }));
@@ -102,7 +101,7 @@ function AssignForm({
           </p>
         </div>
       </div>
-
+      //check line no 100
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">

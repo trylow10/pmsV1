@@ -189,6 +189,21 @@ export const getAllWorker = async () => {
     return null;
   }
 };
+export const getAllWorkerList = async () => {
+  try {
+    const workers = await db.worker.findMany({
+      orderBy: { id: 'asc' },
+      include: {
+        bundle: true,
+      },
+    });
+    const count = await db.worker.count();
+    return { items: workers, count };
+  } catch (error) {
+    console.error('Error in getAllWorker:', error);
+    return null;
+  }
+};
 
 // export const searchCloths = async (query: string) => {
 //   try {

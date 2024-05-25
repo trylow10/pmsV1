@@ -55,7 +55,6 @@ model Sheet {
   totalSize       Int
   average         Float
   Size            Size[]
-  Worker          Worker[]
   Bundle          Bundle[]
   cloth           Cloth    @relation(fields: [clothId], references: [id], onDelete: Cascade)
   clothId         String
@@ -86,8 +85,6 @@ model Worker {
   id      String   @id @default(cuid())
   name    String
   bundle  Bundle[]
-  sheet   Sheet?    @relation(fields: [sheetId], references: [id],onDelete: Cascade) 
-  sheetId String?
 }
 model Payment {
   id        String   @id @default(cuid())

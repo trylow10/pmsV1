@@ -239,13 +239,12 @@ export const createWorker = async (values: z.infer<typeof WorkerSchema>) => {
     return { error: 'Invalid fields!', errorFields };
   }
 
-  const { name, sheetId } = validatedFields.data;
+  const { name } = validatedFields.data;
 
   try {
     const worker = await db.worker.create({
       data: {
         name,
-        sheet: { connect: { id: sheetId } },
       },
     });
     return worker;
@@ -254,6 +253,7 @@ export const createWorker = async (values: z.infer<typeof WorkerSchema>) => {
     return { error: 'Error creating worker object', detailedError: error };
   }
 };
+
 export const createPayment = async (values: z.infer<typeof PaymentSchema>) => {
   const validatedFields = PaymentSchema.safeParse(values);
 
