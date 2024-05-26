@@ -1,21 +1,15 @@
 'use client';
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-
-import WorkerTable from './WorkerTable';
-import Link from 'next/link';
 import Empty from '@/components/Empty';
+
+import type { Worker } from '@prisma/client';
 import Actions from './Actions';
-import { EyeIcon } from '@/components/icons';
 import WorkerAction from './WorkerAction';
+import { Link } from 'lucide-react';
+import { EyeIcon } from '@/components/icons';
 
 type WorkerListProps = {
-  items: any;
+  items: Worker[];
 };
 
 function WorkerList({ items }: WorkerListProps) {
@@ -26,27 +20,21 @@ function WorkerList({ items }: WorkerListProps) {
       ) : (
         items.map((item: any) => {
           return (
-            <div className="flex items-center justify-between" key={item.id}>
-              <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value={item.id} className="">
-                  <AccordionTrigger className="text-base">
-                    <span>{item.name}</span>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <WorkerTable list={item?.bundle} />
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-              {/* <Actions>
+            <div
+              className="flex items-center justify-between p-3 border-b "
+              key={item.id}
+            >
+              <h3 className="font-semibold">{item.name}</h3>
+              <Actions>
                 <WorkerAction isEditWorker={true} data={item} />
                 <Link
-                  href={`/worker/edit/${item.id}`}
+                  href={`/view-worker/${item.id}`}
                   className="flex w-full items-center justify-center gap-3 hover:bg-accent p-1 text-gray-700 hover:text-accent-foreground"
                 >
                   <EyeIcon />
                   <span>View</span>
                 </Link>
-              </Actions> */}
+              </Actions>
             </div>
           );
         })

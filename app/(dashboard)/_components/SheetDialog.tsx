@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/dialog';
 
 import SheetForm from './SheetForm';
-import { PenIcon } from '@/components/icons'; // Import AddIcon
+import { PenIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 

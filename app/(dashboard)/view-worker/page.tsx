@@ -1,6 +1,6 @@
 import { getAllWorkerList } from '@/data/sheet/data';
 import WorkerHeader from '../_components/WorkerHeader';
-// import WorkerTable from '../_components/WorkerTable';
+
 import WorkerList from '../_components/WorkerList';
 async function page() {
   const { items, count } = await getAllWorkerList();

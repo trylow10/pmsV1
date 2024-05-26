@@ -13,6 +13,7 @@ import {
 } from '@/validation/cloth.schema';
 import { getClothByName, getSheetByColor } from '@/data/sheet/data';
 import { calculation, generateSerialNumber } from '@/lib/calculation';
+import { revalidatePath } from 'next/cache';
 //TODO: create custom error handlers
 
 export const createClothDesign = async (
@@ -247,6 +248,8 @@ export const createWorker = async (values: z.infer<typeof WorkerSchema>) => {
         name,
       },
     });
+    revalidatePath('/view-worker');
+
     return worker;
   } catch (error) {
     console.log('Error creating worker object:', error);

@@ -23,7 +23,8 @@ type WorkerFormProps = {
   setModalOpen: (isOpen: boolean) => void;
 };
 
-function WorkerForm({ data, isEditWorker }: WorkerFormProps) {
+function WorkerForm({ data, isEditWorker, setModalOpen }: WorkerFormProps) {
+  console.log(setModalOpen);
   const form = useForm<z.infer<typeof WorkerSchema>>({
     resolver: zodResolver(WorkerSchema),
   });
@@ -33,8 +34,10 @@ function WorkerForm({ data, isEditWorker }: WorkerFormProps) {
       createWorker(values).then((response: any) => {
         if (response?.error) {
           toast.error(response?.error);
+          setModalOpen(false);
         } else if (response?.success) {
           toast.success(response?.success);
+          setModalOpen(false);
         }
       });
     } catch (error) {
@@ -47,7 +50,7 @@ function WorkerForm({ data, isEditWorker }: WorkerFormProps) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="space-y-4">
-          <Controller
+          <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
