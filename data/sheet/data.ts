@@ -189,17 +189,20 @@ export const getAllWorker = async () => {
     return null;
   }
 };
-export const getAllWorkerList: any = async () => {
+
+export const getWorkerById = async (id: string) => {
   try {
-    const workers = await db.worker.findMany({
-      orderBy: { id: 'asc' },
+    const worker = await db.sheet.findUnique({
+      where: { id: id },
       include: {
-        bundle: {
+        Bundle: {
           include: {
             size: {
               include: {
                 sheet: {
-                  include: { cloth: true },
+                  include: {
+                    cloth: true,
+                  },
                 },
               },
             },
@@ -208,6 +211,26 @@ export const getAllWorkerList: any = async () => {
       },
     });
 
+    return worker;
+  } catch (error) {
+    console.error('Error in getWorkerById:', error);
+    return null;
+  }
+};
+
+export const getAllWorkerList = async ({
+  page,
+}: {
+  page: number;
+}): Promise<any> => {
+  const skip = (Number(page) - 1) * Number(PAGE_SIZE);
+
+  try {
+    const workers = await db.worker.findMany({
+      skip,
+      take: Number(PAGE_SIZE),
+      orderBy: { id: 'desc' },
+    });
     const count = await db.worker.count();
     return { items: workers, count };
   } catch (error) {

@@ -208,3 +208,71 @@ export const editCloth = async (id: string, data: any) => {
     console.error(e);
   }
 };
+
+export const editWorker = async (id: string, data: any) => {
+  try {
+    const isWorkerExist = await db.worker.findFirst({
+      where: {
+        id,
+      },
+    });
+    if (!isWorkerExist) return { error: 'Worker not found' };
+
+    const existingWorker = await db.worker.findFirst({
+      where: {
+        name: data.name,
+      },
+    });
+
+    if (existingWorker) {
+      return { error: 'Worker already exist!' };
+    }
+
+    const worker = await db.worker.update({
+      data: {
+        name: data.name,
+      },
+      where: {
+        id,
+      },
+    });
+
+    if (worker) return { success: 'Successfully updated worker!' };
+
+    return worker;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const editPayment = async (id: string, data: any) => {
+  try {
+    const isPaymentExist = await db.payment.findFirst({
+      where: {
+        id,
+      },
+    });
+    if (!isPaymentExist) return { error: 'Payment not found' };
+
+    const payment = await db.payment.update({
+      data: {
+        advance: data.advance,
+        receviedQty: data.receviedQty,
+        receviedDate: data.receviedDate,
+        rate: data.rate,
+        total: data.total,
+        remarks: data.remarks,
+        bundle: { connect: { id: data.bundleId } },
+      },
+      where: {
+        id,
+      },
+    });
+
+    if (payment) return { success: 'Successfully updated payment!' };
+
+    return payment;
+  } catch (e) {
+    console.error(e);
+  }
+};

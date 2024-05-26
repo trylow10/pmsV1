@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/accordion';
 import { TCloth } from '@/types/cloth.types';
 import BundleTable from './BundleTable';
-import { Worker } from '@prisma/client';
+import type { Worker } from '@prisma/client';
 
 type CuttingAssignListProps = {
   items: TCloth[];

@@ -12,7 +12,6 @@ async function page(props: PageProps) {
   const pageNumber = query?.page ? Number(query.page) : 1;
   const { items, count } = await getAllCloths({ page: pageNumber });
   const workers = await getAllWorker();
-
   return (
     <div>
       <CuttingAssignHeader totalRecord={count} />
