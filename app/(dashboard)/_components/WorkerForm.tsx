@@ -16,28 +16,45 @@ import {
 } from '@/components/ui/form';
 import { WorkerSchema } from '@/validation/cloth.schema';
 import { createWorker } from '@/actions/sheet/create';
+import type { Worker } from '@prisma/client';
+import { startTransition } from 'react';
 
 type WorkerFormProps = {
-  data: any;
+  data: Worker | undefined;
   isEditWorker?: boolean;
   setModalOpen: (isOpen: boolean) => void;
 };
 
 function WorkerForm({ data, isEditWorker, setModalOpen }: WorkerFormProps) {
-  console.log(setModalOpen);
   const form = useForm<z.infer<typeof WorkerSchema>>({
     resolver: zodResolver(WorkerSchema),
+    defaultValues: {
+      name: data?.name,
+    },
   });
 
   const onSubmit = async (values: z.infer<typeof WorkerSchema>) => {
     try {
-      createWorker(values).then((response: any) => {
-        if (response?.error) {
-          toast.error(response?.error);
-          setModalOpen(false);
-        } else if (response?.success) {
-          toast.success(response?.success);
-          setModalOpen(false);
+      startTransition(() => {
+        if (isEditWorker) {
+          // TODO : add edit worker method and call call here.
+          // editWoker(data?.id, values).then((response: any) => {
+          //   if (response?.error) {
+          //     toast.error(response?.error);
+          //   } else if (response?.success) {
+          //     toast.success(response?.success);
+          //     setModalOpen(false);
+          //   }
+          // });
+        } else {
+          createWorker(values).then((response: any) => {
+            if (response?.error) {
+              toast.error(response?.error);
+            } else if (response?.success) {
+              toast.success(response?.success);
+              setModalOpen(false);
+            }
+          });
         }
       });
     } catch (error) {

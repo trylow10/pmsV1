@@ -7,15 +7,16 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-import Worker from './WorkerForm';
+import WorkerForm from './WorkerForm';
 
 import { PenIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import type { Worker } from '@prisma/client';
 
 type WorkerActionProps = {
   isEditWorker: boolean;
-  data?: any;
+  data?: Worker;
 };
 
 function WorkerAction({ data, isEditWorker }: WorkerActionProps) {
@@ -40,7 +41,7 @@ function WorkerAction({ data, isEditWorker }: WorkerActionProps) {
             <DialogTitle>{isEditWorker ? 'Edit' : 'Add'} Worker</DialogTitle>
           </DialogHeader>
 
-          <Worker
+          <WorkerForm
             data={data}
             isEditWorker={isEditWorker}
             setModalOpen={setIsOpen}

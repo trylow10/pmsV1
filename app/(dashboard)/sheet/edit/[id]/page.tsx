@@ -14,6 +14,7 @@ async function getSheet(id: string) {
   const companyCloth = cloth?.companyCloth;
   return { list, count, companyCloth };
 }
+
 async function page({ params }: TParams) {
   type Props = {
     clothId: string;

@@ -1,6 +1,7 @@
 'use server';
 
 import { db } from '@/lib/db';
+import { revalidatePath } from 'next/cache';
 
 export const deleteClothDesign = async (id: string) => {
   try {
@@ -8,6 +9,7 @@ export const deleteClothDesign = async (id: string) => {
       where: { id },
     });
     if (cloth) {
+      revalidatePath('/');
       return { success: 'Cloth deleted successfully' };
     } else {
       return { error: 'No cloth Found' };
@@ -72,7 +74,7 @@ export const deleteWorker = async (id: string) => {
     const worker = await db.worker.delete({
       where: { id },
     });
-
+    revalidatePath('/view-worker');
     return worker;
   } catch (error) {
     console.log('Error deleting worker object:', error);

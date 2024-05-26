@@ -5,8 +5,11 @@ import Empty from '@/components/Empty';
 import type { Worker } from '@prisma/client';
 import Actions from './Actions';
 import WorkerAction from './WorkerAction';
-import { Link } from 'lucide-react';
+
 import { EyeIcon } from '@/components/icons';
+import ConfirmDelete from '@/components/ConfirmDelete';
+import { deleteWorker } from '@/actions/sheet/delete';
+import Link from 'next/link';
 
 type WorkerListProps = {
   items: Worker[];
@@ -25,8 +28,10 @@ function WorkerList({ items }: WorkerListProps) {
               key={item.id}
             >
               <h3 className="font-semibold">{item.name}</h3>
+
               <Actions>
                 <WorkerAction isEditWorker={true} data={item} />
+
                 <Link
                   href={`/view-worker/${item.id}`}
                   className="flex w-full items-center justify-center gap-3 hover:bg-accent p-1 text-gray-700 hover:text-accent-foreground"
@@ -34,6 +39,10 @@ function WorkerList({ items }: WorkerListProps) {
                   <EyeIcon />
                   <span>View</span>
                 </Link>
+                <ConfirmDelete
+                  resourceName="Cloth"
+                  deletehandler={() => deleteWorker(item?.id)}
+                />
               </Actions>
             </div>
           );

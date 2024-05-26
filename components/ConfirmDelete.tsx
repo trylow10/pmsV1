@@ -11,7 +11,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { useRouter } from 'next/navigation';
 import { TrashCan } from './icons';
 import { Button } from './ui/button';
 
@@ -22,7 +21,6 @@ function ConfirmDelete({
   resourceName: string;
   deletehandler: () => void;
 }) {
-  const router = useRouter();
   return (
     <AlertDialog>
       <AlertDialogTrigger>
@@ -47,7 +45,6 @@ function ConfirmDelete({
           <AlertDialogAction
             onClick={() => {
               deletehandler();
-              router.refresh();
             }}
           >
             Continue
