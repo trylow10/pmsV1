@@ -266,7 +266,8 @@ export const createPayment = async (values: z.infer<typeof PaymentSchema>) => {
     return { error: 'Invalid fields!', errorFields };
   }
 
-  const { advance, receviedQty,receviedDate rate, total, remarks, bundleId } =  validatedFields.data;
+  const { advance, receviedQty, receviedDate, rate, total, remarks, bundleId } =
+    validatedFields.data;
 
   try {
     const payment = await db.payment.create({

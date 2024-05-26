@@ -13,7 +13,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { PAGE_SIZE } from '@/constant';
 import { Button } from '@/components/ui/button';
 
-function SheetPagination({ count }: { count: number }) {
+function CustomPagination({ count }: { count: number }) {
   const searchParams = useSearchParams();
 
   const router = useRouter();
@@ -93,4 +93,4 @@ function SheetPagination({ count }: { count: number }) {
   );
 }
 
-export default SheetPagination;
+export default CustomPagination;

@@ -1,5 +1,3 @@
-import React, { useEffect, useState } from 'react';
-
 import {
   Table,
   TableBody,
@@ -8,7 +6,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { getSizesAndClothBySheetId } from '@/data/sheet/data';
 
 import type { Bundle } from 'prisma/prisma-client';
 
@@ -17,9 +14,6 @@ type Props = {
 };
 
 const WorkerTable = ({ list }: Props) => {
-  // const [holderSheetId, setHolderSheetId] = useState('');
-  console.log(list, 'worker list with sheetid');
-
   return (
     <div className="flex justify-between items-center mt-6">
       <div className="w-full">
@@ -45,7 +39,8 @@ const WorkerTable = ({ list }: Props) => {
                   <TableCell>{bundle.bundleId}</TableCell>
                   <TableCell>{bundle.assignedDate.toDateString()}</TableCell>
                   <TableCell>{bundle.bundleSize}</TableCell>
-                  <TableCell>{bundle.sheetId}</TableCell>
+                  <TableCell>{bundle?.size.sheet.cloth.companyCloth}</TableCell>
+                  <TableCell>{bundle?.size.type}</TableCell>
                   {/* <TableCell>{data[bundle.id]?.cloth.companyCloth}</TableCell>
                 <TableCell>{data[bundle.id]?.Size[0].type}</TableCell> */}
                   <TableCell>#</TableCell>

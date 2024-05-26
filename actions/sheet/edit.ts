@@ -9,6 +9,7 @@ import {
   CreateBundleSchema,
   AssignBundleSchema,
 } from '@/validation/cloth.schema';
+import { revalidatePath } from 'next/cache';
 import * as z from 'zod';
 
 export const editBundle = async (
@@ -209,8 +210,10 @@ export const editCloth = async (id: string, data: any) => {
   }
 };
 
-export const editWorker = async (id: string, data: any) => {
+export const editWorker = async (id: string, data: { name: string }) => {
   try {
+    if (!data.name) return { error: 'Please provide a name.' };
+
     const isWorkerExist = await db.worker.findFirst({
       where: {
         id,
@@ -237,7 +240,10 @@ export const editWorker = async (id: string, data: any) => {
       },
     });
 
-    if (worker) return { success: 'Successfully updated worker!' };
+    if (worker) {
+      revalidatePath('/view-worker');
+      return { success: 'Successfully updated worker!' };
+    }
 
     return worker;
   } catch (e) {

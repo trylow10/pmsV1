@@ -1,6 +1,7 @@
 import { db } from '@/lib/db';
 
 import { PAGE_SIZE } from '@/constant';
+import { number } from 'zod';
 
 export const getCloths = async () => {
   try {
@@ -192,10 +193,10 @@ export const getAllWorker = async () => {
 
 export const getWorkerById = async (id: string) => {
   try {
-    const worker = await db.sheet.findUnique({
+    const worker = await db.worker.findUnique({
       where: { id: id },
       include: {
-        Bundle: {
+        bundle: {
           include: {
             size: {
               include: {

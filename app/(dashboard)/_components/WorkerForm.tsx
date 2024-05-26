@@ -18,6 +18,7 @@ import { WorkerSchema } from '@/validation/cloth.schema';
 import { createWorker } from '@/actions/sheet/create';
 import type { Worker } from '@prisma/client';
 import { startTransition } from 'react';
+import { editWorker } from '@/actions/sheet/edit';
 
 type WorkerFormProps = {
   data: Worker | undefined;
@@ -37,15 +38,14 @@ function WorkerForm({ data, isEditWorker, setModalOpen }: WorkerFormProps) {
     try {
       startTransition(() => {
         if (isEditWorker) {
-          // TODO : add edit worker method and call call here.
-          // editWoker(data?.id, values).then((response: any) => {
-          //   if (response?.error) {
-          //     toast.error(response?.error);
-          //   } else if (response?.success) {
-          //     toast.success(response?.success);
-          //     setModalOpen(false);
-          //   }
-          // });
+          editWorker(data?.id ?? '', values).then((response: any) => {
+            if (response?.error) {
+              toast.error(response?.error);
+            } else if (response?.success) {
+              toast.success(response?.success);
+              setModalOpen(false);
+            }
+          });
         } else {
           createWorker(values).then((response: any) => {
             if (response?.error) {

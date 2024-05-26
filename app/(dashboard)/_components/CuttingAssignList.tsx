@@ -12,7 +12,7 @@ import type { Worker } from '@prisma/client';
 
 type CuttingAssignListProps = {
   items: TCloth[];
-  workers: Worker[];
+  workers: Worker[] | null;
 };
 
 function CuttingAssignList({ items, workers }: CuttingAssignListProps) {

@@ -20,7 +20,7 @@ export const config = {
     '/cutting-assign',
     '/sheet/edit/:path*',
     '/view-worker',
-    '/worker/edit/:path*',
+    '/view-worker/:path*',
     '/view-payments',
   ],
 };
