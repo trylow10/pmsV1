@@ -221,6 +221,7 @@ export const updateBundle = async (
     });
 
     if (updatedBundle) {
+      revalidatePath('/cutting-assign');
       return { success: 'Bundle Assigned successfully!' };
     }
   } catch (error) {

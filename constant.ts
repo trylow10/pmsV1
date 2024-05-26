@@ -1,6 +1,8 @@
 import type { GroupBase } from 'react-select';
 
-export const PAGE_SIZE = 10;
+export const CLOTH_PAGE_SIZE = 10;
+export const WORKER_PAGE_SIZE = 8;
+export const CUTTING_ASSIGN_PAGE_SIZE = 10;
 
 export const options: GroupBase<any>[] = [
   {

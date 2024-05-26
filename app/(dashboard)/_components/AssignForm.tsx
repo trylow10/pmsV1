@@ -28,6 +28,7 @@ type AssignFormProps = {
   color: any;
   companyCloth: any;
   workers: any;
+  setIsOpen: (val: boolean) => void;
 };
 
 function AssignForm({
@@ -37,6 +38,7 @@ function AssignForm({
   color,
   companyCloth,
   workers,
+  setIsOpen,
 }: AssignFormProps) {
   const renderValues = {
     companyClothName: companyCloth,
@@ -69,6 +71,7 @@ function AssignForm({
               toast.error(response?.error);
             } else if (response?.success) {
               toast.success(response?.success);
+              setIsOpen(false);
             }
           });
         } else {
@@ -77,6 +80,7 @@ function AssignForm({
               toast.error(response?.error);
             } else if (response?.success) {
               toast.success(response?.success);
+              setIsOpen(false);
             }
           });
         }

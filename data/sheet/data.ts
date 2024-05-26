@@ -1,8 +1,5 @@
 import { db } from '@/lib/db';
 
-import { PAGE_SIZE } from '@/constant';
-import { number } from 'zod';
-
 export const getCloths = async () => {
   try {
     const cloths = await db.cloth.findMany({ orderBy: { id: 'asc' } });
@@ -15,17 +12,19 @@ export const getCloths = async () => {
 
 export const getAllCloths = async ({
   page,
+  pageSize,
 }: {
   page: number;
+  pageSize: number;
 }): Promise<any> => {
-  const skip = (Number(page) - 1) * Number(PAGE_SIZE);
+  const skip = (Number(page) - 1) * Number(pageSize);
 
   try {
     const count = await db.cloth.count();
 
     const cloths = await db.cloth.findMany({
       skip,
-      take: Number(PAGE_SIZE),
+      take: Number(pageSize),
       orderBy: { id: 'desc' },
       include: {
         sheet: {
@@ -136,12 +135,18 @@ export const getSheetByColor = async (id: string, color: string) => {
   }
 };
 
-export const getAllSheet = async ({ page }: { page: number }) => {
-  const skip = (Number(page) - 1) * Number(PAGE_SIZE);
+export const getAllSheet = async ({
+  page,
+  pageSize,
+}: {
+  page: number;
+  pageSize: number;
+}) => {
+  const skip = (Number(page) - 1) * Number(pageSize);
   try {
     const sheets = await db.sheet.findMany({
       skip,
-      take: Number(PAGE_SIZE),
+      take: Number(pageSize),
       orderBy: { id: 'asc' },
       include: { Size: true },
     });
@@ -164,12 +169,18 @@ export const getAllBundle = async () => {
   }
 };
 
-export const getAllPayment = async ({ page }: { page: number }) => {
-  const skip = (Number(page) - 1) * Number(PAGE_SIZE);
+export const getAllPayment = async ({
+  page,
+  pageSize,
+}: {
+  page: number;
+  pageSize: number;
+}) => {
+  const skip = (Number(page) - 1) * Number(pageSize);
   try {
     const payments = await db.payment.findMany({
       skip,
-      take: Number(PAGE_SIZE),
+      take: Number(pageSize),
       orderBy: { id: 'asc' },
     });
     return payments;
@@ -221,15 +232,17 @@ export const getWorkerById = async (id: string) => {
 
 export const getAllWorkerList = async ({
   page,
+  pageSize,
 }: {
   page: number;
+  pageSize: number;
 }): Promise<any> => {
-  const skip = (Number(page) - 1) * Number(PAGE_SIZE);
+  const skip = (Number(page) - 1) * Number(pageSize);
 
   try {
     const workers = await db.worker.findMany({
       skip,
-      take: Number(PAGE_SIZE),
+      take: Number(pageSize),
       orderBy: { id: 'desc' },
     });
     const count = await db.worker.count();

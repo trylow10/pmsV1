@@ -4,9 +4,13 @@ import WorkerHeader from '../_components/WorkerHeader';
 import WorkerList from '../_components/WorkerList';
 
 import Pagination from '../_components/Pagination';
+import { WORKER_PAGE_SIZE } from '@/constant';
 
 async function getWorkers(page: number) {
-  const { items, count } = await getAllWorkerList({ page });
+  const { items, count } = await getAllWorkerList({
+    page,
+    pageSize: WORKER_PAGE_SIZE,
+  });
 
   return { items, count };
 }
@@ -24,7 +28,7 @@ async function page(props: PageProps) {
     <div>
       <WorkerHeader totalRecord={count} />
       <WorkerList items={items} />
-      <Pagination count={count} />
+      <Pagination count={count} pageSize={WORKER_PAGE_SIZE} />
     </div>
   );
 }

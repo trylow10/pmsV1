@@ -27,12 +27,18 @@ async function page({ params }: TParams) {
       </div>
     );
 
+  const bundleLength = data.bundle.length;
+
   return (
     <>
-      <div className="">
+      <div className="flex justify-between">
         <div>
-          <h3>{data.name}</h3>
-          <span>{data?.bundle.length} record found</span>
+          <h3 className="font-semibold ">{data.name}</h3>
+          {bundleLength !== 0 && (
+            <span className="text-sm text-gray-500">
+              {bundleLength} {bundleLength === 1 ? 'record' : 'records'} found.
+            </span>
+          )}
         </div>
         <BackButton />
       </div>

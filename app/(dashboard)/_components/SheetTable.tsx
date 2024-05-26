@@ -43,7 +43,7 @@ function SheetTable({
           {companyCloth && (
             <h2 className="text-xl font-semibold mb-2">{companyCloth}</h2>
           )}
-          {count && (
+          {count !== 0 && (
             <p className="text-sm text-gray-500 mb-3">{count} Sheet Found</p>
           )}
         </div>

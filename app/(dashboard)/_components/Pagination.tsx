@@ -10,10 +10,15 @@ import {
 
 import { useRouter, useSearchParams } from 'next/navigation';
 
-import { PAGE_SIZE } from '@/constant';
 import { Button } from '@/components/ui/button';
 
-function CustomPagination({ count }: { count: number }) {
+function CustomPagination({
+  count,
+  pageSize,
+}: {
+  count: number;
+  pageSize: number;
+}) {
   const searchParams = useSearchParams();
 
   const router = useRouter();
@@ -22,7 +27,7 @@ function CustomPagination({ count }: { count: number }) {
     ? 1
     : Number(searchParams.get('page'));
 
-  const pageCount = Math.ceil(count / PAGE_SIZE);
+  const pageCount = Math.ceil(count / Number(pageSize));
 
   const query = useCallback(
     (name: string, value: string) => {
@@ -52,12 +57,12 @@ function CustomPagination({ count }: { count: number }) {
         Showing
         {
           <span className="font-semibold mx-1">
-            {(currentPage - 1) * PAGE_SIZE + 1}
+            {(currentPage - 1) * Number(pageSize) + 1}
           </span>
         }
         to
         <span className="font-semibold mx-1">
-          {currentPage === pageCount ? count : currentPage * PAGE_SIZE}
+          {currentPage === pageCount ? count : currentPage * Number(pageSize)}
         </span>
         of <span className="mr-1 font-semibold">{count}</span>
         results

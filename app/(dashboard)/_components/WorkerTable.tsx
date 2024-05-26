@@ -1,3 +1,4 @@
+import Empty from '@/components/Empty';
 import {
   Table,
   TableBody,
@@ -33,23 +34,29 @@ const WorkerTable = ({ list }: Props) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {list?.map((bundle: any) => {
-              return (
-                <TableRow key={bundle.id}>
-                  <TableCell>{bundle.bundleId}</TableCell>
-                  <TableCell>{bundle.assignedDate.toDateString()}</TableCell>
-                  <TableCell>{bundle.bundleSize}</TableCell>
-                  <TableCell>{bundle?.size.sheet.cloth.companyCloth}</TableCell>
-                  <TableCell>{bundle?.size.type}</TableCell>
-                  {/* <TableCell>{data[bundle.id]?.cloth.companyCloth}</TableCell>
+            {list?.length === 0 ? (
+              <Empty />
+            ) : (
+              list?.map((bundle: any) => {
+                return (
+                  <TableRow key={bundle.id}>
+                    <TableCell>{bundle.bundleId}</TableCell>
+                    <TableCell>{bundle.assignedDate.toDateString()}</TableCell>
+                    <TableCell>{bundle.bundleSize}</TableCell>
+                    <TableCell>
+                      {bundle?.size.sheet.cloth.companyCloth}
+                    </TableCell>
+                    <TableCell>{bundle?.size.type}</TableCell>
+                    {/* <TableCell>{data[bundle.id]?.cloth.companyCloth}</TableCell>
                 <TableCell>{data[bundle.id]?.Size[0].type}</TableCell> */}
-                  <TableCell>#</TableCell>
-                  <TableCell>#</TableCell>
-                  <TableCell>#</TableCell>
-                  <TableCell>#</TableCell>
-                </TableRow>
-              );
-            })}
+                    <TableCell>#</TableCell>
+                    <TableCell>#</TableCell>
+                    <TableCell>#</TableCell>
+                    <TableCell>#</TableCell>
+                  </TableRow>
+                );
+              })
+            )}
           </TableBody>
         </Table>
       </div>

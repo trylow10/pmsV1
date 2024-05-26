@@ -51,6 +51,7 @@ function BundleAssignAction({
             companyCloth={companyCloth}
             workers={workers}
             bId={bId}
+            setIsOpen={setIsOpen}
           />
         </DialogContent>
       )}

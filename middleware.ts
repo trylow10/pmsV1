@@ -14,7 +14,6 @@ export const config = {
   matcher: [
     '/',
     '/cloth',
-    '/create-sheet',
     '/create-bundle',
     '/cutting-assign',
     '/cutting-assign',
