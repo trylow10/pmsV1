@@ -42,12 +42,13 @@ export const SheetSchema = z.object({
 });
 
 export const PaymentSchema = z.object({
-  advance: z.number().default(0),
-  quantity: z.number().default(0),
-  rate: z.number().default(0),
-  total: z.number().default(0),
-  remarks: z.string().default(''),
-  bundleId: z.string(),
+  advance: z.coerce.number(),
+  receviedQty: z.coerce.number(),
+  receviedDate: z.coerce.date(),
+  rate: z.coerce.number(),
+  total: z.coerce.number(),
+  remarks: z.coerce.string(),
+  bundleId: z.coerce.string(),
 });
 
 export const ClothSchema = z.object({

@@ -89,7 +89,8 @@ model Worker {
 model Payment {
   id        String   @id @default(cuid())
   advance   Float
-  quantity  Int
+  receivedQty Int
+  receivedDate DateTime
   rate      Float
   total     Float
   remarks   String

@@ -111,8 +111,6 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
       },
     });
 
-    console.log(data);
-
     const { id: sheetId } = data;
     const newSizeArray = Size.map((size) => ({ ...size, sheetId }));
     const createSizePromises = newSizeArray.map((size) =>
@@ -248,9 +246,11 @@ export const createWorker = async (values: z.infer<typeof WorkerSchema>) => {
         name,
       },
     });
-    revalidatePath('/view-worker');
 
-    return worker;
+    if (worker) {
+      revalidatePath('view-worker');
+      return { success: 'Worker created successfully' };
+    }
   } catch (error) {
     console.log('Error creating worker object:', error);
     return { error: 'Error creating worker object', detailedError: error };
@@ -266,18 +266,17 @@ export const createPayment = async (values: z.infer<typeof PaymentSchema>) => {
     return { error: 'Invalid fields!', errorFields };
   }
 
-  const { advance, quantity, rate, total, remarks, bundleId } =
-    validatedFields.data;
+  const { advance, receviedQty,receviedDate rate, total, remarks, bundleId } =  validatedFields.data;
 
   try {
     const payment = await db.payment.create({
       data: {
         advance,
-        quantity,
+        receivedQty,
+        receivedDate,
         rate,
         total,
         remarks,
-        bundle: { connect: { id: bundleId } },
       },
     });
     return payment;
