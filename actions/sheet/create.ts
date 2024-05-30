@@ -270,7 +270,6 @@ export const createPayment = async (values: z.infer<typeof PaymentSchema>) => {
   const { advance, receivedPcs, receivedDate, rate, bundleId, remarks } =
     validatedFields.data;
 
-  console.log(validatedFields.data);
   try {
     const payment = await db.payment.create({
       data: {

@@ -263,12 +263,10 @@ export const editPayment = async (id: string, data: any) => {
     const payment = await db.payment.update({
       data: {
         advance: data.advance,
-        receviedQty: data.receviedQty,
-        receviedDate: data.receviedDate,
+        receivedPcs: data.receivedPcs,
+        receivedDate: data.receivedDate,
         rate: data.rate,
-        total: data.total,
-        remarks: data.remarks,
-        bundle: { connect: { id: data.bundleId } },
+        remarks: data.remarks ?? '',
       },
       where: {
         id,
