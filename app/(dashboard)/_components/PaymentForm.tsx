@@ -21,20 +21,22 @@ import { editPayment } from '@/actions/sheet/edit';
 
 type PaymentProps = {
   data: any;
-  isEditWorker?: boolean;
+  isEditPayment?: boolean;
   setModalOpen: (isOpen: boolean) => void;
 };
 
-function Payment({ data, isEditWorker, setModalOpen }: PaymentProps) {
-  console.log(setModalOpen);
+function Payment({ data, isEditPayment, setModalOpen }: PaymentProps) {
   const form = useForm<z.infer<typeof PaymentSchema>>({
     resolver: zodResolver(PaymentSchema),
+    defaultValues: {
+      bundleId: data?.id,
+    },
   });
 
   const onSubmit = async (values: z.infer<typeof PaymentSchema>) => {
     try {
       startTransition(() => {
-        if (isEditWorker) {
+        if (isEditPayment) {
           editPayment(data?.id, values)
             .then((response: any) => {
               if (response?.error) {
@@ -70,28 +72,89 @@ function Payment({ data, isEditWorker, setModalOpen }: PaymentProps) {
         <div className="space-y-4">
           <FormField
             control={form.control}
-            name="rate"
+            name="bundleId"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Rate</FormLabel>
+              <FormItem className="hidden">
                 <FormControl>
-                  <Input {...field} placeholder="Rate" className="w-full" />
+                  <Input {...field} placeholder="bundleId" type="hidden" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
-            name="receviedQty"
+            name="receivedDate"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Received Quantity</FormLabel>
+                <FormLabel>Received Date</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
-                    placeholder="Received Quantity"
+                    type="date"
+                    value={
+                      field.value
+                        ? new Date(field.value).toISOString().split('T')[0]
+                        : ''
+                    }
+                  />
+                </FormControl>
+                <FormMessage />
+                ss
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="receivedPcs"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Received Pcs</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="Received Pcs"
                     className="w-full"
+                    type="number"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="rate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Rate</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="Rate"
+                    className="w-full"
+                    type="number"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="advance"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Advance</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="Advance"
+                    className="w-full"
+                    type="number"
                   />
                 </FormControl>
                 <FormMessage />
@@ -100,12 +163,17 @@ function Payment({ data, isEditWorker, setModalOpen }: PaymentProps) {
           />
           <FormField
             control={form.control}
-            name="advance"
+            name="remarks"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Advance</FormLabel>
+                <FormLabel>remarks</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Advance" className="w-full" />
+                  <Input
+                    {...field}
+                    placeholder="remarks"
+                    className="w-full"
+                    type="text"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -113,7 +181,7 @@ function Payment({ data, isEditWorker, setModalOpen }: PaymentProps) {
           />
 
           <Button type="submit" className="h-fit">
-            {!isEditWorker ? 'Add' : 'Edit'} Payment
+            {!isEditPayment ? 'Add' : 'Edit'} Payment
           </Button>
         </div>
       </form>

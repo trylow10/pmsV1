@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/table';
 
 import type { Bundle } from 'prisma/prisma-client';
+import PaymentAction from './PaymentAction';
 
 type Props = {
   list: Bundle[];
@@ -26,11 +27,7 @@ const WorkerTable = ({ list }: Props) => {
               <TableHead>Pcs</TableHead>
               <TableHead>Cloth Name</TableHead>
               <TableHead>Size</TableHead>
-              <TableHead></TableHead>
-
-              <TableHead>Total</TableHead>
-              <TableHead>##</TableHead>
-              <TableHead className="text-right">Amount</TableHead>
+              <TableHead>Payment</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -47,12 +44,9 @@ const WorkerTable = ({ list }: Props) => {
                       {bundle?.size.sheet.cloth.companyCloth}
                     </TableCell>
                     <TableCell>{bundle?.size.type}</TableCell>
-                    {/* <TableCell>{data[bundle.id]?.cloth.companyCloth}</TableCell>
-                <TableCell>{data[bundle.id]?.Size[0].type}</TableCell> */}
-                    <TableCell>#</TableCell>
-                    <TableCell>#</TableCell>
-                    <TableCell>#</TableCell>
-                    <TableCell>#</TableCell>
+                    <TableCell>
+                      <PaymentAction data={bundle} isEditPayment={false} />
+                    </TableCell>
                   </TableRow>
                 );
               })
