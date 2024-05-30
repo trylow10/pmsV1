@@ -1,13 +1,11 @@
-// prisma/schema.prisma
-datasource db {
-  provider  = "postgresql"
-  url  	    = env("DATABASE_URL")
-  
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
-generator client {
-  provider = "prisma-client-js"
-  previewFeatures = ["fullTextSearch"]
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -20,23 +18,22 @@ model User {
 }
 
 model VerificationToken {
-  id        String @id @default(cuid())
-  email     String
-  token     String @unique
-  expires   DateTime
-
-  @@unique([email, token])
-}
-
-model PasswordResetToken {
-  id    String @id @default(cuid())
-  email String
-  token String @unique
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
   expires DateTime
 
   @@unique([email, token])
 }
 
+model PasswordResetToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
+}
 
 model Cloth {
   id           String  @id @default(cuid())
@@ -44,58 +41,59 @@ model Cloth {
   sheet        Sheet[]
 }
 
-
 model Sheet {
   id              String   @id @default(cuid())
   cuttingDate     DateTime
-  color           String    
+  color           String
   thanNo          Int
   weightPerLenght Float
   palla           Int
   totalSize       Int
   average         Float
-  Size            Size[]
+  clothId         String
   Bundle          Bundle[]
   cloth           Cloth    @relation(fields: [clothId], references: [id], onDelete: Cascade)
-  clothId         String
+  Size            Size[]
 }
+
 model Size {
-  id        String   @id @default(cuid())
-  type      String   
-  quantity  Int
-  sheet     Sheet    @relation(fields: [sheetId], references: [id], onDelete: Cascade)
-  sheetId   String
-  Bundle    Bundle[]
+  id       String   @id @default(cuid())
+  type     String
+  quantity Int
+  sheetId  String
+  Bundle   Bundle[]
+  sheet    Sheet    @relation(fields: [sheetId], references: [id], onDelete: Cascade)
 }
+
 model Bundle {
-  id           String @id @default(cuid())
+  id           String    @id @default(cuid())
   bundleId     String
-  size         Size   @relation(fields: [sizeId], references: [id], onDelete: Cascade)
   sizeId       String
   bundleSize   Int
-  sheet        Sheet     @relation(fields: [sheetId], references: [id])
   sheetId      String
-  assignedTo   Worker?   @relation(fields: [assignedToId], references: [id])
   assignedToId String?
   assignedDate DateTime
   receivedDate DateTime
+  assignedTo   Worker?   @relation(fields: [assignedToId], references: [id])
+  sheet        Sheet     @relation(fields: [sheetId], references: [id])
+  size         Size      @relation(fields: [sizeId], references: [id], onDelete: Cascade)
   payments     Payment[]
 }
+
 model Worker {
-  id      String   @id @default(cuid())
-  name    String
-  bundle  Bundle[]
-}
-model Payment {
-  id        String   @id @default(cuid())
-  advance   Float
-  receivedQty Int
-  receivedDate DateTime
-  rate      Float
-  total     Float
-  remarks   String
-  bundle    Bundle?  @relation(fields: [bundleId], references: [id])
-  bundleId  String?
-  createdAt DateTime @default(now())
+  id     String   @id @default(cuid())
+  name   String
+  bundle Bundle[]
 }
 
+model Payment {
+  id           String   @id @default(cuid())
+  advance      Float
+  rate         Float
+  total        Float
+  remarks      String
+  bundleId     String?
+  receivedDate DateTime
+  receivedPcs  Int
+  bundle       Bundle?  @relation(fields: [bundleId], references: [id])
+}
