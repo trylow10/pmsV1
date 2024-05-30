@@ -49,7 +49,7 @@ export const createClothDesign = async (
     }
   } catch (error) {
     console.log('Error creating cloth object:', error);
-    return { error: 'Error creating cloth object', detailedError: error };
+    return { error: 'Error creating cloth object' };
   }
 };
 
@@ -74,7 +74,7 @@ export const createSize = async (values: z.infer<typeof SizeSchema>[]) => {
         },
       });
     } catch (error) {
-      return { error: 'Error creating size object', detailedError: error };
+      return { error: 'Error creating size object' };
     }
   }
 };
@@ -124,7 +124,7 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
     }
   } catch (error) {
     console.log('Error creating sheet object:', error);
-    return { error: 'Error creating sheet object', detailedError: error };
+    return { error: 'Error creating sheet object' };
   }
 };
 
@@ -179,7 +179,7 @@ export const createBundle = async (
     return bundles;
   } catch (error) {
     console.log('Error creating bundle objects:', error);
-    return { error: 'Error creating bundle objects', detailedError: error };
+    return { error: 'Error creating bundle objects' };
   }
 };
 
@@ -226,7 +226,7 @@ export const updateBundle = async (
     }
   } catch (error) {
     console.log('Error updating bundle:', error);
-    return { error: 'Error updating bundle', detailedError: error };
+    return { error: 'Error updating bundle' };
   }
 };
 
@@ -254,7 +254,7 @@ export const createWorker = async (values: z.infer<typeof WorkerSchema>) => {
     }
   } catch (error) {
     console.log('Error creating worker object:', error);
-    return { error: 'Error creating worker object', detailedError: error };
+    return { error: 'Error creating worker object' };
   }
 };
 
@@ -267,23 +267,28 @@ export const createPayment = async (values: z.infer<typeof PaymentSchema>) => {
     return { error: 'Invalid fields!', errorFields };
   }
 
-  const { advance, receviedQty, receviedDate, rate, total, remarks, bundleId } =
+  const { advance, receivedPcs, receivedDate, rate, bundleId, remarks } =
     validatedFields.data;
 
+  console.log(validatedFields.data);
   try {
     const payment = await db.payment.create({
       data: {
         advance,
-        receivedQty,
+        receivedPcs,
         receivedDate,
         rate,
-        total,
-        remarks,
+        total: 0,
+        remarks: remarks ?? '',
+        bundle: { connect: { id: bundleId } },
       },
     });
-    return payment;
+
+    if (payment) {
+      return { success: 'Payment created successfully' };
+    }
   } catch (error) {
     console.log('Error creating payment object:', error);
-    return { error: 'Error creating payment object', detailedError: error };
+    return { error: 'Error creating payment object' };
   }
 };
