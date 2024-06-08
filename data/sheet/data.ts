@@ -267,3 +267,54 @@ export const getAllWorkerList = async ({
 //     console.log(error.message);
 //   }
 // };
+
+export const getSheetsByDateRange = async (fromDate: Date, toDate: Date) => {
+  try {
+    const sheets = await db.sheet.findMany({
+      where: {
+        cuttingDate: {
+          gte: fromDate,
+          lte: toDate,
+        },
+      },
+      include: { Size: true },
+    });
+
+    return sheets;
+  } catch (error) {
+    console.error('Error in getSheetsByDateRange:', error);
+    return null;
+  }
+};
+
+export const searchSheetsByClothNameAndColor = async (
+  clothName: string,
+  color: string
+) => {
+  try {
+    const sheets = await db.sheet.findMany({
+      where: {
+        AND: [
+          {
+            cloth: {
+              companyCloth: {
+                contains: clothName,
+              },
+            },
+          },
+          {
+            color: {
+              equals: color,
+            },
+          },
+        ],
+      },
+      include: { cloth: true },
+    });
+
+    return sheets;
+  } catch (error) {
+    console.error('Error in searchSheetsByClothNameAndColor:', error);
+    return null;
+  }
+};
