@@ -33,7 +33,7 @@ function WorkerList({ items }: WorkerListProps) {
                 <WorkerAction isEditWorker={true} data={item} />
 
                 <Link
-                  href={`/view-worker/edit/${item.id}`}
+                  href={`/view-worker/${item.id}`}
                   className="flex w-full items-center justify-center gap-3 hover:bg-accent p-1 text-gray-700 hover:text-accent-foreground"
                 >
                   <EyeIcon />

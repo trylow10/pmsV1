@@ -20,23 +20,24 @@ import { createPayment } from '@/actions/sheet/create';
 import { editPayment } from '@/actions/sheet/edit';
 
 type PaymentProps = {
+  bundleId?: string;
   data: any;
-  isEditPayment?: boolean;
+  isEditMode?: boolean;
   setModalOpen: (isOpen: boolean) => void;
 };
 
-function Payment({ data, isEditPayment, setModalOpen }: PaymentProps) {
+function Payment({ bundleId, data, isEditMode, setModalOpen }: PaymentProps) {
   const form = useForm<z.infer<typeof PaymentSchema>>({
     resolver: zodResolver(PaymentSchema),
     defaultValues: {
-      bundleId: data?.id,
+      bundleId: bundleId,
     },
   });
 
   const onSubmit = async (values: z.infer<typeof PaymentSchema>) => {
     try {
       startTransition(() => {
-        if (isEditPayment) {
+        if (isEditMode) {
           editPayment(data?.id, values)
             .then((response: any) => {
               if (response?.error) {
@@ -181,7 +182,7 @@ function Payment({ data, isEditPayment, setModalOpen }: PaymentProps) {
           />
 
           <Button type="submit" className="h-fit">
-            {!isEditPayment ? 'Add' : 'Edit'} Payment
+            {!isEditMode ? 'Add' : 'Edit'} Payment
           </Button>
         </div>
       </form>
