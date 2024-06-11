@@ -171,7 +171,10 @@ export const editSheet = async (id: string, data: any) => {
     });
     await editSize(existingSizesIds ?? [], data.Size, id);
     await calculation(id);
-    if (sheet) return { success: 'Successfully updated sheet!' };
+    if (sheet) {
+      revalidatePath(`/sheet/edit/${id}`);
+      return { success: 'Successfully updated sheet!' };
+    }
     return sheet;
   } catch (e) {
     console.error(e);
@@ -202,7 +205,10 @@ export const editCloth = async (id: string, data: any) => {
       },
     });
 
-    if (cloth) return { success: 'Successfully updated cloth!' };
+    if (cloth) {
+      revalidatePath('/');
+      return { success: 'Successfully updated cloth!' };
+    }
 
     return cloth;
   } catch (e) {
@@ -273,7 +279,10 @@ export const editPayment = async (id: string, data: any) => {
       },
     });
 
-    if (payment) return { success: 'Successfully updated payment!' };
+    if (payment) {
+      revalidatePath(`/view-payment/edit/${id}`);
+      return { success: 'Successfully updated payment!' };
+    }
 
     return payment;
   } catch (e) {

@@ -45,6 +45,7 @@ export const createClothDesign = async (
     });
 
     if (colth) {
+      revalidatePath('/');
       return { success: 'Cloth created successfully' };
     }
   } catch (error) {
@@ -120,6 +121,7 @@ export const createSheet = async (values: z.infer<typeof SheetSchema>) => {
     await calculation(sheetId);
 
     if (data) {
+      revalidatePath(`sheet/edit/${clothId}`);
       return { success: 'Sheet created successfully!', data: data };
     }
   } catch (error) {
@@ -173,6 +175,7 @@ export const createBundle = async (
     );
 
     if (bundles.every((bundle) => bundle)) {
+      revalidatePath(`/create-bundle?sheetId=${sheetId}`);
       return { success: 'Bundles created successfully!' };
     }
 
@@ -194,7 +197,6 @@ export const updateBundle = async (
     console.log('Invalid fields:', errorFields);
     return { error: 'Invalid fields!', errorFields };
   }
-  console.log(validatedFields.data);
 
   const { assignedDate, assignedTo, sheetId } = validatedFields.data;
 
@@ -284,6 +286,7 @@ export const createPayment = async (values: z.infer<typeof PaymentSchema>) => {
     });
 
     if (payment) {
+      revalidatePath(`/view-payment/edit/${bundleId}`);
       return { success: 'Payment created successfully' };
     }
   } catch (error) {

@@ -26,7 +26,6 @@ import {
 } from '@/components/ui/form';
 import { createSheet } from '@/actions/sheet/create';
 import { editSheet } from '@/actions/sheet/edit';
-import { useRouter } from 'next/navigation';
 
 type SheetFormProps = {
   isEditMode?: boolean;
@@ -46,7 +45,6 @@ function SheetForm({
   setModalOpen,
 }: SheetFormProps) {
   const [sheetId, setSheetId] = useState('');
-  const router = useRouter();
   const form = useForm<z.infer<typeof SheetSchema>>({
     resolver: zodResolver(SheetSchema),
     defaultValues: {
@@ -70,7 +68,6 @@ function SheetForm({
               toast.error(response?.error);
             } else if (response?.success) {
               toast.success(response?.success);
-              router.refresh();
               setModalOpen(false);
             }
           })
@@ -83,7 +80,6 @@ function SheetForm({
             } else if (response?.success) {
               toast.success(response?.success);
               setSheetId(response?.data?.id);
-              router.refresh();
               setModalOpen(false);
             }
           })

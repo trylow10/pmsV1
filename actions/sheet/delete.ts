@@ -26,6 +26,7 @@ export const deleteSheet = async (id: string) => {
       where: { id },
     });
     if (sheet) {
+      revalidatePath(`/view-sheet/${id}`);
       return { success: 'Sheet deleted successfully' };
     } else {
       return { error: 'No sheet Found' };
@@ -43,6 +44,7 @@ export const deleteBundle = async (id: string) => {
     });
 
     if (bundle) {
+      revalidatePath('/');
       return { success: 'Bundle deleted successfully' };
     } else {
       return { error: 'No bundle Found' };
@@ -59,6 +61,7 @@ export const deletePayment = async (id: string) => {
       where: { id },
     });
     if (payment) {
+      revalidatePath(`/view-payment/${id}`);
       return { success: 'Payment deleted successfully' };
     } else {
       return { error: 'No payment Found' };

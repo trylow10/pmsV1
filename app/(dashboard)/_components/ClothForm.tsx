@@ -20,7 +20,6 @@ import { createClothDesign } from '@/actions/sheet/create';
 import { editCloth } from '@/actions/sheet/edit';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
 
 type ClothFormProps = {
   data: any;
@@ -29,8 +28,6 @@ type ClothFormProps = {
 };
 
 function ClothForm({ data, isEditCloth, setModalOpen }: ClothFormProps) {
-  const router = useRouter();
-
   const form = useForm<z.infer<typeof ClothSchema>>({
     resolver: zodResolver(ClothSchema),
     defaultValues: {
@@ -47,7 +44,6 @@ function ClothForm({ data, isEditCloth, setModalOpen }: ClothFormProps) {
               toast.error(response?.error);
             } else if (response?.success) {
               toast.success(response?.success);
-              router.refresh();
               setModalOpen(false);
             }
           })
@@ -59,7 +55,6 @@ function ClothForm({ data, isEditCloth, setModalOpen }: ClothFormProps) {
               toast.error(response?.error);
             } else if (response?.success) {
               toast.success(response?.success);
-              router.refresh();
               setModalOpen(false);
             }
           })
