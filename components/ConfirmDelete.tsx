@@ -37,7 +37,7 @@ function ConfirmDelete({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete the {resourceName}.
+            This will permanently delete this {resourceName}.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
