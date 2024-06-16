@@ -1,6 +1,7 @@
-import { Input } from '@/components/ui/input';
+'use client';
 import ClothAction from './ClothAction';
 import { TCloth } from '@/types/cloth.types';
+import Search from './Search';
 
 type Props = {
   totalRecord: number;
@@ -16,7 +17,7 @@ function SheetHeader({ totalRecord, data }: Props) {
       </div>
 
       <div className="flex gap-3 md:items-center flex-col md:flex-row">
-        <Input className="w-full lg:w-72" placeholder="search" />
+        <Search />
         <ClothAction data={data} isEditCloth={false} />
       </div>
     </div>

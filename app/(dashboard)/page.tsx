@@ -8,10 +8,11 @@ type PageProps = {
   searchParams?: { [key: string]: string | string[] | undefined };
 };
 
-async function getCloths(page: number) {
+async function getCloths(page: number, searchQuery?: string) {
   const { items, count } = await getAllCloths({
     page,
     pageSize: CLOTH_PAGE_SIZE,
+    search: searchQuery,
   });
 
   return { items, count };
@@ -20,7 +21,9 @@ async function getCloths(page: number) {
 async function page(props: PageProps) {
   const query = props.searchParams;
   const pageNumber = query?.page ? Number(query.page) : 1;
-  const { items, count } = await getCloths(pageNumber);
+  const searchQuery = query?.search;
+  console.log(searchQuery);
+  const { items, count } = await getCloths(pageNumber, searchQuery as string);
 
   return (
     <div>

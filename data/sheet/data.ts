@@ -1,4 +1,5 @@
 import { db } from '@/lib/db';
+import { Prisma } from '@prisma/client';
 
 export const getCloths = async () => {
   try {
@@ -13,19 +14,31 @@ export const getCloths = async () => {
 export const getAllCloths = async ({
   page,
   pageSize,
+  search,
 }: {
   page: number;
   pageSize: number;
+  search?: string;
 }): Promise<any> => {
   const skip = (Number(page) - 1) * Number(pageSize);
 
+  const searchFilter: Prisma.ClothWhereInput = search
+    ? {
+        companyCloth: {
+          contains: search,
+          mode: Prisma.QueryMode.insensitive,
+        },
+      }
+    : {};
+
   try {
-    const count = await db.cloth.count();
+    const count = await db.cloth.count({ where: searchFilter });
 
     const cloths = await db.cloth.findMany({
       skip,
       take: Number(pageSize),
       orderBy: { id: 'desc' },
+      where: searchFilter,
       include: {
         sheet: {
           include: {
