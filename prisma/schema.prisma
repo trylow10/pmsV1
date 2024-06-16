@@ -74,10 +74,10 @@ model Bundle {
   assignedToId String?
   assignedDate DateTime
   receivedDate DateTime
-  assignedTo   Worker?   @relation(fields: [assignedToId], references: [id])
-  sheet        Sheet     @relation(fields: [sheetId], references: [id])
+  assignedTo   Worker?   @relation(fields: [assignedToId], references: [id],onDelete: Cascade)
+  sheet        Sheet     @relation(fields: [sheetId], references: [id]  )
   size         Size      @relation(fields: [sizeId], references: [id], onDelete: Cascade)
-  payments     Payment[]
+  payment      Payment? 
 }
 
 model Worker {
@@ -92,8 +92,8 @@ model Payment {
   rate         Float
   total        Float
   remarks      String
-  bundleId     String?
+  bundleId     String    @unique
   receivedDate DateTime
   receivedPcs  Int
-  bundle       Bundle?  @relation(fields: [bundleId], references: [id])
+  bundle       Bundle?  @relation(fields: [bundleId], references: [id],onDelete: Cascade)
 }

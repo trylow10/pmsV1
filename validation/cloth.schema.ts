@@ -1,5 +1,15 @@
 import * as z from 'zod';
 
+export const PaymentSchema = z.object({
+  bundleId: z.string(),
+  receivedDate: z.coerce.date(),
+  receivedPcs: z.coerce.number(),
+  rate: z.coerce.number(),
+  advance: z.coerce.number(),
+  total: z.string().optional(),
+  remarks: z.string().optional(),
+});
+
 export const WorkerSchema = z.object({
   name: z.string(),
   Bundle: z.array(z.string()).optional(),
@@ -39,16 +49,6 @@ export const SheetSchema = z.object({
   Size: SizeSchema,
   Worker: z.array(z.string()).optional(),
   clothId: z.string(),
-});
-
-export const PaymentSchema = z.object({
-  bundleId: z.string(),
-  receivedDate: z.coerce.date(),
-  receivedPcs: z.coerce.number(),
-  rate: z.coerce.number(),
-  advance: z.coerce.number(),
-  total: z.string().optional(),
-  remarks: z.string().optional(),
 });
 
 export const ClothSchema = z.object({

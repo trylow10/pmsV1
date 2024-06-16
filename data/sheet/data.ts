@@ -218,6 +218,7 @@ export const getWorkerById = async (id: string) => {
                 },
               },
             },
+            payment: true,
           },
         },
       },

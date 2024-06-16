@@ -92,7 +92,7 @@ CREATE TABLE "Payment" (
     "rate" DOUBLE PRECISION NOT NULL,
     "total" DOUBLE PRECISION NOT NULL,
     "remarks" TEXT NOT NULL,
-    "bundleId" TEXT,
+    "bundleId" TEXT NOT NULL,
     "receivedDate" TIMESTAMP(3) NOT NULL,
     "receivedPcs" INTEGER NOT NULL,
 
@@ -117,6 +117,9 @@ CREATE UNIQUE INDEX "PasswordResetToken_email_token_key" ON "PasswordResetToken"
 -- CreateIndex
 CREATE UNIQUE INDEX "Cloth_companyCloth_key" ON "Cloth"("companyCloth");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Payment_bundleId_key" ON "Payment"("bundleId");
+
 -- AddForeignKey
 ALTER TABLE "Sheet" ADD CONSTRAINT "Sheet_clothId_fkey" FOREIGN KEY ("clothId") REFERENCES "Cloth"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -124,7 +127,7 @@ ALTER TABLE "Sheet" ADD CONSTRAINT "Sheet_clothId_fkey" FOREIGN KEY ("clothId") 
 ALTER TABLE "Size" ADD CONSTRAINT "Size_sheetId_fkey" FOREIGN KEY ("sheetId") REFERENCES "Sheet"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Bundle" ADD CONSTRAINT "Bundle_assignedToId_fkey" FOREIGN KEY ("assignedToId") REFERENCES "Worker"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Bundle" ADD CONSTRAINT "Bundle_assignedToId_fkey" FOREIGN KEY ("assignedToId") REFERENCES "Worker"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Bundle" ADD CONSTRAINT "Bundle_sheetId_fkey" FOREIGN KEY ("sheetId") REFERENCES "Sheet"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -133,4 +136,4 @@ ALTER TABLE "Bundle" ADD CONSTRAINT "Bundle_sheetId_fkey" FOREIGN KEY ("sheetId"
 ALTER TABLE "Bundle" ADD CONSTRAINT "Bundle_sizeId_fkey" FOREIGN KEY ("sizeId") REFERENCES "Size"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Payment" ADD CONSTRAINT "Payment_bundleId_fkey" FOREIGN KEY ("bundleId") REFERENCES "Bundle"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Payment" ADD CONSTRAINT "Payment_bundleId_fkey" FOREIGN KEY ("bundleId") REFERENCES "Bundle"("id") ON DELETE CASCADE ON UPDATE CASCADE;
