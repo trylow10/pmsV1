@@ -1,4 +1,5 @@
 'use client';
+import { AllClothProvider } from '@/context/AllClothProvider';
 import { useMenu } from '@/context/MenuContext';
 import { cn } from '@/lib/utils';
 
@@ -11,7 +12,7 @@ function Layout({ children }: { children: React.ReactNode }) {
         isOpen && 'lg:grid-cols-[6rem_1fr]'
       )}
     >
-      {children}
+      <AllClothProvider>{children}</AllClothProvider>
     </div>
   );
 }
