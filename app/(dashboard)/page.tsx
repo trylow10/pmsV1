@@ -22,7 +22,6 @@ async function page(props: PageProps) {
   const query = props.searchParams;
   const pageNumber = query?.page ? Number(query.page) : 1;
   const searchQuery = query?.search;
-  console.log(searchQuery);
   const { items, count } = await getCloths(pageNumber, searchQuery as string);
 
   return (

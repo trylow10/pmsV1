@@ -1,10 +1,13 @@
-import React, { ChangeEvent, useCallback } from 'react';
+'use client';
+import React, { ChangeEvent, useCallback, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
+import { useDebounce } from 'use-debounce';
 
 function Search() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [debouncedValue, setDebouncedValue] = useDebounce('', 400);
 
   const query = useCallback(
     (name: string, value: string) => {
@@ -19,9 +22,15 @@ function Search() {
     [searchParams]
   );
 
-  function handleSearch(e: ChangeEvent<HTMLInputElement>) {
-    router.push(`?${query('search', e.target.value)}`);
-  }
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setDebouncedValue(value);
+  };
+
+  useEffect(() => {
+    router.push(`?${query('search', debouncedValue)}`);
+  }, [debouncedValue, query, router]);
+
   return (
     <Input
       className="w-full lg:w-72"
