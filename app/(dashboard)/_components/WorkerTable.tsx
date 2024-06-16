@@ -11,12 +11,10 @@ import {
 
 import type { Bundle } from 'prisma/prisma-client';
 import PaymentDialog from './PaymentDialog';
-import Actions from './Actions';
-import { deleteSheet } from '@/actions/sheet/delete';
-import ConfirmDelete from '@/components/ConfirmDelete';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import { Plus } from 'lucide-react';
+import Actions from './Actions';
+import ConfirmDelete from '@/components/ConfirmDelete';
+import { deletePayment } from '@/actions/sheet/delete';
 
 type Props = {
   list: Bundle[];
@@ -32,11 +30,16 @@ const WorkerTable = ({ list, editableRow, deleteRow }: Props) => {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>Assigned Date</TableHead>
                 <TableHead>Bundle NO</TableHead>
-                <TableHead> Assigned Date</TableHead>
-                <TableHead>Pcs</TableHead>
-                <TableHead>Cloth Name</TableHead>
+                <TableHead>Name</TableHead>
                 <TableHead>Size</TableHead>
+                <TableHead>Assigned Pcs</TableHead>
+                <TableHead>Received Date</TableHead>
+                <TableHead>Rate</TableHead>
+                <TableHead>Received Pcs</TableHead>
+                <TableHead>Advance</TableHead>
+                <TableHead>Remarks</TableHead>
               </TableRow>
             </TableHeader>
             {editableRow && deleteRow && <TableCell></TableCell>}
@@ -47,28 +50,48 @@ const WorkerTable = ({ list, editableRow, deleteRow }: Props) => {
                 list?.map((bundle: any) => {
                   return (
                     <TableRow key={bundle.id}>
-                      <TableCell>{bundle.bundleId}</TableCell>
                       <TableCell>
                         {bundle.assignedDate.toDateString()}
                       </TableCell>
-                      <TableCell>{bundle.bundleSize}</TableCell>
+                      <TableCell>{bundle.bundleId}</TableCell>
                       <TableCell>
                         {bundle?.size.sheet.cloth.companyCloth}
                       </TableCell>
-                      <TableCell>{bundle?.size.type}</TableCell>
+                      <TableCell>{bundle?.size.type.toUpperCase()}</TableCell>
+                      <TableCell>{bundle.bundleSize}</TableCell>
+                      <TableCell>
+                        {bundle?.payment?.receivedDate.toDateString() || '-'}
+                      </TableCell>
+                      <TableCell>{bundle?.payment?.rate || '-'}</TableCell>
+                      <TableCell>
+                        {bundle?.payment?.receivedPcs || '-'}
+                      </TableCell>
+                      <TableCell>{bundle?.payment?.advance || '-'}</TableCell>
+                      <TableCell>{bundle?.payment?.remarks || '-'}</TableCell>
 
                       {editableRow && deleteRow && (
                         <TableCell>
                           <Actions>
-                            <PaymentDialog
-                              mode={'Edit'}
-                              data={list}
-                              resourceName="payment"
-                              bundleId={bundle.id ?? ''}
-                            />
+                            {bundle.payment ? (
+                              <PaymentDialog
+                                mode={'Edit'}
+                                data={bundle.payment}
+                                resourceName="payment"
+                                bundleId={bundle.id ?? ''}
+                              />
+                            ) : (
+                              <PaymentDialog
+                                mode={'Add'}
+                                data={bundle.payment}
+                                resourceName="payment"
+                                bundleId={bundle.id ?? ''}
+                              />
+                            )}
                             <ConfirmDelete
                               resourceName="payment"
-                              deletehandler={() => deleteSheet(bundle.id)}
+                              deletehandler={() =>
+                                deletePayment(bundle.payment.id)
+                              }
                             />
                             <Button variant="ghost"></Button>
                           </Actions>

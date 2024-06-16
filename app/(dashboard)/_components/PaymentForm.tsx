@@ -27,10 +27,16 @@ type PaymentProps = {
 };
 
 function Payment({ bundleId, data, isEditMode, setModalOpen }: PaymentProps) {
+  console.log('data', data);
   const form = useForm<z.infer<typeof PaymentSchema>>({
     resolver: zodResolver(PaymentSchema),
     defaultValues: {
       bundleId: bundleId,
+      receivedDate: data?.receivedDate,
+      receivedPcs: data?.receivedPcs,
+      rate: data?.rate,
+      advance: data?.advance,
+      remarks: data?.remarks,
     },
   });
 
@@ -102,7 +108,6 @@ function Payment({ bundleId, data, isEditMode, setModalOpen }: PaymentProps) {
                   />
                 </FormControl>
                 <FormMessage />
-                ss
               </FormItem>
             )}
           />
