@@ -1,4 +1,9 @@
 'use client';
+import NepaliDate from 'nepali-date-converter';
+import { Plus } from 'lucide-react';
+import Link from 'next/link';
+
+import { TSheet } from '@/types/cloth.types';
 import { deleteSheet } from '@/actions/sheet/delete';
 import ConfirmDelete from '@/components/ConfirmDelete';
 import Empty from '@/components/Empty';
@@ -10,12 +15,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { TSheet } from '@/types/cloth.types';
+
 import Actions from './Actions';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import BackButton from './BackButton';
-import { Plus } from 'lucide-react';
 import SheetDialog from './SheetDialog';
 
 type Props = {
@@ -87,9 +90,14 @@ function SheetTable({
                 acc[size.type] = size.quantity;
                 return acc;
               }, {});
+
+              const cuttingDateNepali = new NepaliDate(
+                item.cuttingDate.getTime()
+              ).format('ddd, DD MMMM YYYY');
+
               return (
                 <TableRow className="rounded" key={item.id}>
-                  <TableCell>{item.cuttingDate.toDateString()}</TableCell>
+                  <TableCell>{cuttingDateNepali}</TableCell>
                   <TableCell className="font-medium">
                     {item.color.toUpperCase()}{' '}
                   </TableCell>

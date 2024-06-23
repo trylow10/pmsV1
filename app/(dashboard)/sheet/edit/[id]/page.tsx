@@ -16,15 +16,6 @@ async function getSheet(id: string) {
 }
 
 async function page({ params }: TParams) {
-  type Props = {
-    clothId: string;
-    list: TSheet[];
-    count: any;
-    companyCloth: any;
-    editableRow: true;
-    deleteRow: true;
-  };
-
   const { id } = params;
   const { list, count, companyCloth } = await getSheet(id);
   return (

@@ -35,10 +35,10 @@ export const getAllCloths = async ({
     const count = await db.cloth.count({ where: searchFilter });
 
     const cloths = await db.cloth.findMany({
+      where: searchFilter,
       skip,
       take: Number(pageSize),
       orderBy: { id: 'desc' },
-      where: searchFilter,
       include: {
         sheet: {
           include: {

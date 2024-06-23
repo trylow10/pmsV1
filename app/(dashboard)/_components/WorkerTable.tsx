@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import Actions from './Actions';
 import ConfirmDelete from '@/components/ConfirmDelete';
 import { deletePayment } from '@/actions/sheet/delete';
+import NepaliDate from 'nepali-date-converter';
 
 type Props = {
   list: Bundle[];
@@ -48,11 +49,13 @@ const WorkerTable = ({ list, editableRow, deleteRow }: Props) => {
                 <Empty />
               ) : (
                 list?.map((bundle: any) => {
+                  const cuttingDateNepali = new NepaliDate(
+                    bundle.assignedDate.getTime()
+                  ).format('ddd, DD MMMM YYYY');
+
                   return (
                     <TableRow key={bundle.id}>
-                      <TableCell>
-                        {bundle.assignedDate.toDateString()}
-                      </TableCell>
+                      <TableCell>{cuttingDateNepali}</TableCell>
                       <TableCell>{bundle.bundleId}</TableCell>
                       <TableCell>
                         {bundle?.size.sheet.cloth.companyCloth}
