@@ -20,12 +20,18 @@ import ClothAction from './ClothAction';
 import Actions from './Actions';
 
 import { EyeIcon } from '@/components/icons';
+import { toast } from 'sonner';
 
 type SheetListProps = {
   items: TCloth[];
 };
 
 function SheetList({ items }: SheetListProps) {
+  async function handleDeleteCloth(id: string) {
+    const { success } = await deleteClothDesign(id);
+    if (success) toast.success(success);
+  }
+
   return (
     <div className="mt-6 px-3">
       {items.length <= 0 ? (
@@ -57,7 +63,7 @@ function SheetList({ items }: SheetListProps) {
 
                 <ConfirmDelete
                   resourceName="Cloth"
-                  deletehandler={() => deleteClothDesign(item.id)}
+                  deletehandler={() => handleDeleteCloth(item.id)}
                 />
               </Actions>
             </div>

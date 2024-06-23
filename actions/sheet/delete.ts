@@ -78,7 +78,7 @@ export const deleteWorker = async (id: string) => {
       where: { id },
     });
     revalidatePath('/view-worker');
-    return worker;
+    return { success: 'Worker deleted successfully' };
   } catch (error) {
     console.log('Error deleting worker object:', error);
     return { error: 'Error deleting worker object', detailedError: error };

@@ -10,12 +10,18 @@ import { EyeIcon } from '@/components/icons';
 import ConfirmDelete from '@/components/ConfirmDelete';
 import { deleteWorker } from '@/actions/sheet/delete';
 import Link from 'next/link';
+import { toast } from 'sonner';
 
 type WorkerListProps = {
   items: Worker[];
 };
 
 function WorkerList({ items }: WorkerListProps) {
+  async function handleDeleteWorker(id: string) {
+    const { success } = await deleteWorker(id);
+    if (success) toast.success(success);
+  }
+
   return (
     <div className="mt-6 px-3">
       {items.length <= 0 ? (
@@ -41,7 +47,7 @@ function WorkerList({ items }: WorkerListProps) {
                 </Link>
                 <ConfirmDelete
                   resourceName="worker"
-                  deletehandler={() => deleteWorker(item?.id)}
+                  deletehandler={() => handleDeleteWorker(item?.id)}
                 />
               </Actions>
             </div>
