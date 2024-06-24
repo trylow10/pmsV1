@@ -74,7 +74,7 @@ export const deletePayment = async (id: string) => {
 
 export const deleteWorker = async (id: string) => {
   try {
-    const worker = await db.worker.delete({
+    await db.worker.delete({
       where: { id },
     });
     revalidatePath('/view-worker');

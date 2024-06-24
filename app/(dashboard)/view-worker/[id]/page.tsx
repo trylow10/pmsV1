@@ -21,10 +21,10 @@ async function page({ params }: TParams) {
 
   if (!data)
     return (
-      <>
+      <div className="flex items-center gap-3">
         <BackButton />
         <Empty />
-      </>
+      </div>
     );
 
   const bundleLength = data.bundle.length;

@@ -20,6 +20,7 @@ import Actions from './Actions';
 import { Button } from '@/components/ui/button';
 import BackButton from './BackButton';
 import SheetDialog from './SheetDialog';
+import { toast } from 'sonner';
 
 type Props = {
   clothId?: string;
@@ -38,6 +39,12 @@ function SheetTable({
   editableRow,
   deleteRow,
 }: Props) {
+  async function handleDeleteSheet(id: string) {
+    const { success, error } = await deleteSheet(id);
+    if (success) toast.success(success);
+    if (error) toast.success(error);
+  }
+
   return (
     <>
       {editableRow && <BackButton />}
@@ -46,7 +53,7 @@ function SheetTable({
           {companyCloth && (
             <h2 className="text-xl font-semibold mb-2">{companyCloth}</h2>
           )}
-          {count !== 0 && (
+          {companyCloth && count !== 0 && (
             <p className="text-sm text-gray-500 mb-3">{count} Sheet Found</p>
           )}
         </div>
@@ -124,7 +131,7 @@ function SheetTable({
                         />
                         <ConfirmDelete
                           resourceName="sheet"
-                          deletehandler={() => deleteSheet(item.id)}
+                          deletehandler={() => handleDeleteSheet(item.id)}
                         />
 
                         <Button variant="ghost">

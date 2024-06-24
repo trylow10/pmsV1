@@ -1,5 +1,5 @@
 'use client';
-import React, { ChangeEvent, useCallback, useEffect } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { useDebounce } from 'use-debounce';
@@ -7,11 +7,20 @@ import { useDebounce } from 'use-debounce';
 function Search() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [debouncedValue, setDebouncedValue] = useDebounce('', 400);
+  const [searchValue, setSearchValue] = useState(
+    searchParams.get('search') || ''
+  );
+  const [debouncedValue] = useDebounce(searchValue, 400);
+  const [prevSearchValue, setPrevSearchValue] = useState(
+    searchParams.get('search') || ''
+  );
 
   const query = useCallback(
-    (name: string, value: string) => {
+    (name: string, value: string, resetPage: boolean = false) => {
       const params = new URLSearchParams(searchParams);
+      if (resetPage) {
+        params.set('page', '1');
+      }
       if (value) {
         params.set(name, value);
       } else {
@@ -24,17 +33,21 @@ function Search() {
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setDebouncedValue(value);
+    setSearchValue(value);
   };
 
   useEffect(() => {
-    router.push(`?${query('search', debouncedValue)}`);
-  }, [debouncedValue, query, router]);
+    if (debouncedValue !== prevSearchValue) {
+      router.push(`?${query('search', debouncedValue, true)}`);
+      setPrevSearchValue(debouncedValue);
+    }
+  }, [debouncedValue, prevSearchValue, query, router]);
 
   return (
     <Input
       className="w-full lg:w-72"
       placeholder="search"
+      value={searchValue}
       onChange={handleSearch}
     />
   );
